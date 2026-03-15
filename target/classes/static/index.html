@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SP Scan Pesado — Sistema de Verificación</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="css/styles.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- ════════ SIDEBAR ════════ -->
+<nav id="sb">
+  <div class="sb-hd">
+    <div class="sb-logo"></div>
+    <div class="sb-brand">SP Scan<br>Pesado</div>
+    <button class="sb-tog" onclick="togSb()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+
+  <!-- ADMIN MENU -->
+  <div id="menu-admin">
+    <div class="grp">General</div>
+    <div class="ni on" onclick="go('dashboard')"><span class="ni-ic">📊</span><span class="ni-lb">Dashboard</span></div>
+
+    <div class="grp">Catálogos</div>
+    <div class="ni" onclick="go('usuarios')"><span class="ni-ic">👥</span><span class="ni-lb">Usuarios</span></div>
+    <div class="ni" onclick="go('clientes')"><span class="ni-ic">🏢</span><span class="ni-lb">Clientes</span></div>
+    <div class="ni" onclick="go('cedis')"><span class="ni-ic">🏭</span><span class="ni-lb">CEDIS</span></div>
+    <div class="ni" onclick="go('vehiculos')"><span class="ni-ic">🚛</span><span class="ni-lb">Vehículos</span></div>
+    <div class="ni" onclick="go('verificentros')"><span class="ni-ic">🔧</span><span class="ni-lb">Verificentros</span></div>
+
+    <div class="sb-div"></div>
+    <div class="grp">Operaciones</div>
+    <div class="ni" onclick="go('notas')"><span class="ni-ic">📋</span><span class="ni-lb">Notas</span></div>
+    <div class="ni" onclick="go('verificacion')"><span class="ni-ic">🔍</span><span class="ni-lb">Verificación</span></div>
+
+    <div class="sb-div"></div>
+    <div class="grp">Finanzas</div>
+    <div class="ni" onclick="go('costos')"><span class="ni-ic">💲</span><span class="ni-lb">Costos</span></div>
+    <div class="ni" onclick="go('transacciones')"><span class="ni-ic">💳</span><span class="ni-lb">Transacciones</span></div>
+    <div class="ni" onclick="go('pedidos')"><span class="ni-ic">📦</span><span class="ni-lb">Pedidos (Envíos)</span></div>
+
+    <div class="sb-div"></div>
+    <div class="grp">Análisis</div>
+    <div class="ni" onclick="go('reportes')"><span class="ni-ic">📈</span><span class="ni-lb">Reportes</span></div>
+  </div>
+
+  <!-- TECNICO MENU -->
+  <div id="menu-tec" style="display:none">
+    <div class="grp">Mi Módulo</div>
+    <div class="ni on" onclick="go('tec-unidades')"><span class="ni-ic">🚛</span><span class="ni-lb">Mis Unidades</span></div>
+    <div class="ni" onclick="go('tec-historial')"><span class="ni-ic">📋</span><span class="ni-lb">Mi Historial</span></div>
+  </div>
+
+  <div class="sb-usr">
+    <div class="sb-av av-admin" id="sb-avatar">👤</div>
+    <div class="sb-ui">
+      <div class="sb-un" id="sb-uname">María González</div>
+      <div class="sb-ur" id="sb-urole">Administrador</div>
+    </div>
+  </div>
+</nav>
+
+<!-- ════════ MAIN ════════ -->
+<div id="mn">
+<div class="topbar no-print">
+  <div class="tb-title" id="tbt">Dashboard</div>
+  <span class="tb-role tb-admin" id="role-badge">ADMIN</span>
+  <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+    <button class="role-btn no-print" onclick="switchRole()" id="role-switch-btn">Cambiar a Técnico →</button>
+  </div>
+</div>
+
+<!-- ══ LOGIN ══ -->
+<div id="view-login" class="view">
+  <div class="lc">
+    <div class="ll">🚛</div>
+    <div class="lt">SP Scan Pesado</div>
+    <div class="ls">Sistema de Verificación Vehicular</div>
+    <div class="lf2"><label>Correo Electrónico</label><input type="email" placeholder="usuario@ejemplo.com"></div>
+    <div class="lf2"><label>Contraseña</label><input type="password" placeholder="••••••••"></div>
+    <div class="login-roles">
+      <div class="lr-btn" onclick="loginAs('admin')">👤 Administrador</div>
+      <div class="lr-btn" onclick="loginAs('tecnico')">🔧 Técnico</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DASHBOARD ══ -->
+<div id="view-dashboard" class="view active">
+<div class="pc">
+  <div class="sh"><div class="st">Dashboard</div><div class="ss">Bienvenido, María González — Resumen general del sistema</div></div>
+  <div class="sr c4">
+    <div class="sc"><div class="si2">🏢</div><div><div class="sn">3</div><div class="sl">Clientes</div></div></div>
+    <div class="sc g"><div class="si2">🚛</div><div><div class="sn">4</div><div class="sl">Unidades</div></div></div>
+    <div class="sc o"><div class="si2">📋</div><div><div class="sn">2</div><div class="sl">Notas Activas</div></div></div>
+    <div class="sc p"><div class="si2">🔍</div><div><div class="sn">5</div><div class="sl">Evaluaciones</div></div></div>
+  </div>
+  <div class="dg">
+    <div class="pn">
+      <div class="pnt">Inspecciones Recientes</div><div class="pns">Últimas 5 inspecciones</div>
+      <table><thead><tr><th>Folio</th><th>Unidad</th><th>Técnico</th><th>Fecha</th><th>Resultado</th></tr></thead>
+      <tbody>
+        <tr><td>V-2026-005</td><td>ABC-123-D</td><td>María González</td><td>25/01</td><td><span class="b bg">✔ Aprobado</span></td></tr>
+        <tr><td>V-2026-004</td><td>JKL-012-G</td><td>María González</td><td>23/01</td><td><span class="b bo">⏳ Pendiente</span></td></tr>
+        <tr><td>V-2026-003</td><td>GHI-789-F</td><td>Carlos Martínez</td><td>22/01</td><td><span class="b br">✘ Reprobado</span></td></tr>
+        <tr><td>V-2026-002</td><td>DEF-456-E</td><td>María González</td><td>21/01</td><td><span class="b bg">✔ Aprobado</span></td></tr>
+        <tr><td>V-2026-001</td><td>AAA-00-A</td><td>Carlos Martínez</td><td>20/01</td><td><span class="b bg">✔ Aprobado</span></td></tr>
+      </tbody></table>
+    </div>
+    <div class="pn" style="text-align:center">
+      <div class="pnt">Tasa de Aprobación</div><div class="pns">Verificaciones del período</div>
+      <div class="dw">
+        <svg width="100" height="100" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="40" fill="none" stroke="#e5e7eb" stroke-width="13"/>
+          <circle cx="50" cy="50" r="40" fill="none" stroke="#16a34a" stroke-width="13" stroke-dasharray="150 251" stroke-linecap="round"/>
+        </svg>
+        <div class="dl">60%</div>
+      </div>
+      <div class="ar"><span>✅ Aprobadas</span><strong>6</strong></div>
+      <div class="ar"><span>❌ Reprobadas</span><strong>3</strong></div>
+      <div class="ar"><span>⏳ Pendientes</span><strong>1</strong></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══ USUARIOS ══ -->
+<div id="view-usuarios" class="view"><div class="pc">
+  <div class="sh"><div class="st">Usuarios</div><div class="ss">Gestión de acceso y permisos del sistema</div></div>
+  <div class="tb2">
+    <div class="sbox">🔍 <input placeholder="Buscar por nombre, correo o tipo..."></div>
+    <select class="fsel"><option>Todos los tipos</option><option>Admin</option><option>Técnico</option></select>
+    <select class="fsel"><option>Todos los estados</option><option>Activo</option><option>Inactivo</option></select>
+    <button class="btn btn-blue" onclick="om('m-usr')">+ Nuevo usuario</button>
+  </div>
+  <div class="tc"><table>
+    <thead><tr><th>Nombre</th><th>Correo</th><th>Tipo</th><th>Activo</th><th>Acciones</th></tr></thead>
+    <tbody>
+      <tr><td>María González</td><td>maria@verificacion.com</td><td><span class="b bb">Admin</span></td><td><span class="b bg">✔ Sí</span></td><td><div class="ax"><button class="ab">🔑</button><button class="ab">✏️</button><button class="ab" onclick="confirmDel()">🗑️</button></div></td></tr>
+      <tr><td>Carlos Martínez</td><td>carlos@verificacion.com</td><td><span class="b bx">Técnico</span></td><td><span class="b bg">✔ Sí</span></td><td><div class="ax"><button class="ab">🔑</button><button class="ab">✏️</button><button class="ab" onclick="confirmDel()">🗑️</button></div></td></tr>
+      <tr><td>Juan Pérez</td><td>juan@verificacion.com</td><td><span class="b bx">Técnico</span></td><td><span class="b bg">✔ Sí</span></td><td><div class="ax"><button class="ab">🔑</button><button class="ab">✏️</button><button class="ab" onclick="confirmDel()">🗑️</button></div></td></tr>
+      <tr><td>Ana Solís</td><td>ana@verificacion.com</td><td><span class="b bb">Admin</span></td><td><span class="b br">✘ No</span></td><td><div class="ax"><button class="ab">🔑</button><button class="ab">✏️</button><button class="ab" onclick="confirmDel()">🗑️</button></div></td></tr>
+    </tbody>
+  </table></div>
+</div></div>
+
+<!-- ══ CLIENTES ══ -->
+<div id="view-clientes" class="view"><div class="pc">
+  <div class="sh"><div class="st">Clientes</div><div class="ss">Empresas registradas en el sistema</div></div>
+  <div class="tb2">
+    <div class="sbox">🔍 <input placeholder="Buscar por razón social, RFC o gestor..."></div>
+    <select class="fsel"><option>Todos los gestores</option><option>María González</option><option>Ana Solís</option></select>
+    <select class="fsel"><option>Todos los estados</option><option>Activo</option><option>Inactivo</option></select>
+    <button class="btn btn-blue" onclick="om('m-cli')">+ Nuevo cliente</button>
+  </div>
+  <div class="tc"><table>
+    <thead><tr><th>Razón Social</th><th>RFC</th><th>Correo</th><th>Teléfono</th><th>Tel. Alt.</th><th>Gestor</th><th>Activo</th><th>Acc.</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Transportes del Norte S.A.</strong></td><td><code>TDN991201AB3</code></td><td>contacto@tdnorte.mx</td><td>812-555-0001</td><td>812-555-0010</td><td>María G.</td><td><span class="b bg">✔ Sí</span></td><td><div class="ax"><button class="ab">👁️</button><button class="ab">✏️</button><button class="ab" onclick="confirmDel()">🗑️</button></div></td></tr>
+      <tr><td><strong>Logística Integral México</strong></td><td><code>LIM001015XY9</code></td><td>info@logistica-mx.com</td><td>55-888-4422</td><td>55-888-4400</td><td>Ana S.</td><td><span class="b bg">✔ Sí</span></td><td><div class="ax"><button class="ab">👁️</button><button class="ab">✏️</button><button class="ab" onclick="confirmDel()">🗑️</button></div></td></tr>
+      <tr><td><strong>Fletes y Rutas del Pacífico</strong></td><td><code>FRP030820ZZ4</code></td><td>rutas@fryp.com.mx</td><td>33-777-9912</td><td>—</td><td>María G.</td><td><span class="b br">✘ No</span></td><td><div class="ax"><button class="ab">👁️</button><button class="ab">✏️</button><button class="ab" onclick="confirmDel()">🗑️</button></div></td></tr>
+    </tbody>
+  </table></div>
+</div></div>
+
+<!-- ══ CEDIS ══ -->
+<div id="view-cedis" class="view"><div class="pc">
+  <div class="sh"><div class="st">CEDIS</div><div class="ss">Centros de distribución por cliente y región</div></div>
+  <div class="tb2">
+    <div class="sbox">🔍 <input placeholder="Buscar por nombre, cliente o región..."></div>
+    <select class="fsel"><option>Todas las regiones</option><option>Noreste</option><option>Centro</option><option>Occidente</option></select>
+    <select class="fsel"><option>Todos los clientes</option><option>Transp. del Norte</option><option>Logística Integral</option></select>
+    <button class="btn btn-blue" onclick="om('m-ced')">+ Nuevo CEDIS</button>
+  </div>
+  <div class="tc"><table>
+    <thead><tr><th>Nombre</th><th>Cliente</th><th>Región</th><th>Encargado</th><th>Correo</th><th>Teléfono</th><th>Activo</th><th>Acc.</th></tr></thead>
+    <tbody>
+      <tr><td><strong>CEDIS Norte MTY</strong></td><td>Transp. del Norte</td><td><span class="b bb">Noreste</span></td><td>Luis Herrera</td><td>cedis@tdnorte.mx</td><td>812-555-1234</td><td><span class="b bg">✔ Sí</span></td><td><div class="ax"><button class="ab">✏️</button><button class="ab" onclick="confirmDel()">🗑️</button></div></td></tr>
+      <tr><td><strong>CEDIS Centro CDMX</strong></td><td>Logística Integral</td><td><span class="b bb">Centro</span></td><td>Patricia Ruiz</td><td>cedis@logistica-mx.com</td><td>55-444-7788</td><td><span class="b bg">✔ Sí</span></td><td><div class="ax"><button class="ab">✏️</button><button class="ab" onclick="confirmDel()">🗑️</button></div></td></tr>
+      <tr><td><strong>CEDIS Occidente GDL</strong></td><td>Fletes y Rutas</td><td><span class="b bp">Occidente</span></td><td>Roberto Leal</td><td>cedis@fryp.com.mx</td><td>33-211-6630</td><td><span class="b br">✘ No</span></td><td><div class="ax"><button class="ab">✏️</button><button class="ab" onclick="confirmDel()">🗑️</button></div></td></tr>
+    </tbody>
+  </table></div>
+</div></div>
+
+<!-- ══ VEHÍCULOS ══ -->
+<div id="view-vehiculos" class="view"><div class="pc">
+  <div class="sh"><div class="st">Vehículos</div><div class="ss">Flota registrada — Historial de evaluaciones por unidad</div></div>
+  <div class="tb2">
+    <div class="sbox">🔍 <input placeholder="Buscar por placa, serie, CEDIS..."></div>
+    <select class="fsel"><option>Todas las regiones</option><option>Noreste</option><option>Centro</option><option>Occidente</option></select>
+    <select class="fsel"><option>Todos los CEDIS</option><option>Norte MTY</option><option>Centro CDMX</option></select>
+    <select class="fsel"><option>Todos los clientes</option><option>Transp. del Norte</option><option>Logística Integral</option></select>
+    <button class="btn btn-blue" onclick="om('m-veh')">+ Nueva unidad</button>
+  </div>
+  <div class="tc"><table>
+    <thead><tr><th>Placa</th><th>Serie</th><th>CEDIS</th><th>Región</th><th>Tipo</th><th>Activo</th><th>Historial</th><th>Acc.</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>AAA-00-A</strong></td><td style="font-size:11px;color:var(--g400)">1FUJGLDR5KS123456</td>
+        <td>CEDIS Norte MTY</td><td><span class="b bb">Noreste</span></td><td>Camión Rabón</td><td><span class="b bg">✔ Sí</span></td>
+        <td><button class="btn btn-outline btn-sm" onclick="th('h1')">📋 Historial</button></td>
+        <td><div class="ax"><button class="ab" onclick="om('m-eval')">📝</button><button class="ab">✏️</button><button class="ab" onclick="confirmDel()">🗑️</button></div></td>
+      </tr>
+      <tr class="hrow" id="hr-h1"><td colspan="8" style="padding:0">
+        <div class="hp"><div class="ht">📋 Historial — AAA-00-A</div>
+          <table style="font-size:12px"><thead><tr><th>Folio</th><th>Materia</th><th>Fecha</th><th>Dictamen</th><th>Técnico</th><th>Precio</th><th></th></tr></thead>
+          <tbody>
+            <tr><td>V-2026-001</td><td>HUMO</td><td>18/02/2026</td><td><span class="b bg">APROBADO</span></td><td>Carlos M.</td><td>$850</td><td><button class="ab" onclick="om('m-eval')">✏️</button></td></tr>
+            <tr><td>V-2025-045</td><td>MOTRIZ</td><td>10/11/2025</td><td><span class="b br">REPROBADO</span></td><td>Juan P.</td><td>$2,100</td><td><button class="ab" onclick="om('m-eval')">✏️</button></td></tr>
+          </tbody></table>
+        </div>
+      </td></tr>
+      <tr>
+        <td><strong>AAB-510-F</strong></td><td style="font-size:11px;color:var(--g400)">1XKWD49X8LJ234567</td>
+        <td>CEDIS Centro CDMX</td><td><span class="b bb">Centro</span></td><td>Camión Rabón</td><td><span class="b bg">✔ Sí</span></td>
+        <td><button class="btn btn-outline btn-sm" onclick="th('h2')">📋 Historial</button></td>
+        <td><div class="ax"><button class="ab" onclick="om('m-eval')">📝</button><button class="ab">✏️</button><button class="ab" onclick="confirmDel()">🗑️</button></div></td>
+      </tr>
+      <tr class="hrow" id="hr-h2"><td colspan="8" style="padding:0">
+        <div class="hp"><div class="ht">📋 Historial — AAB-510-F</div>
+          <table style="font-size:12px"><thead><tr><th>Folio</th><th>Materia</th><th>Fecha</th><th>Dictamen</th><th>Técnico</th><th>Precio</th><th></th></tr></thead>
+          <tbody><tr><td>V-2026-007</td><td>GASOLINA</td><td>19/02/2026</td><td><span class="b bo">PENDIENTE</span></td><td>María G.</td><td>$920</td><td><button class="ab" onclick="om('m-eval')">✏️</button></td></tr></tbody></table>
+        </div>
+      </td></tr>
+      <tr>
+        <td><strong>ABB-360-J</strong></td><td style="font-size:11px;color:var(--g400)">1ZEFB28M0QS567890</td>
+        <td>CEDIS Occidente GDL</td><td><span class="b bp">Occidente</span></td><td>Camión Rabón</td><td><span class="b bg">✔ Sí</span></td>
+        <td><button class="btn btn-outline btn-sm" onclick="th('h3')">📋 Historial</button></td>
+        <td><div class="ax"><button class="ab" onclick="om('m-eval')">📝</button><button class="ab">✏️</button><button class="ab" onclick="confirmDel()">🗑️</button></div></td>
+      </tr>
+      <tr class="hrow" id="hr-h3"><td colspan="8" style="padding:0">
+        <div class="hp"><div class="ht">📋 Historial — ABB-360-J</div>
+          <table style="font-size:12px"><thead><tr><th colspan="7" style="color:var(--g400);text-align:center">Sin evaluaciones registradas</th></tr></thead><tbody></tbody></table>
+        </div>
+      </td></tr>
+    </tbody>
+  </table></div>
+</div></div>
+
+<!-- ══ VERIFICENTROS ══ -->
+<div id="view-verificentros" class="view"><div class="pc">
+  <div class="sh"><div class="st">Verificentros</div><div class="ss">Centros autorizados por región</div></div>
+  <div class="tb2">
+    <div class="sbox">🔍 <input placeholder="Buscar por nombre, clave o región..."></div>
+    <select class="fsel"><option>Todas las regiones</option><option>Noreste</option><option>Centro</option><option>Occidente</option></select>
+    <button class="btn btn-blue" onclick="om('m-ver')">+ Nuevo verificentro</button>
+  </div>
+  <div class="tc"><table>
+    <thead><tr><th>Nombre</th><th>Clave</th><th>Región</th><th>Responsable</th><th>Dirección</th><th>Horario</th><th>Activo</th><th>Acc.</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Verificentro Norte 01</strong></td><td><code>VN-001</code></td><td><span class="b bb">Noreste</span></td><td>Roberto Salas</td><td>Av. Industrial 420, MTY</td><td>8:00–18:00</td><td><span class="b bg">✔ Sí</span></td><td><div class="ax"><button class="ab">⏰</button><button class="ab">✏️</button><button class="ab" onclick="confirmDel()">🗑️</button></div></td></tr>
+      <tr><td><strong>Verificentro Centro 02</strong></td><td><code>VC-002</code></td><td><span class="b bb">Centro</span></td><td>Elena Ríos</td><td>Blvd. Eje Central 88, CDMX</td><td>9:00–17:00</td><td><span class="b bg">✔ Sí</span></td><td><div class="ax"><button class="ab">⏰</button><button class="ab">✏️</button><button class="ab" onclick="confirmDel()">🗑️</button></div></td></tr>
+      <tr><td><strong>Verificentro Occidente 03</strong></td><td><code>VO-003</code></td><td><span class="b bp">Occidente</span></td><td>Miguel Torres</td><td>Calle 5 de Mayo 211, GDL</td><td><span class="b br">Cerrado</span></td><td><span class="b br">✘ No</span></td><td><div class="ax"><button class="ab">⏰</button><button class="ab">✏️</button><button class="ab" onclick="confirmDel()">🗑️</button></div></td></tr>
+    </tbody>
+  </table></div>
+</div></div>
+
+<!-- ══ NOTAS ══ -->
+<div id="view-notas" class="view"><div class="pc">
+  <div class="sh"><div class="st">Notas / Contratos de Servicio</div><div class="ss">Contratos para inspección de flotas vehiculares</div></div>
+  <div class="tb2">
+    <div class="sbox">🔍 <input placeholder="Buscar por folio o cliente..."></div>
+    <select class="fsel"><option>Todos los estados</option><option>Activo</option><option>Inactivo</option></select>
+    <select class="fsel"><option>Todos los clientes</option><option>Transp. del Norte</option><option>Logística Integral</option></select>
+    <button class="btn btn-blue" onclick="om('m-not')">+ Nueva nota</button>
+  </div>
+  <div class="cg">
+    <div class="nc">
+      <div class="nch"><div><div style="display:flex;align-items:center;gap:8px"><span style="font-size:20px">📄</span><div><div class="ncf">NT-2024-001</div><div class="ncc">Transportes del Norte S.A.</div></div></div></div><span class="b bg">✔ Activo</span></div>
+      <div class="ncr">📅 Contrato: <strong>14/01/2024</strong></div>
+      <div class="ncr">🕐 Vigencia: <strong>30/12/2024</strong></div>
+      <div class="ncr">💲 Anticipo: <strong>$15,000</strong></div>
+      <div class="ncr">🔧 Verificentro Norte 01</div>
+      <div class="ncr">💳 Tipo pago: TRANSFERENCIA</div>
+      <div class="ncft"><span style="font-size:12px">Unidades: <strong style="color:var(--blue)">5</strong></span><div style="display:flex;gap:7px"><button class="btn btn-outline btn-sm">👁️ Ver</button><button class="btn btn-blue btn-sm" onclick="om('m-not-ed')">✏️</button></div></div>
+    </div>
+    <div class="nc">
+      <div class="nch"><div><div style="display:flex;align-items:center;gap:8px"><span style="font-size:20px">📄</span><div><div class="ncf">NT-2024-002</div><div class="ncc">Logística Integral México</div></div></div></div><span class="b bg">✔ Activo</span></div>
+      <div class="ncr">📅 Contrato: <strong>14/01/2024</strong></div>
+      <div class="ncr">🕐 Vigencia: <strong>30/12/2024</strong></div>
+      <div class="ncr">💲 Anticipo: <strong>$15,000</strong></div>
+      <div class="ncr">🔧 Verificentro Centro 02</div>
+      <div class="ncr">💳 Tipo pago: EFECTIVO</div>
+      <div class="ncft"><span style="font-size:12px">Unidades: <strong style="color:var(--blue)">5</strong></span><div style="display:flex;gap:7px"><button class="btn btn-outline btn-sm">👁️ Ver</button><button class="btn btn-blue btn-sm" onclick="om('m-not-ed')">✏️</button></div></div>
+    </div>
+  </div>
+</div></div>
+
+<!-- ══ VERIFICACIÓN ══ -->
+<div id="view-verificacion" class="view"><div class="pc">
+  <div class="sh"><div class="st">Verificación</div><div class="ss">Registro histórico de inspecciones</div></div>
+  <div class="sr c4" style="margin-bottom:14px">
+    <div class="sc"><div class="si2">📋</div><div><div class="sn">5</div><div class="sl">Total</div></div></div>
+    <div class="sc g"><div class="si2">✅</div><div><div class="sn" style="color:var(--green)">3</div><div class="sl">Aprobadas</div></div></div>
+    <div class="sc r"><div class="si2">❌</div><div><div class="sn" style="color:var(--red)">1</div><div class="sl">Reprobadas</div></div></div>
+    <div class="sc o"><div class="si2">⏳</div><div><div class="sn" style="color:var(--orange)">1</div><div class="sl">Pendientes</div></div></div>
+  </div>
+  <div class="tb2">
+    <div class="sbox">🔍 <input placeholder="Buscar por folio, placa o técnico..."></div>
+    <select class="fsel"><option>Todos los resultados</option><option>Aprobado</option><option>Reprobado</option><option>Pendiente</option></select>
+    <select class="fsel"><option>Todas las materias</option><option>HUMO</option><option>GASOLINA</option><option>MOTRIZ</option><option>ARRASTRE</option></select>
+    <button class="btn btn-blue" onclick="om('m-vrc')">+ Nueva verificación</button>
+  </div>
+  <div class="tc"><table>
+    <thead><tr><th>Materia</th><th>Precio</th><th>Multa</th><th>Folio</th><th>Fecha</th><th>Dictamen</th><th>Técnico</th><th>Nota</th><th>Acc.</th></tr></thead>
+    <tbody>
+      <tr><td><span class="b bx">HUMO</span></td><td>$850</td><td>$0</td><td>V-2026-001</td><td>18/02/2026</td><td><span class="b bg">APROBADO</span></td><td>Carlos M.</td><td>NT-001</td><td><div class="ax"><button class="ab">✏️</button><button class="ab" onclick="confirmDel()">🗑️</button></div></td></tr>
+      <tr><td><span class="b bx">GASOLINA</span></td><td>$920</td><td>$450</td><td>V-2026-002</td><td>19/02/2026</td><td><span class="b br">REPROBADO</span></td><td>María G.</td><td>NT-002</td><td><div class="ax"><button class="ab">✏️</button><button class="ab" onclick="confirmDel()">🗑️</button></div></td></tr>
+      <tr><td><span class="b bx">MOTRIZ</span></td><td>$2,100</td><td>$0</td><td>V-2026-003</td><td>—</td><td><span class="b bo">PENDIENTE</span></td><td>Juan P.</td><td>NT-001</td><td><div class="ax"><button class="ab">✏️</button><button class="ab" onclick="confirmDel()">🗑️</button></div></td></tr>
+      <tr><td><span class="b bx">ARRASTRE</span></td><td>$1,800</td><td>$0</td><td>V-2026-004</td><td>20/02/2026</td><td><span class="b bg">APROBADO</span></td><td>Carlos M.</td><td>NT-002</td><td><div class="ax"><button class="ab">✏️</button><button class="ab" onclick="confirmDel()">🗑️</button></div></td></tr>
+      <tr><td><span class="b bx">HUMO</span></td><td>$850</td><td>$200</td><td>V-2026-005</td><td>20/02/2026</td><td><span class="b bg">APROBADO</span></td><td>Juan P.</td><td>NT-001</td><td><div class="ax"><button class="ab">✏️</button><button class="ab" onclick="confirmDel()">🗑️</button></div></td></tr>
+    </tbody>
+  </table></div>
+</div></div>
+
+<!-- ══ COSTOS (por CLIENTE) ══ -->
+<div id="view-costos" class="view"><div class="pc">
+  <div class="sh"><div class="st">Costos por Cliente</div><div class="ss">Precios de verificación configurados individualmente por cliente y materia</div></div>
+  <div class="tb2">
+    <div class="sbox">🔍 <input placeholder="Buscar por cliente o materia..."></div>
+    <select class="fsel"><option>Todos los clientes</option><option>Transportes del Norte</option><option>Logística Integral</option><option>Fletes y Rutas</option></select>
+    <select class="fsel"><option>Todas las materias</option><option>HUMO</option><option>GASOLINA</option><option>MOTRIZ</option><option>ARRASTRE</option></select>
+    <button class="btn btn-blue" onclick="om('m-cos')">+ Nuevo costo</button>
+  </div>
+  <div class="tc"><table>
+    <thead><tr><th>Cliente</th><th>Materia</th><th>Costo</th><th>Encargado</th><th>Atiende y Cobra</th><th>Vigente</th><th>Acc.</th></tr></thead>
+    <tbody>
+      <tr><td>Transportes del Norte</td><td><span class="b bx">HUMO</span></td><td><strong>$850.00</strong></td><td>María G.</td><td>Ana S.</td><td><span class="b bg">✔ Sí</span></td><td><div class="ax"><button class="ab">✏️</button><button class="ab" onclick="confirmDel()">🗑️</button></div></td></tr>
+      <tr><td>Transportes del Norte</td><td><span class="b bx">GASOLINA</span></td><td><strong>$920.00</strong></td><td>María G.</td><td>Ana S.</td><td><span class="b bg">✔ Sí</span></td><td><div class="ax"><button class="ab">✏️</button><button class="ab" onclick="confirmDel()">🗑️</button></div></td></tr>
+      <tr><td>Transportes del Norte</td><td><span class="b bx">MOTRIZ</span></td><td><strong>$2,100.00</strong></td><td>María G.</td><td>Ana S.</td><td><span class="b bg">✔ Sí</span></td><td><div class="ax"><button class="ab">✏️</button><button class="ab" onclick="confirmDel()">🗑️</button></div></td></tr>
+      <tr><td>Logística Integral</td><td><span class="b bx">HUMO</span></td><td><strong>$790.00</strong></td><td>Ana S.</td><td>María G.</td><td><span class="b bg">✔ Sí</span></td><td><div class="ax"><button class="ab">✏️</button><button class="ab" onclick="confirmDel()">🗑️</button></div></td></tr>
+      <tr><td>Logística Integral</td><td><span class="b bx">ARRASTRE</span></td><td><strong>$1,800.00</strong></td><td>Ana S.</td><td>María G.</td><td><span class="b bg">✔ Sí</span></td><td><div class="ax"><button class="ab">✏️</button><button class="ab" onclick="confirmDel()">🗑️</button></div></td></tr>
+    </tbody>
+  </table></div>
+</div></div>
+
+<!-- ══ TRANSACCIONES ══ -->
+<div id="view-transacciones" class="view"><div class="pc">
+  <div class="sh"><div class="st">Transacciones</div><div class="ss">Verificaciones por vehículo · Selección múltiple para acciones en lote</div></div>
+  <div class="tb2">
+    <div class="sbox">🔍 <input placeholder="Buscar por gestor, placa, folio, nota..."></div>
+    <select class="fsel"><option>Todos los gestores</option><option>María González</option><option>Ana Solís</option></select>
+    <select class="fsel"><option>Tipo de pago</option><option>EFECTIVO</option><option>DEPOSITO</option><option>TRANSFERENCIA</option><option>TARJETA</option></select>
+    <select class="fsel"><option>Estado de pago</option><option>Pagado</option><option>Pendiente</option></select>
+    <button class="btn btn-blue" onclick="om('m-trn')">+ Nueva</button>
+  </div>
+  <div id="trans-tb" class="mt2">
+    <span id="trans-ct">0 seleccionados</span>
+    <button class="btn btn-green btn-sm" onclick="mkPaid('trans')">✔ Marcar pagados</button>
+    <button class="btn btn-red btn-sm" onclick="del('trans')">🗑️ Eliminar</button>
+    <button class="btn btn-gray btn-sm" onclick="desel('trans')">✘ Cancelar</button>
+  </div>
+  <div class="tc" style="overflow-x:auto"><table>
+    <thead><tr>
+      <th><input type="checkbox" id="ca-trans" onchange="togAll('trans')"></th>
+      <th>Gestor</th><th>Razón Social</th><th>Placa</th><th>Materia</th><th>Verificentro</th>
+      <th>Precio</th><th>Tipo Pago</th><th># Nota</th><th>Cotización</th>
+      <th>F.Folio</th><th>Folio</th><th>Cta.Dep.</th><th>#Factura</th>
+      <th>Pagado</th><th>Pendiente</th><th>F.Pedido</th><th>Acc.</th>
+    </tr></thead>
+    <tbody id="trans-bd">
+      <tr data-id="t1"><td><input type="checkbox" class="ck-trans" onchange="updTb('trans')"></td><td>María G.</td><td>Transp. Norte</td><td><strong>AAA-00-A</strong></td><td><span class="b bx">HUMO</span></td><td>Norte 01</td><td>$850</td><td>TRANSF.</td><td>NT-001</td><td>COT-26-05</td><td>18/02</td><td>V-2026-001</td><td>BBVA-4529</td><td>F-8821</td><td><span class="b bg">✔ Sí</span></td><td><span class="b bx">No</span></td><td>15/02</td><td><div class="ax"><button class="ab">✏️</button><button class="ab" onclick="confirmDel()">🗑️</button></div></td></tr>
+      <tr data-id="t2"><td><input type="checkbox" class="ck-trans" onchange="updTb('trans')"></td><td>Ana S.</td><td>Log. Integral</td><td><strong>AAB-510-F</strong></td><td><span class="b bx">GASOLINA</span></td><td>Centro 02</td><td>$920</td><td>EFECTIVO</td><td>NT-002</td><td>COT-26-12</td><td>19/02</td><td>V-2026-002</td><td>N/A</td><td>N/A</td><td><span class="b br">✘ No</span></td><td><span class="b bo">Sí</span></td><td>16/02</td><td><div class="ax"><button class="ab">✏️</button><button class="ab" onclick="confirmDel()">🗑️</button></div></td></tr>
+      <tr data-id="t3"><td><input type="checkbox" class="ck-trans" onchange="updTb('trans')"></td><td>María G.</td><td>Transp. Norte</td><td><strong>AAA-00-A</strong></td><td><span class="b bx">MOTRIZ</span></td><td>Norte 01</td><td>$2,100</td><td>DEPÓSITO</td><td>NT-001</td><td>COT-26-15</td><td>20/02</td><td>Pendiente</td><td>SANT-110</td><td>F-8825</td><td><span class="b br">✘ No</span></td><td><span class="b bo">Sí</span></td><td>18/02</td><td><div class="ax"><button class="ab">✏️</button><button class="ab" onclick="confirmDel()">🗑️</button></div></td></tr>
+      <tr data-id="t4"><td><input type="checkbox" class="ck-trans" onchange="updTb('trans')"></td><td>Ana S.</td><td>Log. Integral</td><td><strong>ABB-360-J</strong></td><td><span class="b bx">ARRASTRE</span></td><td>Centro 02</td><td>$1,800</td><td>TARJETA</td><td>NT-002</td><td>COT-26-18</td><td>20/02</td><td>V-2026-004</td><td>N/A</td><td>F-8826</td><td><span class="b bg">✔ Sí</span></td><td><span class="b bx">No</span></td><td>20/02</td><td><div class="ax"><button class="ab">✏️</button><button class="ab" onclick="confirmDel()">🗑️</button></div></td></tr>
+    </tbody>
+  </table></div>
+</div></div>
+
+<!-- ══ PEDIDOS (ENVÍOS FÍSICOS) ══ -->
+<div id="view-pedidos" class="view"><div class="pc">
+  <div class="sh"><div class="st">Pedidos — Envíos</div><div class="ss">Seguimiento de envíos físicos de documentación asociados a notas</div></div>
+  <div class="tb2">
+    <div class="sbox">🔍 <input placeholder="Buscar por nota, guía o cliente..."></div>
+    <select class="fsel"><option>Todos los estados</option><option>PENDIENTE</option><option>ENVIADO</option><option>ENTREGADO</option><option>INCIDENCIA</option></select>
+    <select class="fsel"><option>Todos los clientes</option><option>Transp. del Norte</option><option>Logística Integral</option></select>
+    <button class="btn btn-blue" onclick="om('m-ped')">+ Nuevo envío</button>
+  </div>
+  <div id="ped-tb" class="mt2">
+    <span id="ped-ct">0 seleccionados</span>
+    <button class="btn btn-red btn-sm" onclick="del('ped')">🗑️ Eliminar</button>
+    <button class="btn btn-gray btn-sm" onclick="desel('ped')">✘ Cancelar</button>
+  </div>
+  <div class="tc" style="overflow-x:auto"><table>
+    <thead><tr>
+      <th><input type="checkbox" id="ca-ped" onchange="togAll('ped')"></th>
+      <th># Nota</th><th>Cliente</th><th>Fecha Envío</th><th># Guía</th>
+      <th>Recibió</th><th>Foto</th><th>Estatus</th><th>Comentario</th><th>Acc.</th>
+    </tr></thead>
+    <tbody id="ped-bd">
+      <tr data-id="p1"><td><input type="checkbox" class="ck-ped" onchange="updTb('ped')"></td><td><strong>NT-2024-001</strong></td><td>Transp. del Norte</td><td>22/02/2026</td><td><code>DHL-4421889</code></td><td>Luis Herrera</td><td><span class="b bb">📷 Ver</span></td><td><span class="b bg">✔ ENTREGADO</span></td><td style="font-size:12px">Entregado en CEDIS Norte.</td><td><div class="ax"><button class="ab">✏️</button><button class="ab" onclick="confirmDel()">🗑️</button></div></td></tr>
+      <tr data-id="p2"><td><input type="checkbox" class="ck-ped" onchange="updTb('ped')"></td><td><strong>NT-2024-002</strong></td><td>Logística Integral</td><td>23/02/2026</td><td><code>FEDEX-8812034</code></td><td>—</td><td><span class="b bx">Sin foto</span></td><td><span class="b bo">📬 ENVIADO</span></td><td style="font-size:12px">En tránsito, ETA: 25/02.</td><td><div class="ax"><button class="ab">✏️</button><button class="ab" onclick="confirmDel()">🗑️</button></div></td></tr>
+      <tr data-id="p3"><td><input type="checkbox" class="ck-ped" onchange="updTb('ped')"></td><td><strong>NT-2024-003</strong></td><td>Fletes y Rutas</td><td>—</td><td>—</td><td>—</td><td><span class="b bx">Sin foto</span></td><td><span class="b bx">⏳ PENDIENTE</span></td><td style="font-size:12px">Pendiente de envío.</td><td><div class="ax"><button class="ab">✏️</button><button class="ab" onclick="confirmDel()">🗑️</button></div></td></tr>
+    </tbody>
+  </table></div>
+</div></div>
+
+<!-- ══ REPORTES ══ -->
+<div id="view-reportes" class="view"><div class="pc">
+  <div class="sh"><div class="st">Reportes de Evaluaciones</div><div class="ss">Consulta y exporta resultados filtrados por cliente, nota o región</div></div>
+  <div class="tb2 no-print">
+    <div class="sbox">🔍 <input placeholder="Buscar por placa, folio o técnico..."></div>
+    <select class="fsel" id="rp-nota"><option value="">Todas las notas</option><option>NT-2024-001</option><option>NT-2024-002</option></select>
+    <select class="fsel" id="rp-cliente"><option value="">Todos los clientes</option><option>Transp. del Norte</option><option>Logística Integral</option><option>Fletes y Rutas</option></select>
+    <select class="fsel" id="rp-region"><option value="">Todas las regiones</option><option>Noreste</option><option>Centro</option><option>Occidente</option></select>
+    <select class="fsel" id="rp-dictamen"><option value="">Todos los dictámenes</option><option>APROBADO</option><option>REPROBADO</option><option>PENDIENTE</option></select>
+    <button class="btn btn-gray" onclick="resetFiltros()">↺ Limpiar</button>
+    <button class="btn btn-blue" onclick="window.print()">⬇ Exportar PDF</button>
+  </div>
+  <div class="sr c3 no-print" style="margin-bottom:14px">
+    <div class="sc g"><div class="si2">✅</div><div><div class="sn" style="color:var(--green)">3</div><div class="sl">Aprobadas</div></div></div>
+    <div class="sc r"><div class="si2">❌</div><div><div class="sn" style="color:var(--red)">1</div><div class="sl">Reprobadas</div></div></div>
+    <div class="sc o"><div class="si2">⏳</div><div><div class="sn" style="color:var(--orange)">1</div><div class="sl">Pendientes</div></div></div>
+  </div>
+  <!-- Print header (only visible when printing) -->
+  <div style="display:none" class="print-only" id="print-header">
+    <div style="text-align:center;margin-bottom:20px">
+      <h1 style="font-size:20px;color:#0f2544">SP Scan Pesado — Reporte de Evaluaciones</h1>
+      <p style="font-size:12px;color:#666">Generado el: <span id="print-date"></span></p>
+    </div>
+  </div>
+  <div class="tc"><table id="report-table">
+    <thead><tr>
+      <th>Folio</th><th>Placa</th><th>Serie</th><th>Cliente</th><th>CEDIS</th><th>Región</th>
+      <th>Nota</th><th>Materia</th><th>Fecha</th><th>Dictamen</th><th>Técnico</th><th>Causa Reprobación</th>
+    </tr></thead>
+    <tbody>
+      <tr><td>V-2026-001</td><td>AAA-00-A</td><td>1FUJGLDR5KS</td><td>Transp. Norte</td><td>Norte MTY</td><td><span class="b bb">Noreste</span></td><td>NT-001</td><td>HUMO</td><td>18/02/2026</td><td><span class="b bg">APROBADO</span></td><td>Carlos M.</td><td>—</td></tr>
+      <tr><td>V-2026-002</td><td>AAB-510-F</td><td>1XKWD49X8LJ</td><td>Log. Integral</td><td>Centro CDMX</td><td><span class="b bb">Centro</span></td><td>NT-002</td><td>GASOLINA</td><td>19/02/2026</td><td><span class="b br">REPROBADO</span></td><td>María G.</td><td>Presión llantas baja (65 PSI)</td></tr>
+      <tr><td>V-2026-003</td><td>AAA-00-A</td><td>1FUJGLDR5KS</td><td>Transp. Norte</td><td>Norte MTY</td><td><span class="b bb">Noreste</span></td><td>NT-001</td><td>MOTRIZ</td><td>—</td><td><span class="b bo">PENDIENTE</span></td><td>Juan P.</td><td>—</td></tr>
+      <tr><td>V-2026-004</td><td>ABB-360-J</td><td>1ZEFB28M0QS</td><td>Log. Integral</td><td>Centro CDMX</td><td><span class="b bb">Centro</span></td><td>NT-002</td><td>ARRASTRE</td><td>20/02/2026</td><td><span class="b bg">APROBADO</span></td><td>Carlos M.</td><td>—</td></tr>
+      <tr><td>V-2026-005</td><td>AAA-00-A</td><td>1FUJGLDR5KS</td><td>Transp. Norte</td><td>Norte MTY</td><td><span class="b bb">Noreste</span></td><td>NT-001</td><td>HUMO</td><td>20/02/2026</td><td><span class="b bg">APROBADO</span></td><td>Juan P.</td><td>—</td></tr>
+    </tbody>
+  </table></div>
+</div></div>
+
+<!-- ══ MÓDULO TÉCNICO: UNIDADES ══ -->
+<div id="view-tec-unidades" class="view"><div class="pc">
+  <div class="sh">
+    <div class="st">Mis Unidades</div>
+    <div class="ss">Carlos Martínez — Vehículos asignados a tu zona · Regista nuevas evaluaciones</div>
+  </div>
+  <div class="tb2">
+    <div class="sbox">🔍 <input placeholder="Buscar por placa, serie o CEDIS..."></div>
+    <select class="fsel"><option>Todos los CEDIS</option><option>Norte MTY</option><option>Centro CDMX</option></select>
+    <select class="fsel"><option>Todas las regiones</option><option>Noreste</option><option>Centro</option></select>
+    <button class="btn btn-blue" onclick="om('m-veh')">+ Registrar unidad</button>
+  </div>
+  <div class="tc"><table>
+    <thead><tr><th>Placa</th><th>Serie</th><th>CEDIS</th><th>Región</th><th>Tipo</th><th>Historial</th><th>Nueva Evaluación</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>AAA-00-A</strong></td><td style="font-size:11px;color:var(--g400)">1FUJGLDR5KS123456</td>
+        <td>CEDIS Norte MTY</td><td><span class="b bb">Noreste</span></td><td>Camión Rabón</td>
+        <td><button class="btn btn-outline btn-sm" onclick="th('th1')">📋 Ver mi historial</button></td>
+        <td><button class="btn btn-blue btn-sm" onclick="om('m-wizard')">➕ Nueva evaluación</button></td>
+      </tr>
+      <tr class="hrow" id="hr-th1"><td colspan="7" style="padding:0">
+        <div class="hp"><div class="ht">📋 Mi Historial — AAA-00-A (solo mis evaluaciones)</div>
+          <table style="font-size:12px"><thead><tr><th>Folio</th><th>Materia</th><th>Fecha</th><th>Dictamen</th><th>Notas</th></tr></thead>
+          <tbody>
+            <tr><td>V-2026-001</td><td>HUMO</td><td>18/02/2026</td><td><span class="b bg">APROBADO</span></td><td>Sin observaciones</td></tr>
+          </tbody></table>
+          <p style="font-size:11px;color:var(--g400);margin-top:6px">⚠ Solo puedes ver tus propias evaluaciones. No se permite edición de registros pasados.</p>
+        </div>
+      </td></tr>
+      <tr>
+        <td><strong>AAB-510-F</strong></td><td style="font-size:11px;color:var(--g400)">1XKWD49X8LJ234567</td>
+        <td>CEDIS Centro CDMX</td><td><span class="b bb">Centro</span></td><td>Camión Rabón</td>
+        <td><button class="btn btn-outline btn-sm" onclick="th('th2')">📋 Ver mi historial</button></td>
+        <td><button class="btn btn-blue btn-sm" onclick="om('m-wizard')">➕ Nueva evaluación</button></td>
+      </tr>
+      <tr class="hrow" id="hr-th2"><td colspan="7" style="padding:0">
+        <div class="hp"><div class="ht">📋 Mi Historial — AAB-510-F</div>
+          <table style="font-size:12px"><thead><tr><th colspan="5" style="color:var(--g400);text-align:center">Sin evaluaciones propias registradas</th></tr></thead><tbody></tbody></table>
+        </div>
+      </td></tr>
+    </tbody>
+  </table></div>
+</div></div>
+
+<!-- ══ MÓDULO TÉCNICO: MI HISTORIAL ══ -->
+<div id="view-tec-historial" class="view"><div class="pc">
+  <div class="sh"><div class="st">Mi Historial de Evaluaciones</div><div class="ss">Carlos Martínez — Solo tus evaluaciones registradas</div></div>
+  <div class="tb2">
+    <div class="sbox">🔍 <input placeholder="Buscar por placa o folio..."></div>
+    <select class="fsel"><option>Todos los dictámenes</option><option>APROBADO</option><option>REPROBADO</option></select>
+  </div>
+  <div class="tc"><table>
+    <thead><tr><th>Folio</th><th>Placa</th><th>Materia</th><th>Fecha</th><th>Dictamen</th><th>Observaciones</th></tr></thead>
+    <tbody>
+      <tr><td>V-2026-001</td><td>AAA-00-A</td><td>HUMO</td><td>18/02/2026</td><td><span class="b bg">APROBADO</span></td><td>Sin observaciones</td></tr>
+      <tr><td>V-2025-038</td><td>AAA-00-A</td><td>MOTRIZ</td><td>05/09/2025</td><td><span class="b br">REPROBADO</span></td><td>Tuercas traseras izq. con 3 faltantes</td></tr>
+    </tbody>
+  </table></div>
+  <p style="font-size:11px;color:var(--g400);margin-top:9px">⚠ El historial es de solo lectura. Para registrar una nueva evaluación ve a la sección Mis Unidades.</p>
+</div></div>
+
+</div><!-- /#mn -->
+
+<!-- ═══════════════════════════════════
+     MODALES
+═══════════════════════════════════ -->
+
+<!-- Nueva Unidad -->
+<div id="m-veh" class="mo" onclick="mc(event,'m-veh')"><div class="md">
+  <div class="mdt">🚛 Nueva Unidad Vehicular</div>
+  <div class="fg">
+    <div class="ff"><label>Placa *</label><input placeholder="AAA-00-A"></div>
+    <div class="ff"><label>Número de Serie *</label><input placeholder="1FUJGLDR5KS..."></div>
+    <div class="ff"><label>Tipo</label><select><option>Camión Rabón (4x2)</option><option>Trailer</option><option>Full</option></select></div>
+    <div class="ff"><label>Cliente</label><select><option>Transportes del Norte</option><option>Logística Integral</option></select></div>
+    <div class="ff"><label>CEDIS</label><select><option>CEDIS Norte MTY</option><option>CEDIS Centro CDMX</option></select></div>
+    <div class="ff"><label>Activo</label><select><option>Sí</option><option>No</option></select></div>
+  </div>
+  <div class="ma"><button class="btn btn-outline" onclick="cm('m-veh')">Cancelar</button><button class="btn btn-blue" onclick="saveVehiculo()">💾 Guardar</button></div>
+</div></div>
+
+<!-- Editar Evaluación (Admin) -->
+<div id="m-eval" class="mo" onclick="mc(event,'m-eval')"><div class="md">
+  <div class="mdt">📝 Editar Evaluación</div>
+  <div class="fg">
+    <div class="ff"><label>Folio</label><input value="V-2026-001"></div>
+    <div class="ff"><label>Materia</label><select><option>HUMO</option><option>GASOLINA</option><option>MOTRIZ</option><option>ARRASTRE</option></select></div>
+    <div class="ff"><label>Fecha</label><input type="date" value="2026-02-18"></div>
+    <div class="ff"><label>Dictamen</label><select><option>APROBADO</option><option>REPROBADO</option></select></div>
+    <div class="ff"><label>Precio ($)</label><input type="number" value="850"></div>
+    <div class="ff"><label>Multa ($)</label><input type="number" value="0"></div>
+    <div class="ff"><label>Técnico</label><select><option>Carlos Martínez</option><option>Juan Pérez</option><option>María González</option></select></div>
+    <div class="ff"><label>Nota</label><input value="NT-2024-001"></div>
+    <div class="ff fw"><label>Comentarios</label><textarea rows="2"></textarea></div>
+  </div>
+  <div class="ma"><button class="btn btn-outline" onclick="cm('m-eval')">Cancelar</button><button class="btn btn-blue">💾 Guardar</button></div>
+</div></div>
+
+<!-- Nuevo Envío (Pedido) -->
+<div id="m-ped" class="mo" onclick="mc(event,'m-ped')"><div class="md">
+  <div class="mdt">📦 Nuevo Envío</div>
+  <div class="fg">
+    <div class="ff"><label>Nota *</label><select><option>NT-2024-001</option><option>NT-2024-002</option><option>NT-2024-003</option></select></div>
+    <div class="ff"><label>Fecha de Envío</label><input type="date"></div>
+    <div class="ff"><label>Número de Guía</label><input placeholder="DHL-000000 / FEDEX-000000"></div>
+    <div class="ff"><label>Recibió</label><input placeholder="Nombre de quien recibe"></div>
+    <div class="ff"><label>Estatus</label><select><option>PENDIENTE</option><option>ENVIADO</option><option>ENTREGADO</option><option>INCIDENCIA</option></select></div>
+    <div class="ff"><label>Evidencia (foto)</label><input type="file" accept="image/*"></div>
+    <div class="ff fw"><label>Comentario</label><textarea rows="2" placeholder="Observaciones del envío..."></textarea></div>
+  </div>
+  <div class="ma"><button class="btn btn-outline" onclick="cm('m-ped')">Cancelar</button><button class="btn btn-blue">💾 Guardar</button></div>
+</div></div>
+
+<!-- Nuevo Costo -->
+<div id="m-cos" class="mo" onclick="mc(event,'m-cos')"><div class="md">
+  <div class="mdt">💲 Nuevo Costo</div>
+  <div class="fg">
+    <div class="ff"><label>Cliente *</label><select><option>Transportes del Norte</option><option>Logística Integral</option><option>Fletes y Rutas</option></select></div>
+    <div class="ff"><label>Materia *</label><select><option>HUMO</option><option>GASOLINA</option><option>MOTRIZ</option><option>ARRASTRE</option></select></div>
+    <div class="ff"><label>Costo ($) *</label><input type="number" placeholder="0.00" min="0"></div>
+    <div class="ff"><label>Encargado</label><select><option>María González</option><option>Ana Solís</option></select></div>
+    <div class="ff fw"><label>Atiende y Cobra</label><select><option>María González</option><option>Ana Solís</option><option>Juan Pérez</option></select></div>
+  </div>
+  <div class="ma"><button class="btn btn-outline" onclick="cm('m-cos')">Cancelar</button><button class="btn btn-blue">💾 Guardar</button></div>
+</div></div>
+
+<!-- Modales básicos -->
+<div id="m-usr" class="mo" onclick="mc(event,'m-usr')"><div class="md"><div class="mdt">👥 Nuevo Usuario</div><div class="fg"><div class="ff"><label>Nombre</label><input placeholder="Nombre completo"></div><div class="ff"><label>Correo *</label><input type="email" placeholder="correo@ejemplo.com"></div><div class="ff"><label>Contraseña *</label><input type="password"></div><div class="ff"><label>Tipo</label><select><option>admin</option><option>tecnico</option></select></div></div><div class="ma"><button class="btn btn-outline" onclick="cm('m-usr')">Cancelar</button><button class="btn btn-blue" onclick="saveUsuario()">💾 Guardar</button></div></div></div>
+<div id="m-cli" class="mo" onclick="mc(event,'m-cli')"><div class="md"><div class="mdt">🏢 Nuevo Cliente</div><div class="fg"><div class="ff fw"><label>Razón Social *</label><input placeholder="Empresa S.A. de C.V."></div><div class="ff"><label>RFC *</label><input placeholder="TDN991201AB3" style="text-transform:uppercase"></div><div class="ff"><label>Región/Estado *</label><input placeholder="Nuevo León"></div><div class="ff"><label>Correo *</label><input type="email"></div><div class="ff"><label>Teléfono *</label><input placeholder="000-000-0000"></div><div class="ff"><label>Tel. Alternativo</label><input placeholder="000-000-0000"></div><div class="ff"><label>Gestor *</label><select><option>María González</option><option>Ana Solís</option></select></div></div><div class="ma"><button class="btn btn-outline" onclick="cm('m-cli')">Cancelar</button><button class="btn btn-blue" onclick="saveCliente()">💾 Guardar</button></div></div></div>
+<div id="m-ced" class="mo" onclick="mc(event,'m-ced')"><div class="md"><div class="mdt">🏭 Nuevo CEDIS</div><div class="fg"><div class="ff fw"><label>Nombre *</label><input placeholder="CEDIS Nombre Ciudad"></div><div class="ff"><label>Cliente</label><select><option>Transportes del Norte</option><option>Logística Integral</option></select></div><div class="ff"><label>Región *</label><select><option>Noreste</option><option>Centro</option><option>Occidente</option></select></div><div class="ff"><label>Encargado</label><input></div><div class="ff"><label>Correo</label><input type="email"></div><div class="ff"><label>Teléfono</label><input></div><div class="ff fw"><label>Dirección *</label><textarea rows="2"></textarea></div></div><div class="ma"><button class="btn btn-outline" onclick="cm('m-ced')">Cancelar</button><button class="btn btn-blue" onclick="saveCedis()">💾 Guardar</button></div></div></div>
+<div id="m-ver" class="mo" onclick="mc(event,'m-ver')"><div class="md"><div class="mdt">🔧 Nuevo Verificentro</div><div class="fg"><div class="ff fw"><label>Nombre *</label><input></div><div class="ff"><label>Clave</label><input placeholder="VN-000"></div><div class="ff"><label>Región *</label><select><option>Noreste</option><option>Centro</option><option>Occidente</option></select></div><div class="ff"><label>Responsable</label><input></div><div class="ff fw"><label>Dirección *</label><textarea rows="2"></textarea></div></div><div class="ma"><button class="btn btn-outline" onclick="cm('m-ver')">Cancelar</button><button class="btn btn-blue" onclick="saveVerificentro()">💾 Guardar</button></div></div></div>
+<div id="m-not" class="mo" onclick="mc(event,'m-not')"><div class="md"><div class="mdt">📋 Nueva Nota</div><div class="fg"><div class="ff"><label>Folio *</label><input placeholder="NT-2024-003"></div><div class="ff"><label>Cliente *</label><select><option>Transportes del Norte</option><option>Logística Integral</option></select></div><div class="ff"><label>Verificentro *</label><select><option>Norte 01</option><option>Centro 02</option></select></div><div class="ff"><label>Tipo Pago *</label><select><option>EFECTIVO</option><option>DEPOSITO</option><option>TRANSFERENCIA</option><option>TARJETA</option></select></div><div class="ff"><label>Anticipo ($) *</label><input type="number" placeholder="0.00"></div><div class="ff"><label>Pagado Completo</label><select><option>No</option><option>Sí</option></select></div><div class="ff"><label>Atendió *</label><select><option>Juan Pérez</option><option>María González</option></select></div><div class="ff"><label>Revisó *</label><select><option>María González</option><option>Ana Solís</option></select></div><div class="ff fw"><label>Comentario</label><textarea rows="2"></textarea></div></div><div class="ma"><button class="btn btn-outline" onclick="cm('m-not')">Cancelar</button><button class="btn btn-blue">💾 Guardar</button></div></div></div>
+<div id="m-not-ed" class="mo" onclick="mc(event,'m-not-ed')"><div class="md"><div class="mdt">✏️ Editar Nota</div><div class="fg"><div class="ff"><label>Folio</label><input value="NT-2024-001"></div><div class="ff"><label>Cliente</label><select><option>Transportes del Norte</option></select></div><div class="ff"><label>Anticipo ($)</label><input type="number" value="15000"></div><div class="ff"><label>Pagado Completo</label><select><option>Sí</option><option>No</option></select></div><div class="ff"><label>Atendió</label><select><option>Juan Pérez</option></select></div><div class="ff"><label>Revisó</label><select><option>María González</option></select></div><div class="ff fw"><label>Comentario</label><textarea rows="2">Pago liquidado de contado.</textarea></div></div><div class="ma"><button class="btn btn-outline" onclick="cm('m-not-ed')">Cancelar</button><button class="btn btn-blue">💾 Guardar</button></div></div></div>
+<div id="m-vrc" class="mo" onclick="mc(event,'m-vrc')"><div class="md"><div class="mdt">🔍 Nueva Verificación</div><div class="fg"><div class="ff"><label>Nota</label><select><option>NT-2024-001</option><option>NT-2024-002</option></select></div><div class="ff"><label>Vehículo</label><select><option>AAA-00-A</option><option>AAB-510-F</option><option>ABB-360-J</option></select></div><div class="ff"><label>Materia</label><select><option>HUMO</option><option>GASOLINA</option><option>MOTRIZ</option><option>ARRASTRE</option></select></div><div class="ff"><label>Folio</label><input placeholder="V-2026-..."></div><div class="ff"><label>Precio ($)</label><input type="number"></div><div class="ff"><label>Multa ($)</label><input type="number" value="0"></div><div class="ff"><label>Fecha</label><input type="date"></div><div class="ff"><label>Dictamen</label><select><option>— Pendiente —</option><option>APROBADO</option><option>REPROBADO</option></select></div><div class="ff"><label>Técnico</label><select><option>Carlos Martínez</option><option>Juan Pérez</option><option>María González</option></select></div></div><div class="ma"><button class="btn btn-outline" onclick="cm('m-vrc')">Cancelar</button><button class="btn btn-blue">💾 Guardar</button></div></div></div>
+<div id="m-trn" class="mo" onclick="mc(event,'m-trn')"><div class="md"><div class="mdt">💳 Nueva Transacción</div><div class="fg"><div class="ff"><label>Nota *</label><select><option>NT-2024-001</option><option>NT-2024-002</option></select></div><div class="ff"><label>Unidad</label><select><option>AAA-00-A</option><option>AAB-510-F</option></select></div><div class="ff"><label>Materia</label><select><option>HUMO</option><option>GASOLINA</option><option>MOTRIZ</option><option>ARRASTRE</option></select></div><div class="ff"><label>Verificentro</label><select><option>Norte 01</option><option>Centro 02</option></select></div><div class="ff"><label>Precio ($) *</label><input type="number"></div><div class="ff"><label>Tipo Pago *</label><select><option>EFECTIVO</option><option>DEPOSITO</option><option>TRANSFERENCIA</option><option>TARJETA</option></select></div><div class="ff"><label>Cotización</label><input placeholder="COT-2026-..."></div><div class="ff"><label>Folio</label><input placeholder="V-2026-..."></div><div class="ff"><label>Fecha Folio</label><input type="date"></div><div class="ff"><label>Fecha Pedido</label><input type="date"></div><div class="ff"><label>Cta. Depósito</label><input placeholder="Banco · últimos 4"></div><div class="ff"><label># Factura</label><input placeholder="F-0000"></div></div><div class="ma"><button class="btn btn-outline" onclick="cm('m-trn')">Cancelar</button><button class="btn btn-blue">💾 Guardar</button></div></div></div>
+
+<!-- ════════════════════════════════════
+     WIZARD DE EVALUACIÓN (7 PASOS)
+════════════════════════════════════ -->
+<div id="m-wizard" class="mo" onclick="mc(event,'m-wizard')">
+<div class="md wide">
+  <div class="mdt">🔧 Nueva Evaluación — Formulario de Inspección</div>
+
+  <!-- Selección de vehículo -->
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px;background:#f0f2f8;padding:12px;border-radius:10px;">
+    <div class="ff"><label>Vehículo (Placa) *</label><select><option>AAA-00-A</option><option>AAB-510-F</option><option>ABB-360-J</option></select></div>
+    <div class="ff"><label>Materia *</label><select><option>MOTRIZ</option><option>HUMO</option><option>GASOLINA</option><option>ARRASTRE</option></select></div>
+    <div class="ff"><label>Nota *</label><select><option>NT-2024-001</option><option>NT-2024-002</option></select></div>
+  </div>
+
+  <!-- Step indicators -->
+  <div class="wz-steps" id="wz-steps">
+    <div class="wz-step active" id="ws0"><div class="wz-dot">1</div><div class="wz-lbl">Luces</div></div>
+    <div class="wz-step" id="ws1"><div class="wz-dot">2</div><div class="wz-lbl">Llantas</div></div>
+    <div class="wz-step" id="ws2"><div class="wz-dot">3</div><div class="wz-lbl">Dirección</div></div>
+    <div class="wz-step" id="ws3"><div class="wz-dot">4</div><div class="wz-lbl">Aire/Frenos</div></div>
+    <div class="wz-step" id="ws4"><div class="wz-dot">5</div><div class="wz-lbl">Motor</div></div>
+    <div class="wz-step" id="ws5"><div class="wz-dot">6</div><div class="wz-lbl">Otros</div></div>
+    <div class="wz-step" id="ws6"><div class="wz-dot">7</div><div class="wz-lbl">Evidencias</div></div>
+  </div>
+
+  <!-- PASO 1: LUCES -->
+  <div class="wz-panel on" id="wp0">
+    <div class="wz-section-title">💡 A. Luces</div>
+    <div class="ev-row">
+      <div class="ev-field"><label>Luces de Gálibo</label><select><option>Aprobadas</option><option>Izquierda fundida</option><option>Derecha fundida</option><option>Ambas fundidas</option></select></div>
+      <div class="ev-field"><label>Luces Altas</label><select><option>Aprobadas</option><option>Izquierda fundida</option><option>Derecha fundida</option><option>Ambas fundidas</option></select></div>
+      <div class="ev-field"><label>Luces Bajas</label><select><option>Aprobadas</option><option>Izquierda fundida</option><option>Derecha fundida</option><option>Ambas fundidas</option></select></div>
+      <div class="ev-field"><label>Demarcadoras Delanteras</label><select><option>Aprobadas</option><option>Izquierda fundida</option><option>Derecha fundida</option><option>Ambas fundidas</option></select></div>
+      <div class="ev-field"><label>Demarcadoras Traseras</label><select><option>Aprobadas</option><option>Izquierda fundida</option><option>Derecha fundida</option><option>Ambas fundidas</option></select></div>
+      <div class="ev-field"><label>Luces Indicadoras</label><select><option>Aprobadas</option><option>1 fundida</option><option>2 fundidas</option><option>3 fundidas</option></select></div>
+      <div class="ev-field"><label>Faro Izquierdo</label><select><option>Aprobado</option><option>Flojo</option><option>Roto</option></select></div>
+      <div class="ev-field"><label>Faro Derecho</label><select><option>Aprobado</option><option>Flojo</option><option>Roto</option></select></div>
+      <div class="ev-field"><label>Direccionales Delanteras</label><select><option>Aprobadas</option><option>Izquierda fundida</option><option>Derecha fundida</option><option>Ambas fundidas</option></select></div>
+      <div class="ev-field"><label>Direccionales Traseras</label><select><option>Aprobadas</option><option>Izquierda fundida</option><option>Derecha fundida</option><option>Ambas fundidas</option></select></div>
+    </div>
+  </div>
+
+  <!-- PASO 2: LLANTAS -->
+  <div class="wz-panel" id="wp1">
+    <div class="wz-section-title">🛞 B. Llantas</div>
+    <div class="ev-row">
+      <div class="ev-field"><label>Rines Delanteros</label><select><option>Aprobados</option><option>Derecho roto/soldado</option><option>Izquierdo roto/soldado</option><option>Ambos rotos/soldados</option></select></div>
+      <div class="ev-field"><label>Rines Traseros</label><select><option>Aprobados</option><option>Derecho roto/soldado</option><option>Izquierdo roto/soldado</option><option>Ambos rotos/soldados</option></select></div>
+      <div class="ev-field"><label>Masas Delanteras</label><select><option>Aprobadas</option><option>Derecha con fuga</option><option>Izquierda con fuga</option><option>Ambas con fuga</option></select></div>
+      <div class="ev-field"><label>Masas Traseras</label><select><option>Aprobadas</option><option>Derecha con fuga</option><option>Izquierda con fuga</option><option>Ambas con fuga</option></select></div>
+    </div>
+    <p style="font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--g600);margin-bottom:8px">Presión (PSI — mín. 80)</p>
+    <div class="ev-row">
+      <div class="ev-field"><label>Del. Izq.</label><div class="psi-wrap"><input type="number" id="psi1" placeholder="80" oninput="chkPsi(this,'pv1')"><span class="psi-val" id="pv1">—</span></div></div>
+      <div class="ev-field"><label>Del. Der.</label><div class="psi-wrap"><input type="number" id="psi2" placeholder="80" oninput="chkPsi(this,'pv2')"><span class="psi-val" id="pv2">—</span></div></div>
+      <div class="ev-field"><label>Tras. Izq. 1</label><div class="psi-wrap"><input type="number" id="psi3" placeholder="80" oninput="chkPsi(this,'pv3')"><span class="psi-val" id="pv3">—</span></div></div>
+      <div class="ev-field"><label>Tras. Izq. 2</label><div class="psi-wrap"><input type="number" id="psi4" placeholder="80" oninput="chkPsi(this,'pv4')"><span class="psi-val" id="pv4">—</span></div></div>
+      <div class="ev-field"><label>Tras. Der. 1</label><div class="psi-wrap"><input type="number" id="psi5" placeholder="80" oninput="chkPsi(this,'pv5')"><span class="psi-val" id="pv5">—</span></div></div>
+      <div class="ev-field"><label>Tras. Der. 2</label><div class="psi-wrap"><input type="number" id="psi6" placeholder="80" oninput="chkPsi(this,'pv6')"><span class="psi-val" id="pv6">—</span></div></div>
+    </div>
+    <p style="font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--g600);margin:10px 0 6px">Profundidad (mm) | Del ≥3.2 / Tras ≥1.6</p>
+    <div class="ev-row">
+      <div class="ev-field"><label>Del. Izq.</label><div class="psi-wrap"><input type="number" id="mm1" placeholder="3.2" step="0.1" oninput="chkMm(this,'mv1',3.2)"><span class="psi-val" id="mv1">—</span></div></div>
+      <div class="ev-field"><label>Del. Der.</label><div class="psi-wrap"><input type="number" id="mm2" placeholder="3.2" step="0.1" oninput="chkMm(this,'mv2',3.2)"><span class="psi-val" id="mv2">—</span></div></div>
+      <div class="ev-field"><label>Tras. Izq. 1</label><div class="psi-wrap"><input type="number" id="mm3" placeholder="1.6" step="0.1" oninput="chkMm(this,'mv3',1.6)"><span class="psi-val" id="mv3">—</span></div></div>
+      <div class="ev-field"><label>Tras. Izq. 2</label><div class="psi-wrap"><input type="number" id="mm4" placeholder="1.6" step="0.1" oninput="chkMm(this,'mv4',1.6)"><span class="psi-val" id="mv4">—</span></div></div>
+      <div class="ev-field"><label>Tras. Der. 1</label><div class="psi-wrap"><input type="number" id="mm5" placeholder="1.6" step="0.1" oninput="chkMm(this,'mv5',1.6)"><span class="psi-val" id="mv5">—</span></div></div>
+      <div class="ev-field"><label>Tras. Der. 2</label><div class="psi-wrap"><input type="number" id="mm6" placeholder="1.6" step="0.1" oninput="chkMm(this,'mv6',1.6)"><span class="psi-val" id="mv6">—</span></div></div>
+    </div>
+
+    <!-- GRÁFICA DE LLANTAS (birlos y tuercas) -->
+    <p style="font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--g600);margin:14px 0 4px">🔩 Birlos y Tuercas — Haz clic en cada elemento para marcar como faltante/roto</p>
+    <p style="font-size:11px;color:var(--g400);margin-bottom:10px">⬜ Normal · 🔴 Faltante o roto (si &gt;2 por llanta → REPRUEBA)</p>
+    <div class="tire-grid">
+      <div class="tire-wrap"><div class="tire-lbl">Delantera Izquierda</div><div id="tire-DI"></div><div class="tire-counter" id="tc-DI">Birlos: 0 faltantes · Tuercas: 0 faltantes</div></div>
+      <div class="tire-wrap"><div class="tire-lbl">Delantera Derecha</div><div id="tire-DD"></div><div class="tire-counter" id="tc-DD">Birlos: 0 faltantes · Tuercas: 0 faltantes</div></div>
+      <div class="tire-wrap"><div class="tire-lbl">Trasera Izquierda</div><div id="tire-TI"></div><div class="tire-counter" id="tc-TI">Birlos: 0 faltantes · Tuercas: 0 faltantes</div></div>
+      <div class="tire-wrap"><div class="tire-lbl">Trasera Derecha</div><div id="tire-TD"></div><div class="tire-counter" id="tc-TD">Birlos: 0 faltantes · Tuercas: 0 faltantes</div></div>
+    </div>
+  </div>
+
+  <!-- PASO 3: DIRECCIÓN -->
+  <div class="wz-panel" id="wp2">
+    <div class="wz-section-title">🔩 C. Dirección, Estructura y Accesos</div>
+    <div class="ev-row">
+      <div class="ev-field"><label>Brazo Pitman</label><select><option>Aprobado</option><option>Golpeado</option></select></div>
+      <div class="ev-field"><label>Manijas de Puertas</label><select><option>Aprobadas</option><option>1 rota</option><option>2 rotas</option></select></div>
+      <div class="ev-field"><label>Chavetas</label><select><option>Aprobadas</option><option>Faltan</option></select></div>
+      <div class="ev-field"><label>Núm. Chavetas Faltantes</label><input type="number" value="0" min="0"></div>
+    </div>
+  </div>
+
+  <!-- PASO 4: AIRE / FRENOS -->
+  <div class="wz-panel" id="wp3">
+    <div class="wz-section-title">💨 D. Sistema de Aire / Frenos</div>
+    <div class="ev-row">
+      <div class="ev-field"><label>Compresor</label><select><option>Aprobado</option><option>No corta</option><option>Reprobado</option></select></div>
+      <div class="ev-field"><label>Tanques de Aire</label><select><option>Aprobado</option><option>Reprobado</option></select></div>
+      <div class="ev-field"><label>Tiempo de Carga (PSI)</label><div class="psi-wrap"><input type="number" id="tc_psi" placeholder="70–120" oninput="chkRango(this,'tcv',70,120)"><span class="psi-val" id="tcv">—</span></div></div>
+      <div class="ev-field"><label>Tiempo de Carga (min)</label><div class="psi-wrap"><input type="number" id="tc_min" placeholder="&lt;120" oninput="chkMax(this,'tmv',120)"><span class="psi-val" id="tmv">—</span></div></div>
+    </div>
+    <div class="ev-alert">⚠ Aprobado si PSI está entre 70–120 y tiempo &lt; 120 minutos.</div>
+  </div>
+
+  <!-- PASO 5: MOTOR -->
+  <div class="wz-panel" id="wp4">
+    <div class="wz-section-title">⚙ E. Motor y Emisiones</div>
+    <div class="ev-row">
+      <div class="ev-field"><label>Humo</label><select><option>Aprobado</option><option>Reprobado</option></select></div>
+      <div class="ev-field"><label>Gobernado</label><select><option>Aprobado</option><option>Reprobado</option></select></div>
+    </div>
+  </div>
+
+  <!-- PASO 6: OTROS -->
+  <div class="wz-panel" id="wp5">
+    <div class="wz-section-title">🔍 F. Otros</div>
+    <div class="ev-row">
+      <div class="ev-field"><label>Caja Dirección</label><select><option>Aprobada</option><option>Fuga</option></select></div>
+      <div class="ev-field"><label>Depósito de Aceite</label><select><option>Aprobado</option><option>Fuga</option></select></div>
+      <div class="ev-field"><label>Parabrisas</label><select><option>Aprobado</option><option>Estrellado</option></select></div>
+      <div class="ev-field"><label>Limpiaparabrisas</label><select><option>Aprobado</option><option>Falta 1 pluma</option><option>Faltan 2 plumas</option><option>No funciona</option></select></div>
+      <div class="ev-field"><label>Huelgo</label><select><option>Aprobado</option><option>Reprobado</option></select></div>
+      <div class="ev-field"><label>Huelgo (mm si reprobado)</label><input type="number" placeholder="0" min="0"></div>
+      <div class="ev-field"><label>Escape</label><select><option>Aprobado</option><option>Faltante</option><option>Roto</option></select></div>
+    </div>
+  </div>
+
+  <!-- PASO 7: EVIDENCIAS -->
+  <div class="wz-panel" id="wp6">
+    <div class="wz-section-title">📷 G. Evidencias (mín. 3 fotos obligatorias)</div>
+    <div class="ev-row">
+      <div class="ev-field"><label>Evidencia 1 * (Frontal)</label><input type="file" accept="image/*"></div>
+      <div class="ev-field"><label>Evidencia 2 * (Lateral Izq.)</label><input type="file" accept="image/*"></div>
+      <div class="ev-field"><label>Evidencia 3 * (Lateral Der.)</label><input type="file" accept="image/*"></div>
+      <div class="ev-field"><label>Evidencia 4</label><input type="file" accept="image/*"></div>
+      <div class="ev-field"><label>Evidencia 5</label><input type="file" accept="image/*"></div>
+      <div class="ev-field fw"><label>Comentarios Generales</label><textarea rows="2" placeholder="Observaciones adicionales del técnico..."></textarea></div>
+    </div>
+    <!-- Resultado previo -->
+    <div id="dictamen-preview" style="background:#f0fdf4;border:2px solid #16a34a;border-radius:10px;padding:14px;margin-top:12px;text-align:center;display:none">
+      <div style="font-size:28px">✅</div>
+      <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#15803d;margin-top:4px" id="dp-text">APROBADO</div>
+      <div style="font-size:12px;color:#4ade80;margin-top:3px" id="dp-sub">Todos los parámetros dentro de norma</div>
+    </div>
+  </div>
+
+  <!-- Wizard nav buttons -->
+  <div class="ma" style="border-top:1px solid var(--g200);padding-top:14px;margin-top:14px">
+    <button class="btn btn-outline" id="wz-prev" onclick="wzNav(-1)" style="display:none">← Anterior</button>
+    <span style="flex:1;font-size:12px;color:var(--g400);text-align:center" id="wz-info">Paso 1 de 7</span>
+    <button class="btn btn-outline" onclick="cm('m-wizard')">✘ Cancelar</button>
+    <button class="btn btn-blue" id="wz-next" onclick="wzNav(1)">Siguiente →</button>
+    <button class="btn btn-green" id="wz-finish" onclick="finishWizard()" style="display:none">✔ Guardar Evaluación</button>
+  </div>
+</div>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<!-- ════════════════════════════════════
+     SCRIPTS MODULARES
+════════════════════════════════════ -->
+<script src="js/api.js"></script>
+<script src="js/navigation.js"></script>
+<script src="js/modals.js"></script>
+<script src="js/validators.js"></script>
+<script src="js/wizard.js"></script>
+<script src="js/main.js"></script>
+
+</body>
+</html>
