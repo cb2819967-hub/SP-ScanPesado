@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS scanpesado;
-USE scanpesado;
+CREATE DATABASE IF NOT EXISTS SP;
+USE SP;
 
 -- 1. USUARIOS
 CREATE TABLE IF NOT EXISTS usuarios (
@@ -14,13 +14,13 @@ CREATE TABLE IF NOT EXISTS usuarios (
 -- Usuario por defecto para entrar (contraseña: admin123)
 -- Hash bcrypt de 'admin123'
 INSERT INTO usuarios (nombre_usuario, email, contrasena, tipo_usuario)
-SELECT 'Administrador', 'admin@test.com', '$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxw96pASQDm7G6S.sO1E/0c5.r.Ry', 'ADMIN'
-WHERE NOT EXISTS (SELECT * FROM usuarios WHERE email = 'admin@test.com');
+SELECT 'Administrador', 'admin@scanpesado.com', 'admin123', 'ADMIN'
+WHERE NOT EXISTS (SELECT * FROM usuarios WHERE email = 'admin@scanpesado.com');
 
 -- Usuario Carlos (contraseña: 1234)
 -- Hash bcrypt de '1234'
 INSERT INTO usuarios (nombre_usuario, email, contrasena, tipo_usuario) 
-SELECT 'Carlos', 'carlos@scanpesado.com', '$2b$12$X5r/X5r/X5r/X5r/X5r/X5r/X5r/X5r/X5r/X5r/X5r/X5r/X5r/X', 'ADMIN'
+SELECT 'Carlos', 'carlos@scanpesado.com', 'admin123', 'ADMIN'
 WHERE NOT EXISTS (SELECT * FROM usuarios WHERE email = 'carlos@scanpesado.com');
 
 -- 2. REGIONES

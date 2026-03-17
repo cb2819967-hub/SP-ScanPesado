@@ -6,7 +6,7 @@
 // Actualizado para apuntar a Spring Boot en el puerto 8080
 const isDev = location.protocol === 'file:' || location.port === '5500';
 const API_BASE = isDev 
-  ? 'http://192.168.0.16:8080/api'
+  ? 'http://192.168.108.76:8080/api'
   : `${location.origin}/api`;
 
 // ════════════════════════════════════════════════════════════════
