@@ -11,11 +11,20 @@ public class VehiculoService {
     @Autowired
     private VehiculoRepository vehiculoRepository;
 
+    // Cambiado a findAll() para que el frontend filtre
     public List<Vehiculo> getAllVehiculos() {
-        return vehiculoRepository.findByActivoTrue();
+        return vehiculoRepository.findAll();
     }
 
     public Vehiculo saveVehiculo(Vehiculo vehiculo) {
         return vehiculoRepository.save(vehiculo);
+    }
+
+    // Borrado lógico
+    public void deleteVehiculo(Long id) {
+        vehiculoRepository.findById(id).ifPresent(vehiculo -> {
+            vehiculo.setActivo(false);
+            vehiculoRepository.save(vehiculo);
+        });
     }
 }

@@ -25,6 +25,12 @@ public class AuthController {
         if (userOpt.isPresent()) {
             Usuario user = userOpt.get();
 
+             if (!user.getActivo()) {
+                Map<String, String> error = new HashMap<>();
+                error.put("error", "Usuario inactivo");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+            }
+
             // Verificación simple temporal para probar el acceso
             // En producción debe usarse BCrypt
             boolean isValid = user.getContrasena().equals(loginRequest.getPassword());
@@ -50,7 +56,7 @@ public class AuthController {
         
         // Formato de error esperado por el frontend
         Map<String, String> error = new HashMap<>();
-        error.put("error", "Credenciales inválidas");
+        error.put("error", "Usuario o contraseña incorrectos");
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
     }
 }

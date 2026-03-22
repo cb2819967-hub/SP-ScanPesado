@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard - SP Scan Pesado</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="/css/styles.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- ════════ SIDEBAR ════════ -->
+<nav id="sb">
+  <div class="sb-hd">
+    <div class="sb-logo"></div>
+    <div class="sb-brand">SP Scan<br>Pesado</div>
+    <button class="sb-tog" onclick="togSb()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+
+  <div class="sb-scroll">
+    <!-- ADMIN MENU -->
+    <div id="menu-admin">
+      <div class="grp">General</div>
+      <div class="ni on" onclick="window.location.href='/dashboard.html'"><span class="ni-ic">📊</span><span class="ni-lb">Dashboard</span></div>
+
+      <div class="grp">Catálogos</div>
+      <div class="ni" onclick="window.location.href='/usuarios.html'"><span class="ni-ic">👥</span><span class="ni-lb">Usuarios</span></div>
+      <div class="ni" onclick="window.location.href='/clientes.html'"><span class="ni-ic">🏢</span><span class="ni-lb">Clientes</span></div>
+      <div class="ni" onclick="window.location.href='/cedis.html'"><span class="ni-ic">🏭</span><span class="ni-lb">CEDIS</span></div>
+      <div class="ni" onclick="window.location.href='/vehiculos.html'"><span class="ni-ic">🚛</span><span class="ni-lb">Vehículos</span></div>
+      <div class="ni" onclick="window.location.href='/verificentros.html'"><span class="ni-ic">🔧</span><span class="ni-lb">Verificentros</span></div>
+
+      <div class="sb-div"></div>
+      <div class="grp">Operaciones</div>
+      <div class="ni" onclick="window.location.href='/notas.html'"><span class="ni-ic">📋</span><span class="ni-lb">Notas</span></div>
+      <div class="ni" onclick="window.location.href='/verificacion.html'"><span class="ni-ic">🔍</span><span class="ni-lb">Verificación</span></div>
+
+      <div class="sb-div"></div>
+      <div class="grp">Finanzas</div>
+      <div class="ni" onclick="window.location.href='/costos.html'"><span class="ni-ic">💲</span><span class="ni-lb">Costos</span></div>
+      <div class="ni" onclick="window.location.href='/transacciones.html'"><span class="ni-ic">💳</span><span class="ni-lb">Transacciones</span></div>
+      <div class="ni" onclick="window.location.href='/pedidos.html'"><span class="ni-ic">📦</span><span class="ni-lb">Pedidos (Envíos)</span></div>
+
+      <div class="sb-div"></div>
+      <div class="grp">Análisis</div>
+      <div class="ni" onclick="window.location.href='/reportes.html'"><span class="ni-ic">📈</span><span class="ni-lb">Reportes</span></div>
+    </div>
+
+    <div class="sb-usr" onclick="toggleLogout()">
+      <div class="sb-av av-admin" id="sb-avatar">👤</div>
+      <div class="sb-ui">
+        <div class="sb-un" id="sb-uname">Cargando...</div>
+        <div class="sb-ur" id="sb-urole">Administrador</div>
+      </div>
+      <button id="btn-logout" class="btn btn-red btn-sm" style="display:none; position: absolute; right: 14px; top: -30px;" onclick="logout()">Cerrar Sesión</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ════════ MAIN ════════ -->
+<div id="mn">
+<div class="topbar no-print">
+  <div class="tb-title" id="tbt">Dashboard</div>
+  <span class="tb-role tb-admin" id="role-badge">ADMIN</span>
+  <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+    <button class="role-btn no-print" onclick="window.location.href='/tec-unidades.html'" id="role-switch-btn">Cambiar a Técnico →</button>
+  </div>
+</div>
+
+<!-- ══ DASHBOARD ══ -->
+<div class="pc">
+  <div class="sh"><div class="st">Dashboard</div><div class="ss">Resumen general del sistema</div></div>
+  <div class="sr c4">
+    <div class="sc"><div class="si2">🏢</div><div><div class="sn" id="stat-clientes">0</div><div class="sl">Clientes</div></div></div>
+    <div class="sc g"><div class="si2">🚛</div><div><div class="sn" id="stat-vehiculos">0</div><div class="sl">Unidades</div></div></div>
+    <div class="sc o"><div class="si2">📋</div><div><div class="sn" id="stat-notas">0</div><div class="sl">Notas Activas</div></div></div>
+    <div class="sc p"><div class="si2">🔍</div><div><div class="sn" id="stat-verificaciones">0</div><div class="sl">Evaluaciones</div></div></div>
+  </div>
+  <div class="dg">
+    <div class="pn">
+      <div class="pnt">Inspecciones Recientes</div><div class="pns">Últimas inspecciones</div>
+      <table><thead><tr><th>Folio</th><th>Unidad</th><th>Técnico</th><th>Fecha</th><th>Resultado</th></tr></thead>
+      <tbody id="tb-verificaciones">
+        <tr><td colspan="5" style="text-align:center">Cargando datos...</td></tr>
+      </tbody></table>
+    </div>
+    <div class="pn" style="text-align:center">
+      <div class="pnt">Tasa de Aprobación</div><div class="pns">Verificaciones del período</div>
+      <div class="dw">
+        <svg width="100" height="100" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="40" fill="none" stroke="#e5e7eb" stroke-width="13"/>
+          <circle cx="50" cy="50" r="40" fill="none" stroke="#16a34a" stroke-width="13" stroke-dasharray="150 251" stroke-linecap="round"/>
+        </svg>
+        <div class="dl">60%</div>
+      </div>
+      <div class="ar"><span>✅ Aprobadas</span><strong>6</strong></div>
+      <div class="ar"><span>❌ Reprobadas</span><strong>3</strong></div>
+      <div class="ar"><span>⏳ Pendientes</span><strong>1</strong></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /#mn -->
+
+<div id="toast"></div>
+
+<!-- ════════════════════════════════════
+     SCRIPTS
+════════════════════════════════════ -->
+<script src="/js/api.js"></script>
+<script>
+  // Inicialización básica
+  document.addEventListener('DOMContentLoaded', () => {
+    // Restaurar usuario
+    const userName = localStorage.getItem('userName') || 'Admin';
+    document.getElementById('sb-uname').textContent = userName;
+
+    // Cargar datos reales si la API está disponible
+    if (typeof apiGetStats === 'function') {
+      loadDashboardData();
+    }
+  });
+
+  // Función para manejar el sidebar
+  function togSb(){
+    document.getElementById('sb').classList.toggle('col');
+    document.getElementById('mn').classList.toggle('col');
+  }
+
+  // Toast
+  function toast(msg){
+    const t=document.getElementById('toast');
+    t.textContent=msg;
+    t.style.display='block';
+    clearTimeout(t._t);
+    t._t=setTimeout(()=>t.style.display='none',2800);
+  }
+
+  // Logout visibility
+  function toggleLogout() {
+    const btn = document.getElementById('btn-logout');
+    btn.style.display = btn.style.display === 'none' ? 'block' : 'none';
+  }
+
+  // Ejecutar Logout
+  function logout() {
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('userName');
+    window.location.href = '/login.html';
+  }
+
+  async function loadDashboardData() {
+    try {
+      const stats = await apiGetStats();
+      document.getElementById('stat-clientes').textContent = stats.clientes || 0;
+      document.getElementById('stat-vehiculos').textContent = stats.vehiculos || 0;
+      document.getElementById('stat-notas').textContent = stats.notas || 0;
+      document.getElementById('stat-verificaciones').textContent = stats.verificaciones || 0;
+
+      const verificaciones = await apiGetVerificaciones();
+      const tbody = document.getElementById('tb-verificaciones');
+      if (tbody && verificaciones.length > 0) {
+        tbody.innerHTML = '';
+        verificaciones.slice(0, 5).forEach(v => {
+          let badgeClass = 'bg';
+          let icon = '✔';
+          if (v.resultado === 'REPROBADO') { badgeClass = 'br'; icon = '✘'; }
+          else if (v.resultado === 'PENDIENTE') { badgeClass = 'bo'; icon = '⏳'; }
+
+          tbody.innerHTML += `
+            <tr>
+              <td>${v.folio || 'N/A'}</td>
+              <td>${v.unidad || 'N/A'}</td>
+              <td>${v.tecnico || 'N/A'}</td>
+              <td>${v.fecha || 'N/A'}</td>
+              <td><span class="b ${badgeClass}">${icon} ${v.resultado || 'N/A'}</span></td>
+            </tr>
+          `;
+        });
+      } else if (tbody) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center">No hay datos</td></tr>';
+      }
+    } catch(e) {
+      console.error(e);
+      document.getElementById('tb-verificaciones').innerHTML = '<tr><td colspan="5" style="text-align:center;color:red">Error cargando datos</td></tr>';
+    }
+  }
+</script>
+</body>
+</html>

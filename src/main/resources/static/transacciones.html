@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Transacciones - SP Scan Pesado</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="/css/styles.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- ════════ SIDEBAR ════════ -->
+<nav id="sb">
+  <div class="sb-hd">
+    <div class="sb-logo"></div>
+    <div class="sb-brand">SP Scan<br>Pesado</div>
+    <button class="sb-tog" onclick="togSb()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+
+  <div class="sb-scroll">
+    <!-- ADMIN MENU -->
+    <div id="menu-admin">
+      <div class="grp">General</div>
+      <div class="ni" onclick="window.location.href='/dashboard.html'"><span class="ni-ic">📊</span><span class="ni-lb">Dashboard</span></div>
+
+      <div class="grp">Catálogos</div>
+      <div class="ni" onclick="window.location.href='/usuarios.html'"><span class="ni-ic">👥</span><span class="ni-lb">Usuarios</span></div>
+      <div class="ni" onclick="window.location.href='/clientes.html'"><span class="ni-ic">🏢</span><span class="ni-lb">Clientes</span></div>
+      <div class="ni" onclick="window.location.href='/cedis.html'"><span class="ni-ic">🏭</span><span class="ni-lb">CEDIS</span></div>
+      <div class="ni" onclick="window.location.href='/vehiculos.html'"><span class="ni-ic">🚛</span><span class="ni-lb">Vehículos</span></div>
+      <div class="ni" onclick="window.location.href='/verificentros.html'"><span class="ni-ic">🔧</span><span class="ni-lb">Verificentros</span></div>
+
+      <div class="sb-div"></div>
+      <div class="grp">Operaciones</div>
+      <div class="ni" onclick="window.location.href='/notas.html'"><span class="ni-ic">📋</span><span class="ni-lb">Notas</span></div>
+      <div class="ni" onclick="window.location.href='/verificacion.html'"><span class="ni-ic">🔍</span><span class="ni-lb">Verificación</span></div>
+
+      <div class="sb-div"></div>
+      <div class="grp">Finanzas</div>
+      <div class="ni" onclick="window.location.href='/costos.html'"><span class="ni-ic">💲</span><span class="ni-lb">Costos</span></div>
+      <div class="ni on" onclick="window.location.href='/transacciones.html'"><span class="ni-ic">💳</span><span class="ni-lb">Transacciones</span></div>
+      <div class="ni" onclick="window.location.href='/pedidos.html'"><span class="ni-ic">📦</span><span class="ni-lb">Pedidos (Envíos)</span></div>
+
+      <div class="sb-div"></div>
+      <div class="grp">Análisis</div>
+      <div class="ni" onclick="window.location.href='/reportes.html'"><span class="ni-ic">📈</span><span class="ni-lb">Reportes</span></div>
+    </div>
+
+    <div class="sb-usr" onclick="toggleLogout()">
+    <div class="sb-av av-admin" id="sb-avatar">👤</div>
+    <div class="sb-ui">
+      <div class="sb-un" id="sb-uname">Cargando...</div>
+      <div class="sb-ur" id="sb-urole">Administrador</div>
+    </div>
+    <button id="btn-logout" class="btn btn-red btn-sm" style="display:none; position: absolute; right: 14px; top: -30px;" onclick="logout()">Cerrar Sesión</button>
+  </div>
+</nav>
+
+<!-- ════════ MAIN ════════ -->
+<div id="mn">
+<div class="topbar no-print">
+  <div class="tb-title" id="tbt">Transacciones</div>
+  <span class="tb-role tb-admin" id="role-badge">ADMIN</span>
+  <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+    <button class="role-btn no-print" onclick="window.location.href='/tec-unidades.html'" id="role-switch-btn">Cambiar a Técnico →</button>
+  </div>
+</div>
+
+<!-- ══ TRANSACCIONES ══ -->
+<div class="pc">
+  <div class="sh"><div class="st">Transacciones</div><div class="ss">Verificaciones por vehículo · Selección múltiple para acciones en lote</div></div>
+  <div class="tb2">
+    <div class="sbox">🔍 <input placeholder="Buscar por gestor, placa, folio, nota..."></div>
+    <select class="fsel"><option>Todos los gestores</option><option>María González</option><option>Ana Solís</option></select>
+    <select class="fsel"><option>Tipo de pago</option><option>EFECTIVO</option><option>DEPOSITO</option><option>TRANSFERENCIA</option><option>TARJETA</option></select>
+    <select class="fsel"><option>Estado de pago</option><option>Pagado</option><option>Pendiente</option></select>
+    <button class="btn btn-blue" onclick="om('m-trn')">+ Nueva</button>
+  </div>
+  <div id="trans-tb" class="mt2">
+    <span id="trans-ct">0 seleccionados</span>
+    <button class="btn btn-green btn-sm" onclick="mkPaid('trans')">✔ Marcar pagados</button>
+    <button class="btn btn-red btn-sm" onclick="del('trans')">🗑️ Eliminar</button>
+    <button class="btn btn-gray btn-sm" onclick="desel('trans')">✘ Cancelar</button>
+  </div>
+  <div class="tc" style="overflow-x:auto"><table>
+    <thead><tr>
+      <th><input type="checkbox" id="ca-trans" onchange="togAll('trans')"></th>
+      <th>Gestor</th><th>Razón Social</th><th>Placa</th><th>Materia</th><th>Verificentro</th>
+      <th>Precio</th><th>Tipo Pago</th><th># Nota</th><th>Cotización</th>
+      <th>F.Folio</th><th>Folio</th><th>Cta.Dep.</th><th>#Factura</th>
+      <th>Pagado</th><th>Pendiente</th><th>F.Pedido</th><th>Acc.</th>
+    </tr></thead>
+    <tbody id="tb-transacciones">
+      <tr><td colspan="18" style="text-align:center">Cargando datos...</td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+</div><!-- /#mn -->
+
+<div id="toast"></div>
+
+<!-- Modal Nueva Transaccion -->
+<div id="m-trn" class="mo" onclick="mc(event,'m-trn')"><div class="md"><div class="mdt">💳 Nueva Transacción</div><div class="fg"><div class="ff"><label>Nota *</label><select><option>NT-2024-001</option><option>NT-2024-002</option></select></div><div class="ff"><label>Unidad</label><select><option>AAA-00-A</option><option>AAB-510-F</option></select></div><div class="ff"><label>Materia</label><select><option>HUMO</option><option>GASOLINA</option><option>MOTRIZ</option><option>ARRASTRE</option></select></div><div class="ff"><label>Verificentro</label><select><option>Norte 01</option><option>Centro 02</option></select></div><div class="ff"><label>Precio ($) *</label><input type="number"></div><div class="ff"><label>Tipo Pago *</label><select><option>EFECTIVO</option><option>DEPOSITO</option><option>TRANSFERENCIA</option><option>TARJETA</option></select></div><div class="ff"><label>Cotización</label><input placeholder="COT-2026-..."></div><div class="ff"><label>Folio</label><input placeholder="V-2026-..."></div><div class="ff"><label>Fecha Folio</label><input type="date"></div><div class="ff"><label>Fecha Pedido</label><input type="date"></div><div class="ff"><label>Cta. Depósito</label><input placeholder="Banco · últimos 4"></div><div class="ff"><label># Factura</label><input placeholder="F-0000"></div></div><div class="ma"><button class="btn btn-outline" onclick="cm('m-trn')">Cancelar</button><button class="btn btn-blue" onclick="toast('Transacción guardada');cm('m-trn')">💾 Guardar</button></div></div></div>
+
+<!-- ════════════════════════════════════
+     SCRIPTS
+════════════════════════════════════ -->
+<script src="/js/api.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const userName = localStorage.getItem('userName') || 'Admin';
+    document.getElementById('sb-uname').textContent = userName;
+
+    // Simulación
+    setTimeout(() => {
+        document.getElementById('tb-transacciones').innerHTML = `
+          <tr data-id="t1"><td><input type="checkbox" class="ck-trans" onchange="updTb('trans')"></td><td>María G.</td><td>Transp. Norte</td><td><strong>AAA-00-A</strong></td><td><span class="b bx">HUMO</span></td><td>Norte 01</td><td>$850</td><td>TRANSF.</td><td>NT-001</td><td>COT-26-05</td><td>18/02</td><td>V-2026-001</td><td>BBVA-4529</td><td>F-8821</td><td><span class="b bg">✔ Sí</span></td><td><span class="b bx">No</span></td><td>15/02</td><td><div class="ax"><button class="ab">✏️</button><button class="ab" onclick="confirm('¿Eliminar?')">🗑️</button></div></td></tr>
+          <tr data-id="t2"><td><input type="checkbox" class="ck-trans" onchange="updTb('trans')"></td><td>Ana S.</td><td>Log. Integral</td><td><strong>AAB-510-F</strong></td><td><span class="b bx">GASOLINA</span></td><td>Centro 02</td><td>$920</td><td>EFECTIVO</td><td>NT-002</td><td>COT-26-12</td><td>19/02</td><td>V-2026-002</td><td>N/A</td><td>N/A</td><td><span class="b br">✘ No</span></td><td><span class="b bo">Sí</span></td><td>16/02</td><td><div class="ax"><button class="ab">✏️</button><button class="ab" onclick="confirm('¿Eliminar?')">🗑️</button></div></td></tr>
+        `;
+    }, 500);
+  });
+
+  function om(id){document.getElementById(id).classList.add('on');}
+  function cm(id){document.getElementById(id).classList.remove('on');}
+  function mc(e,id){if(e.target.id===id)cm(id);}
+
+  function togSb(){
+    document.getElementById('sb').classList.toggle('col');
+    document.getElementById('mn').classList.toggle('col');
+  }
+
+  function toast(msg){
+    const t=document.getElementById('toast');
+    t.textContent=msg;
+    t.style.display='block';
+    clearTimeout(t._t);
+    t._t=setTimeout(()=>t.style.display='none',2800);
+  }
+
+  function toggleLogout() {
+    const btn = document.getElementById('btn-logout');
+    btn.style.display = btn.style.display === 'none' ? 'block' : 'none';
+  }
+
+  function logout() {
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('userName');
+    window.location.href = '/login.html';
+  }
+
+  // Multi-select logic
+  function updTb(p){
+    const n=[...document.querySelectorAll('.ck-'+p)].filter(c=>c.checked).length;
+    document.getElementById(p+'-ct').textContent=n+' seleccionado'+(n!==1?'s':'');
+    n>0?document.getElementById(p+'-tb').classList.add('on'):document.getElementById(p+'-tb').classList.remove('on');
+    const a=document.getElementById('ca-'+p);
+    if(a&&!n) a.checked=false;
+  }
+
+  function togAll(p){
+    const a=document.getElementById('ca-'+p).checked;
+    document.querySelectorAll('.ck-'+p).forEach(c=>c.checked=a);
+    updTb(p);
+  }
+
+  function desel(p){
+    document.querySelectorAll('.ck-'+p).forEach(c=>c.checked=false);
+    const a=document.getElementById('ca-'+p);
+    if(a) a.checked=false;
+    document.getElementById(p+'-tb').classList.remove('on');
+  }
+
+  function mkPaid(p){
+    const idx=p==='trans'?14:7;
+    document.querySelectorAll('.ck-'+p+':checked').forEach(c=>{
+      const tds=c.closest('tr').querySelectorAll('td');
+      if(tds[idx]) tds[idx].innerHTML='<span class="b bg">✔ Sí</span>';
+    });
+    desel(p);
+    toast('✔ Registros marcados como pagados');
+  }
+
+  function del(p){
+    const sel=[...document.querySelectorAll('.ck-'+p+':checked')];
+    if(!sel.length) return;
+    if(!confirm('⚠️ ¿Eliminar '+sel.length+' registro(s) seleccionados?')) return;
+    sel.forEach(c=>c.closest('tr').remove());
+    desel(p);
+    toast('🗑️ '+sel.length+' registro(s) eliminado(s)');
+  }
+</script>
+</body>
+</html>

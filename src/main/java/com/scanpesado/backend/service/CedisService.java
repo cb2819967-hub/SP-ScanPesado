@@ -12,10 +12,17 @@ public class CedisService {
     private CedisRepository cedisRepository;
 
     public List<Cedis> getAllCedis() {
-        return cedisRepository.findByActivoTrue();
+        return cedisRepository.findAll();
     }
 
     public Cedis saveCedis(Cedis cedis) {
         return cedisRepository.save(cedis);
+    }
+
+    public void deleteCedis(Long id) {
+        cedisRepository.findById(id).ifPresent(cedis -> {
+            cedis.setActivo(false);
+            cedisRepository.save(cedis);
+        });
     }
 }

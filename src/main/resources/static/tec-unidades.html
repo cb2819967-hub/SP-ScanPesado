@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mis Unidades - Técnico - SP Scan Pesado</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="/css/styles.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- ════════ SIDEBAR ════════ -->
+<nav id="sb">
+  <div class="sb-hd">
+    <div class="sb-logo"></div>
+    <div class="sb-brand">SP Scan<br>Pesado</div>
+    <button class="sb-tog" onclick="togSb()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+
+  <div class="sb-scroll">
+    <!-- TECNICO MENU -->
+    <div id="menu-tec">
+      <div class="grp">Mi Módulo</div>
+      <div class="ni on" onclick="window.location.href='/tec-unidades.html'"><span class="ni-ic">🚛</span><span class="ni-lb">Mis Unidades</span></div>
+      <div class="ni" onclick="window.location.href='/tec-historial.html'"><span class="ni-ic">📋</span><span class="ni-lb">Mi Historial</span></div>
+    </div>
+
+    <div class="sb-usr" onclick="toggleLogout()">
+    <div class="sb-av av-tec" id="sb-avatar">👤</div>
+    <div class="sb-ui">
+      <div class="sb-un" id="sb-uname">Cargando...</div>
+      <div class="sb-ur" id="sb-urole">Técnico</div>
+    </div>
+    <button id="btn-logout" class="btn btn-red btn-sm" style="display:none; position: absolute; right: 14px; top: -30px;" onclick="logout()">Cerrar Sesión</button>
+  </div>
+</nav>
+
+<!-- ════════ MAIN ════════ -->
+<div id="mn">
+<div class="topbar no-print">
+  <div class="tb-title" id="tbt">Mis Unidades</div>
+  <span class="tb-role tb-tec" id="role-badge">TÉCNICO</span>
+  <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+    <button class="role-btn no-print" onclick="window.location.href='/dashboard.html'" id="role-switch-btn">Cambiar a Admin →</button>
+  </div>
+</div>
+
+<!-- ══ MÓDULO TÉCNICO: UNIDADES ══ -->
+<div class="pc">
+  <div class="sh">
+    <div class="st">Mis Unidades</div>
+    <div class="ss"><span id="sub-uname">Técnico</span> — Vehículos asignados a tu zona · Regista nuevas evaluaciones</div>
+  </div>
+  <div class="tb2">
+    <div class="sbox">🔍 <input placeholder="Buscar por placa, serie o CEDIS..."></div>
+    <select class="fsel"><option>Todos los CEDIS</option><option>Norte MTY</option><option>Centro CDMX</option></select>
+    <select class="fsel"><option>Todas las regiones</option><option>Noreste</option><option>Centro</option></select>
+    <button class="btn btn-blue" onclick="toast('No disponible en esta demo')">+ Registrar unidad</button>
+  </div>
+  <div class="tc"><table>
+    <thead><tr><th>Placa</th><th>Serie</th><th>CEDIS</th><th>Región</th><th>Tipo</th><th>Historial</th><th>Nueva Evaluación</th></tr></thead>
+    <tbody id="tb-tec-unidades">
+      <tr><td colspan="7" style="text-align:center">Cargando unidades...</td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+</div><!-- /#mn -->
+
+<div id="toast"></div>
+
+<!-- ════════════════════════════════════
+     SCRIPTS
+════════════════════════════════════ -->
+<script src="/js/api.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const userName = localStorage.getItem('userName') || 'Técnico';
+    document.getElementById('sb-uname').textContent = userName;
+    document.getElementById('sub-uname').textContent = userName;
+
+    // Simulación
+    setTimeout(() => {
+        document.getElementById('tb-tec-unidades').innerHTML = `
+          <tr>
+            <td><strong>AAA-00-A</strong></td><td style="font-size:11px;color:var(--g400)">1FUJGLDR5KS123456</td>
+            <td>CEDIS Norte MTY</td><td><span class="b bb">Noreste</span></td><td>Camión Rabón</td>
+            <td><button class="btn btn-outline btn-sm" onclick="th('th1')">📋 Ver mi historial</button></td>
+            <td><button class="btn btn-blue btn-sm" onclick="om('m-wizard')">➕ Nueva evaluación</button></td>
+          </tr>
+          <tr class="hrow" id="hr-th1"><td colspan="7" style="padding:0">
+            <div class="hp"><div class="ht">📋 Mi Historial — AAA-00-A (solo mis evaluaciones)</div>
+              <table style="font-size:12px"><thead><tr><th>Folio</th><th>Materia</th><th>Fecha</th><th>Dictamen</th><th>Notas</th></tr></thead>
+              <tbody>
+                <tr><td>V-2026-001</td><td>HUMO</td><td>18/02/2026</td><td><span class="b bg">APROBADO</span></td><td>Sin observaciones</td></tr>
+              </tbody></table>
+              <p style="font-size:11px;color:var(--g400);margin-top:6px">⚠ Solo puedes ver tus propias evaluaciones. No se permite edición de registros pasados.</p>
+            </div>
+          </td></tr>
+          <tr>
+            <td><strong>AAB-510-F</strong></td><td style="font-size:11px;color:var(--g400)">1XKWD49X8LJ234567</td>
+            <td>CEDIS Centro CDMX</td><td><span class="b bb">Centro</span></td><td>Camión Rabón</td>
+            <td><button class="btn btn-outline btn-sm" onclick="th('th2')">📋 Ver mi historial</button></td>
+            <td><button class="btn btn-blue btn-sm" onclick="om('m-wizard')">➕ Nueva evaluación</button></td>
+          </tr>
+          <tr class="hrow" id="hr-th2"><td colspan="7" style="padding:0">
+            <div class="hp"><div class="ht">📋 Mi Historial — AAB-510-F</div>
+              <table style="font-size:12px"><thead><tr><th colspan="5" style="color:var(--g400);text-align:center">Sin evaluaciones propias registradas</th></tr></thead><tbody></tbody></table>
+            </div>
+          </td></tr>
+        `;
+    }, 500);
+  });
+
+  function om(id){/* En una version real abre el wizard */}
+  function th(id){document.getElementById('hr-'+id).classList.toggle('on');}
+
+  function togSb(){
+    document.getElementById('sb').classList.toggle('col');
+    document.getElementById('mn').classList.toggle('col');
+  }
+
+  function toast(msg){
+    const t=document.getElementById('toast');
+    t.textContent=msg;
+    t.style.display='block';
+    clearTimeout(t._t);
+    t._t=setTimeout(()=>t.style.display='none',2800);
+  }
+
+  function toggleLogout() {
+    const btn = document.getElementById('btn-logout');
+    btn.style.display = btn.style.display === 'none' ? 'block' : 'none';
+  }
+
+  function logout() {
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('userName');
+    window.location.href = '/login.html';
+  }
+</script>
+</body>
+</html>

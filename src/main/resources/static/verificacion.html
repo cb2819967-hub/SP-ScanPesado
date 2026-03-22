@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verificación - SP Scan Pesado</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="/css/styles.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- ════════ SIDEBAR ════════ -->
+<nav id="sb">
+  <div class="sb-hd">
+    <div class="sb-logo"></div>
+    <div class="sb-brand">SP Scan<br>Pesado</div>
+    <button class="sb-tog" onclick="togSb()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+
+  <div class="sb-scroll">
+    <!-- ADMIN MENU -->
+    <div id="menu-admin">
+      <div class="grp">General</div>
+      <div class="ni" onclick="window.location.href='/dashboard.html'"><span class="ni-ic">📊</span><span class="ni-lb">Dashboard</span></div>
+
+      <div class="grp">Catálogos</div>
+      <div class="ni" onclick="window.location.href='/usuarios.html'"><span class="ni-ic">👥</span><span class="ni-lb">Usuarios</span></div>
+      <div class="ni" onclick="window.location.href='/clientes.html'"><span class="ni-ic">🏢</span><span class="ni-lb">Clientes</span></div>
+      <div class="ni" onclick="window.location.href='/cedis.html'"><span class="ni-ic">🏭</span><span class="ni-lb">CEDIS</span></div>
+      <div class="ni" onclick="window.location.href='/vehiculos.html'"><span class="ni-ic">🚛</span><span class="ni-lb">Vehículos</span></div>
+      <div class="ni" onclick="window.location.href='/verificentros.html'"><span class="ni-ic">🔧</span><span class="ni-lb">Verificentros</span></div>
+
+      <div class="sb-div"></div>
+      <div class="grp">Operaciones</div>
+      <div class="ni" onclick="window.location.href='/notas.html'"><span class="ni-ic">📋</span><span class="ni-lb">Notas</span></div>
+      <div class="ni on" onclick="window.location.href='/verificacion.html'"><span class="ni-ic">🔍</span><span class="ni-lb">Verificación</span></div>
+
+      <div class="sb-div"></div>
+      <div class="grp">Finanzas</div>
+      <div class="ni" onclick="window.location.href='/costos.html'"><span class="ni-ic">💲</span><span class="ni-lb">Costos</span></div>
+      <div class="ni" onclick="window.location.href='/transacciones.html'"><span class="ni-ic">💳</span><span class="ni-lb">Transacciones</span></div>
+      <div class="ni" onclick="window.location.href='/pedidos.html'"><span class="ni-ic">📦</span><span class="ni-lb">Pedidos (Envíos)</span></div>
+
+      <div class="sb-div"></div>
+      <div class="grp">Análisis</div>
+      <div class="ni" onclick="window.location.href='/reportes.html'"><span class="ni-ic">📈</span><span class="ni-lb">Reportes</span></div>
+    </div>
+
+    <div class="sb-usr" onclick="toggleLogout()">
+    <div class="sb-av av-admin" id="sb-avatar">👤</div>
+    <div class="sb-ui">
+      <div class="sb-un" id="sb-uname">Cargando...</div>
+      <div class="sb-ur" id="sb-urole">Administrador</div>
+    </div>
+    <button id="btn-logout" class="btn btn-red btn-sm" style="display:none; position: absolute; right: 14px; top: -30px;" onclick="logout()">Cerrar Sesión</button>
+  </div>
+</nav>
+
+<!-- ════════ MAIN ════════ -->
+<div id="mn">
+<div class="topbar no-print">
+  <div class="tb-title" id="tbt">Verificación</div>
+  <span class="tb-role tb-admin" id="role-badge">ADMIN</span>
+  <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+    <button class="role-btn no-print" onclick="window.location.href='/tec-unidades.html'" id="role-switch-btn">Cambiar a Técnico →</button>
+  </div>
+</div>
+
+<!-- ══ VERIFICACIÓN ══ -->
+<div class="pc">
+  <div class="sh"><div class="st">Verificación</div><div class="ss">Registro histórico de inspecciones</div></div>
+  <div class="sr c4" style="margin-bottom:14px">
+    <div class="sc"><div class="si2">📋</div><div><div class="sn" id="ver-total">5</div><div class="sl">Total</div></div></div>
+    <div class="sc g"><div class="si2">✅</div><div><div class="sn" style="color:var(--green)" id="ver-aprob">3</div><div class="sl">Aprobadas</div></div></div>
+    <div class="sc r"><div class="si2">❌</div><div><div class="sn" style="color:var(--red)" id="ver-reprob">1</div><div class="sl">Reprobadas</div></div></div>
+    <div class="sc o"><div class="si2">⏳</div><div><div class="sn" style="color:var(--orange)" id="ver-pend">1</div><div class="sl">Pendientes</div></div></div>
+  </div>
+  <div class="tb2">
+    <div class="sbox">🔍 <input placeholder="Buscar por folio, placa o técnico..."></div>
+    <select class="fsel"><option>Todos los resultados</option><option>Aprobado</option><option>Reprobado</option><option>Pendiente</option></select>
+    <select class="fsel"><option>Todas las materias</option><option>HUMO</option><option>GASOLINA</option><option>MOTRIZ</option><option>ARRASTRE</option></select>
+    <button class="btn btn-blue" onclick="om('m-vrc')">+ Nueva verificación</button>
+  </div>
+  <div class="tc"><table>
+    <thead><tr><th>Materia</th><th>Precio</th><th>Multa</th><th>Folio</th><th>Fecha</th><th>Dictamen</th><th>Técnico</th><th>Nota</th><th>Acc.</th></tr></thead>
+    <tbody id="tb-verificaciones">
+      <tr><td colspan="9" style="text-align:center">Cargando datos...</td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+</div><!-- /#mn -->
+
+<div id="toast"></div>
+
+<!-- Modal Nueva Verificación -->
+<div id="m-vrc" class="mo" onclick="mc(event,'m-vrc')"><div class="md"><div class="mdt">🔍 Nueva Verificación</div><div class="fg"><div class="ff"><label>Nota</label><select><option>NT-2024-001</option><option>NT-2024-002</option></select></div><div class="ff"><label>Vehículo</label><select><option>AAA-00-A</option><option>AAB-510-F</option><option>ABB-360-J</option></select></div><div class="ff"><label>Materia</label><select><option>HUMO</option><option>GASOLINA</option><option>MOTRIZ</option><option>ARRASTRE</option></select></div><div class="ff"><label>Folio</label><input placeholder="V-2026-..."></div><div class="ff"><label>Precio ($)</label><input type="number"></div><div class="ff"><label>Multa ($)</label><input type="number" value="0"></div><div class="ff"><label>Fecha</label><input type="date"></div><div class="ff"><label>Dictamen</label><select><option>— Pendiente —</option><option>APROBADO</option><option>REPROBADO</option></select></div><div class="ff"><label>Técnico</label><select><option>Carlos Martínez</option><option>Juan Pérez</option><option>María González</option></select></div></div><div class="ma"><button class="btn btn-outline" onclick="cm('m-vrc')">Cancelar</button><button class="btn btn-blue" onclick="toast('Verificación guardada');cm('m-vrc')">💾 Guardar</button></div></div></div>
+
+<!-- ════════════════════════════════════
+     SCRIPTS
+════════════════════════════════════ -->
+<script src="/js/api.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const userName = localStorage.getItem('userName') || 'Admin';
+    document.getElementById('sb-uname').textContent = userName;
+
+    if (typeof apiGetVerificaciones === 'function') {
+      loadVerificacionesData();
+    }
+  });
+
+  function om(id){document.getElementById(id).classList.add('on');}
+  function cm(id){document.getElementById(id).classList.remove('on');}
+  function mc(e,id){if(e.target.id===id)cm(id);}
+
+  function togSb(){
+    document.getElementById('sb').classList.toggle('col');
+    document.getElementById('mn').classList.toggle('col');
+  }
+
+  function toast(msg){
+    const t=document.getElementById('toast');
+    t.textContent=msg;
+    t.style.display='block';
+    clearTimeout(t._t);
+    t._t=setTimeout(()=>t.style.display='none',2800);
+  }
+
+  function toggleLogout() {
+    const btn = document.getElementById('btn-logout');
+    btn.style.display = btn.style.display === 'none' ? 'block' : 'none';
+  }
+
+  function logout() {
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('userName');
+    window.location.href = '/login.html';
+  }
+
+  async function loadVerificacionesData() {
+    try {
+      const verificaciones = await apiGetVerificaciones();
+      const tbody = document.getElementById('tb-verificaciones');
+
+      let tot = 0, apr = 0, rep = 0, pen = 0;
+
+      if (verificaciones && verificaciones.length > 0) {
+        tbody.innerHTML = '';
+        verificaciones.forEach(v => {
+          tot++;
+          let badgeClass = 'bg';
+          if (v.resultado === 'REPROBADO') { badgeClass = 'br'; rep++; }
+          else if (v.resultado === 'PENDIENTE') { badgeClass = 'bo'; pen++; }
+          else { apr++; }
+
+          tbody.innerHTML += `
+            <tr>
+              <td><span class="b bx">HUMO</span></td>
+              <td>$850</td>
+              <td>$0</td>
+              <td>${v.folio || 'N/A'}</td>
+              <td>${v.fecha || 'N/A'}</td>
+              <td><span class="b ${badgeClass}">${v.resultado || 'N/A'}</span></td>
+              <td>${v.tecnico || 'N/A'}</td>
+              <td>${v.unidad || 'N/A'}</td>
+              <td><div class="ax"><button class="ab">✏️</button><button class="ab" onclick="confirm('¿Eliminar?')">🗑️</button></div></td>
+            </tr>
+          `;
+        });
+
+        document.getElementById('ver-total').textContent = tot;
+        document.getElementById('ver-aprob').textContent = apr;
+        document.getElementById('ver-reprob').textContent = rep;
+        document.getElementById('ver-pend').textContent = pen;
+
+      } else {
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center">No hay datos en la base de datos</td></tr>';
+      }
+    } catch(e) {
+      console.error(e);
+      document.getElementById('tb-verificaciones').innerHTML = '<tr><td colspan="9" style="text-align:center;color:red">Error cargando datos</td></tr>';
+    }
+  }
+</script>
+</body>
+</html>

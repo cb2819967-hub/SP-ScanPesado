@@ -13,11 +13,21 @@ public class ClienteService {
     @Autowired
     private ClienteRepository clienteRepository;
 
+    // Modificado para traer TODOS los clientes (activos e inactivos)
+    // Así el frontend puede usar sus propios filtros.
     public List<Cliente> getAllClientes() {
-        return clienteRepository.findByActivoTrue();
+        return clienteRepository.findAll();
     }
-    
+
     public Cliente saveCliente(Cliente cliente) {
         return clienteRepository.save(cliente);
+    }
+
+    // Borrado lógico: Solo cambia el estatus a falso, no borra de la BD
+    public void deleteCliente(Long id) {
+        clienteRepository.findById(id).ifPresent(cliente -> {
+            cliente.setActivo(false);
+            clienteRepository.save(cliente);
+        });
     }
 }

@@ -63,8 +63,7 @@
       <div class="sb-ur" id="sb-urole">Administrador</div>
     </div>
   </div>
-</nav>
-
+</div>
 <!-- ════════ MAIN ════════ -->
 <div id="mn">
 <div class="topbar no-print">
@@ -206,7 +205,7 @@
         <td><button class="btn btn-outline btn-sm" onclick="th('h1')">📋 Historial</button></td>
         <td><div class="ax"><button class="ab" onclick="om('m-eval')">📝</button><button class="ab">✏️</button><button class="ab" onclick="confirmDel()">🗑️</button></div></td>
       </tr>
-      <tr class="hrow" id="hr-h1"><td colspan="8" style="padding:0">
+      <tr class="hrow" id="hr-h1" style="display:none"><td colspan="8" style="padding:0">
         <div class="hp"><div class="ht">📋 Historial — AAA-00-A</div>
           <table style="font-size:12px"><thead><tr><th>Folio</th><th>Materia</th><th>Fecha</th><th>Dictamen</th><th>Técnico</th><th>Precio</th><th></th></tr></thead>
           <tbody>
@@ -221,7 +220,7 @@
         <td><button class="btn btn-outline btn-sm" onclick="th('h2')">📋 Historial</button></td>
         <td><div class="ax"><button class="ab" onclick="om('m-eval')">📝</button><button class="ab">✏️</button><button class="ab" onclick="confirmDel()">🗑️</button></div></td>
       </tr>
-      <tr class="hrow" id="hr-h2"><td colspan="8" style="padding:0">
+      <tr class="hrow" id="hr-h2" style="display:none"><td colspan="8" style="padding:0">
         <div class="hp"><div class="ht">📋 Historial — AAB-510-F</div>
           <table style="font-size:12px"><thead><tr><th>Folio</th><th>Materia</th><th>Fecha</th><th>Dictamen</th><th>Técnico</th><th>Precio</th><th></th></tr></thead>
           <tbody><tr><td>V-2026-007</td><td>GASOLINA</td><td>19/02/2026</td><td><span class="b bo">PENDIENTE</span></td><td>María G.</td><td>$920</td><td><button class="ab" onclick="om('m-eval')">✏️</button></td></tr></tbody></table>
@@ -233,7 +232,7 @@
         <td><button class="btn btn-outline btn-sm" onclick="th('h3')">📋 Historial</button></td>
         <td><div class="ax"><button class="ab" onclick="om('m-eval')">📝</button><button class="ab">✏️</button><button class="ab" onclick="confirmDel()">🗑️</button></div></td>
       </tr>
-      <tr class="hrow" id="hr-h3"><td colspan="8" style="padding:0">
+      <tr class="hrow" id="hr-h3" style="display:none"><td colspan="8" style="padding:0">
         <div class="hp"><div class="ht">📋 Historial — ABB-360-J</div>
           <table style="font-size:12px"><thead><tr><th colspan="7" style="color:var(--g400);text-align:center">Sin evaluaciones registradas</th></tr></thead><tbody></tbody></table>
         </div>
@@ -460,7 +459,7 @@
         <td><button class="btn btn-outline btn-sm" onclick="th('th1')">📋 Ver mi historial</button></td>
         <td><button class="btn btn-blue btn-sm" onclick="om('m-wizard')">➕ Nueva evaluación</button></td>
       </tr>
-      <tr class="hrow" id="hr-th1"><td colspan="7" style="padding:0">
+      <tr class="hrow" id="hr-th1" style="display:none"><td colspan="7" style="padding:0">
         <div class="hp"><div class="ht">📋 Mi Historial — AAA-00-A (solo mis evaluaciones)</div>
           <table style="font-size:12px"><thead><tr><th>Folio</th><th>Materia</th><th>Fecha</th><th>Dictamen</th><th>Notas</th></tr></thead>
           <tbody>
@@ -475,7 +474,7 @@
         <td><button class="btn btn-outline btn-sm" onclick="th('th2')">📋 Ver mi historial</button></td>
         <td><button class="btn btn-blue btn-sm" onclick="om('m-wizard')">➕ Nueva evaluación</button></td>
       </tr>
-      <tr class="hrow" id="hr-th2"><td colspan="7" style="padding:0">
+      <tr class="hrow" id="hr-th2" style="display:none"><td colspan="7" style="padding:0">
         <div class="hp"><div class="ht">📋 Mi Historial — AAB-510-F</div>
           <table style="font-size:12px"><thead><tr><th colspan="5" style="color:var(--g400);text-align:center">Sin evaluaciones propias registradas</th></tr></thead><tbody></tbody></table>
         </div>

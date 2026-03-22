@@ -1,6 +1,6 @@
 CREATE DATABASE IF NOT EXISTS SP;
 USE SP;
-
+SELECT * FROM clientes;
 -- 1. USUARIOS
 CREATE TABLE IF NOT EXISTS usuarios (
     id_usuario INT AUTO_INCREMENT PRIMARY KEY,
@@ -10,7 +10,43 @@ CREATE TABLE IF NOT EXISTS usuarios (
     tipo_usuario ENUM('ADMIN', 'TECNICO') NOT NULL,
     activo TINYINT(1) DEFAULT 1
 );
+select * from verificentros;
+-- Revisa que existan estas columnas con estos nombres exactos:
+-- clave_verificentro
+-- correo
+-- telefono
+-- tel_alternativo
+-- horario
 
+-- Si te falta alguna, puedes agregarla corriendo un comando como este:
+INSERT IGNORE INTO regiones (id_region, nombre_region, activo)
+VALUES (1, 'Noreste', 1);
+ALTER TABLE verificentros MODIFY COLUMN horario VARCHAR(255);
+INSERT INTO verificentros (
+    id_region,
+    nombre,
+    clave_verificentro,
+    direccion,
+    responsable,
+    correo,
+    telefono,
+    tel_alternativo,
+    horario,
+    activo
+) VALUES (
+             1,
+             'Verificentro MTY Centro',
+             'VN-001',
+             'Av. Universidad 123, San Nicolás, N.L.',
+             'Roberto Gómez',
+             'roberto@verifmty.com',
+             '8112345678',
+             '8119876543',
+             'L-V 8:00 a 18:00, S 8:00 a 14:00',
+             1
+         );
+INSERT INTO regiones (nombre_region, activo) VALUES ('Noreste', 1), ('Centro', 1), ('Occidente', 1);
+ALTER TABLE clientes ADD COLUMN rfc VARCHAR(20) AFTER razon_social;
 -- Usuario por defecto para entrar (contraseña: admin123)
 -- Hash bcrypt de 'admin123'
 INSERT INTO usuarios (nombre_usuario, email, contrasena, tipo_usuario)

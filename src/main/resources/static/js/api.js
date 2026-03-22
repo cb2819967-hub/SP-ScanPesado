@@ -6,7 +6,7 @@
 // Actualizado para apuntar a Spring Boot en el puerto 8080
 const isDev = location.protocol === 'file:' || location.port === '5500';
 const API_BASE = isDev 
-  ? 'http://192.168.0.16:8080/api' 
+  ? 'http://localhost:8080/api'
   : `${location.origin}/api`;
 
 // ════════════════════════════════════════════════════════════════
@@ -61,6 +61,64 @@ async function apiGetClientes() {
   }
 }
 
+/**
+ * Crea un nuevo cliente
+ * @param {Object} cliente - Datos del cliente
+ * @returns {Promise<Object>}
+ */
+async function apiCreateCliente(cliente) {
+  try {
+    const res = await fetch(`${API_BASE}/clientes`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(cliente)
+    });
+    if (!res.ok) throw new Error('Error al crear cliente');
+    return await res.json();
+  } catch (err) {
+    console.error('❌ Error en apiCreateCliente:', err.message);
+    throw err;
+  }
+}
+
+/**
+ * Actualiza un cliente
+ * @param {number} id - ID del cliente
+ * @param {Object} cliente - Datos actualizados
+ * @returns {Promise<Object>}
+ */
+async function apiUpdateCliente(id, cliente) {
+  try {
+    const res = await fetch(`${API_BASE}/clientes/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(cliente)
+    });
+    if (!res.ok) throw new Error('Error al actualizar cliente');
+    return await res.json();
+  } catch (err) {
+    console.error('❌ Error en apiUpdateCliente:', err.message);
+    throw err;
+  }
+}
+
+/**
+ * Elimina un cliente (borrado lógico)
+ * @param {number} id - ID del cliente
+ * @returns {Promise<void>}
+ */
+async function apiDeleteCliente(id) {
+  try {
+    const res = await fetch(`${API_BASE}/clientes/${id}`, {
+      method: 'DELETE'
+    });
+    if (!res.ok) throw new Error('Error al eliminar cliente');
+  } catch (err) {
+    console.error('❌ Error en apiDeleteCliente:', err.message);
+    throw err;
+  }
+}
+
 // ════════════════════════════════════════════════════════════════
 // USUARIOS
 // ════════════════════════════════════════════════════════════════
@@ -77,6 +135,64 @@ async function apiGetUsuarios() {
   } catch (err) {
     console.error('❌ Error en apiGetUsuarios:', err.message);
     return [];
+  }
+}
+
+/**
+ * Crea un nuevo usuario
+ * @param {Object} usuario - Datos del usuario
+ * @returns {Promise<Object>}
+ */
+async function apiCreateUsuario(usuario) {
+  try {
+    const res = await fetch(`${API_BASE}/usuarios`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(usuario)
+    });
+    if (!res.ok) throw new Error('Error al crear usuario');
+    return await res.json();
+  } catch (err) {
+    console.error('❌ Error en apiCreateUsuario:', err.message);
+    throw err;
+  }
+}
+
+/**
+ * Actualiza un usuario
+ * @param {number} id - ID del usuario
+ * @param {Object} usuario - Datos actualizados
+ * @returns {Promise<Object>}
+ */
+async function apiUpdateUsuario(id, usuario) {
+  try {
+    const res = await fetch(`${API_BASE}/usuarios/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(usuario)
+    });
+    if (!res.ok) throw new Error('Error al actualizar usuario');
+    return await res.json();
+  } catch (err) {
+    console.error('❌ Error en apiUpdateUsuario:', err.message);
+    throw err;
+  }
+}
+
+/**
+ * Elimina un usuario (borrado lógico)
+ * @param {number} id - ID del usuario
+ * @returns {Promise<void>}
+ */
+async function apiDeleteUsuario(id) {
+  try {
+    const res = await fetch(`${API_BASE}/usuarios/${id}`, {
+      method: 'DELETE'
+    });
+    if (!res.ok) throw new Error('Error al eliminar usuario');
+  } catch (err) {
+    console.error('❌ Error en apiDeleteUsuario:', err.message);
+    throw err;
   }
 }
 
@@ -118,10 +234,72 @@ async function apiGetVehiculos() {
   }
 }
 
+/**
+ * Crea un nuevo vehículo
+ * @param {Object} vehiculo - Datos del vehículo
+ * @returns {Promise<Object>}
+ */
+async function apiCreateVehiculo(vehiculo) {
+  try {
+    const res = await fetch(`${API_BASE}/vehiculos`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(vehiculo)
+    });
+    if (!res.ok) throw new Error('Error al crear vehículo');
+    return await res.json();
+  } catch (err) {
+    console.error('❌ Error en apiCreateVehiculo:', err.message);
+    throw err;
+  }
+}
+
+/**
+ * Actualiza un vehículo
+ * @param {number} id - ID del vehículo
+ * @param {Object} vehiculo - Datos actualizados
+ * @returns {Promise<Object>}
+ */
+async function apiUpdateVehiculo(id, vehiculo) {
+  try {
+    const res = await fetch(`${API_BASE}/vehiculos/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(vehiculo)
+    });
+    if (!res.ok) throw new Error('Error al actualizar vehículo');
+    return await res.json();
+  } catch (err) {
+    console.error('❌ Error en apiUpdateVehiculo:', err.message);
+    throw err;
+  }
+}
+
+/**
+ * Elimina un vehículo (borrado lógico)
+ * @param {number} id - ID del vehículo
+ * @returns {Promise<void>}
+ */
+async function apiDeleteVehiculo(id) {
+  try {
+    const res = await fetch(`${API_BASE}/vehiculos/${id}`, {
+      method: 'DELETE'
+    });
+    if (!res.ok) throw new Error('Error al eliminar vehículo');
+  } catch (err) {
+    console.error('❌ Error en apiDeleteVehiculo:', err.message);
+    throw err;
+  }
+}
+
 // ════════════════════════════════════════════════════════════════
 // CEDIS
 // ════════════════════════════════════════════════════════════════
 
+/**
+ * Obtiene lista de CEDIS
+ * @returns {Promise<Array>}
+ */
 async function apiGetCedis() {
   try {
     const res = await fetch(`${API_BASE}/cedis`);
@@ -133,10 +311,72 @@ async function apiGetCedis() {
   }
 }
 
+/**
+ * Crea un nuevo CEDIS
+ * @param {Object} cedis - Datos del CEDIS
+ * @returns {Promise<Object>}
+ */
+async function apiCreateCedis(cedis) {
+  try {
+    const res = await fetch(`${API_BASE}/cedis`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(cedis)
+    });
+    if (!res.ok) throw new Error('Error al crear CEDIS');
+    return await res.json();
+  } catch (err) {
+    console.error('❌ Error en apiCreateCedis:', err.message);
+    throw err;
+  }
+}
+
+/**
+ * Actualiza un CEDIS
+ * @param {number} id - ID del CEDIS
+ * @param {Object} cedis - Datos actualizados
+ * @returns {Promise<Object>}
+ */
+async function apiUpdateCedis(id, cedis) {
+  try {
+    const res = await fetch(`${API_BASE}/cedis/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(cedis)
+    });
+    if (!res.ok) throw new Error('Error al actualizar CEDIS');
+    return await res.json();
+  } catch (err) {
+    console.error('❌ Error en apiUpdateCedis:', err.message);
+    throw err;
+  }
+}
+
+/**
+ * Elimina un CEDIS (borrado lógico)
+ * @param {number} id - ID del CEDIS
+ * @returns {Promise<void>}
+ */
+async function apiDeleteCedis(id) {
+  try {
+    const res = await fetch(`${API_BASE}/cedis/${id}`, {
+      method: 'DELETE'
+    });
+    if (!res.ok) throw new Error('Error al eliminar CEDIS');
+  } catch (err) {
+    console.error('❌ Error en apiDeleteCedis:', err.message);
+    throw err;
+  }
+}
+
 // ════════════════════════════════════════════════════════════════
 // VERIFICENTROS
 // ════════════════════════════════════════════════════════════════
 
+/**
+ * Obtiene lista de verificentros
+ * @returns {Promise<Array>}
+ */
 async function apiGetVerificentros() {
   try {
     const res = await fetch(`${API_BASE}/verificentros`);
@@ -145,6 +385,64 @@ async function apiGetVerificentros() {
   } catch (err) {
     console.error('❌ Error en apiGetVerificentros:', err.message);
     return [];
+  }
+}
+
+/**
+ * Crea un nuevo verificentro
+ * @param {Object} verificentro - Datos del verificentro
+ * @returns {Promise<Object>}
+ */
+async function apiCreateVerificentro(verificentro) {
+  try {
+    const res = await fetch(`${API_BASE}/verificentros`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(verificentro)
+    });
+    if (!res.ok) throw new Error('Error al crear verificentro');
+    return await res.json();
+  } catch (err) {
+    console.error('❌ Error en apiCreateVerificentro:', err.message);
+    throw err;
+  }
+}
+
+/**
+ * Actualiza un verificentro
+ * @param {number} id - ID del verificentro
+ * @param {Object} verificentro - Datos actualizados
+ * @returns {Promise<Object>}
+ */
+async function apiUpdateVerificentro(id, verificentro) {
+  try {
+    const res = await fetch(`${API_BASE}/verificentros/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(verificentro)
+    });
+    if (!res.ok) throw new Error('Error al actualizar verificentro');
+    return await res.json();
+  } catch (err) {
+    console.error('❌ Error en apiUpdateVerificentro:', err.message);
+    throw err;
+  }
+}
+
+/**
+ * Elimina un verificentro (borrado lógico)
+ * @param {number} id - ID del verificentro
+ * @returns {Promise<void>}
+ */
+async function apiDeleteVerificentro(id) {
+  try {
+    const res = await fetch(`${API_BASE}/verificentros/${id}`, {
+      method: 'DELETE'
+    });
+    if (!res.ok) throw new Error('Error al eliminar verificentro');
+  } catch (err) {
+    console.error('❌ Error en apiDeleteVerificentro:', err.message);
+    throw err;
   }
 }
 
