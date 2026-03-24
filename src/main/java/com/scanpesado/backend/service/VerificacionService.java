@@ -4,7 +4,6 @@ import com.scanpesado.backend.model.Verificacion;
 import com.scanpesado.backend.repository.VerificacionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
@@ -14,5 +13,16 @@ public class VerificacionService {
 
     public List<Verificacion> getRecentVerificaciones() {
         return verificacionRepository.findByActivoTrueOrderByFechaVerificacionDesc();
+    }
+
+    public Verificacion saveVerificacion(Verificacion verificacion) {
+        return verificacionRepository.save(verificacion);
+    }
+
+    public void deleteVerificacion(Long id) {
+        verificacionRepository.findById(id).ifPresent(v -> {
+            v.setActivo(false);
+            verificacionRepository.save(v);
+        });
     }
 }

@@ -1,6 +1,13 @@
 CREATE DATABASE IF NOT EXISTS SP;
 USE SP;
 SELECT * FROM clientes;
+-- 1. Quitamos el candado de la llave foránea de reviso (casi siempre es el 4)
+ALTER TABLE notas DROP FOREIGN KEY notas_ibfk_4;
+select * from verificaciones;
+
+-- 2. Cambiamos la columna a texto
+ALTER TABLE notas MODIFY COLUMN reviso VARCHAR(100);
+
 -- 1. USUARIOS
 CREATE TABLE IF NOT EXISTS usuarios (
     id_usuario INT AUTO_INCREMENT PRIMARY KEY,
