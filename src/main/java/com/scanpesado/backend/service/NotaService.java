@@ -12,7 +12,8 @@ public class NotaService {
     private NotaRepository notaRepository;
 
     public List<Nota> getAllNotas() {
-        return notaRepository.findAll();
+        // Usamos el método que ordena por activos y más recientes
+        return notaRepository.findAllByOrderByActivoDescIdDesc();
     }
 
     public Nota saveNota(Nota nota) {
@@ -24,5 +25,17 @@ public class NotaService {
             nota.setActivo(false);
             notaRepository.save(nota);
         });
+    }
+
+    public void pagarMasivo(List<Long> ids) {
+        List<Nota> notas = notaRepository.findAllById(ids);
+        notas.forEach(n -> n.setPagadoCompleto(true));
+        notaRepository.saveAll(notas);
+    }
+
+    public void eliminarMasivo(List<Long> ids) {
+        List<Nota> notas = notaRepository.findAllById(ids);
+        notas.forEach(n -> n.setActivo(false));
+        notaRepository.saveAll(notas);
     }
 }

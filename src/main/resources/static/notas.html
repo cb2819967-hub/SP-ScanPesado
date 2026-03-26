@@ -6,6 +6,23 @@
   <title>Notas - SP Scan Pesado</title>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link href="/css/styles.css" rel="stylesheet">
+  <style>
+    /* Ajustes específicos para los modales */
+    .md { max-height: 90vh; display: flex; flex-direction: column; width: 600px; }
+    .fg { overflow-y: auto; padding-right: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    .fw { grid-column: 1 / -1; }
+
+    /* Estilos para el Checkbox dentro de la tarjeta */
+    .nc { position: relative; } /* Hace que la tarjeta sea un lienzo posicionable */
+    .nc-checkbox {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      transform: scale(1.3);
+      cursor: pointer;
+    }
+    .nch { padding-left: 30px; } /* Empuja el título de la tarjeta para que no choque con el checkbox */
+  </style>
 </head>
 <body>
 
@@ -51,14 +68,15 @@
 
 <div id="mn">
   <div class="topbar no-print">
-    <div class="tb-title" id="tbt">Notas</div>
+    <div class="tb-title" id="tbt">Notas (Vista Resumen)</div>
     <span class="tb-role tb-admin" id="role-badge">ADMIN</span>
   </div>
 
   <div class="pc">
-    <div class="sh"><div class="st">Notas / Contratos de Servicio</div><div class="ss">Contratos para inspección de flotas vehiculares</div></div>
+    <div class="sh"><div class="st">Control Maestro de Notas</div><div class="ss">Resumen de contratos y cálculo automático de verificaciones</div></div>
+
     <div class="tb2">
-      <div class="sbox">🔍 <input id="f-buscar" placeholder="Buscar por folio..." oninput="applyFilters()"></div>
+      <div class="sbox">🔍 <input id="f-buscar" placeholder="Buscar por folio o cliente..." oninput="applyFilters()"></div>
       <select class="fsel" id="f-cliente" onchange="applyFilters()"><option value="ALL">Todos los clientes</option></select>
       <select class="fsel" id="f-estado" onchange="applyFilters()">
         <option value="ALL">Todos los estados</option>
@@ -66,6 +84,13 @@
         <option value="false">Inactivo</option>
       </select>
       <button class="btn btn-blue" onclick="om('m-not')">+ Nueva nota</button>
+    </div>
+
+    <div id="nota-tb" class="mt2" style="display:none; background: #e0e7ff; padding: 12px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #c7d2fe;">
+      <span id="nota-ct" style="font-weight: 600; color: #3730a3; margin-right: 15px;">0 seleccionadas</span>
+      <button class="btn btn-green btn-sm" onclick="mkPaid()">✔ Marcar pagadas</button>
+      <button class="btn btn-red btn-sm" onclick="del()">🗑️ Cancelar Notas</button>
+      <button class="btn btn-gray btn-sm" onclick="desel()">✘ Deseleccionar</button>
     </div>
 
     <div class="cg" id="cg-notas">
@@ -137,7 +162,6 @@
     if (typeof apiGetNotas === 'function') loadNotasData();
   });
 
-  // --- UI ---
   function om(id){document.getElementById(id).classList.add('on');}
   function cm(id){document.getElementById(id).classList.remove('on');}
   function mc(e,id){if(e.target.id===id)cm(id);}
@@ -156,58 +180,58 @@
     window.location.href = '/login.html';
   }
 
-  // --- DEPENDENCIAS ---
   async function loadDependencies() {
     try {
       allClientes = await apiGetClientes();
       allVerificentros = await apiGetVerificentros();
-
       const fCli = document.getElementById('f-cliente');
       const selectsCli = [document.getElementById('n-cliente'), document.getElementById('e-cliente')];
       const selectsVer = [document.getElementById('n-verificentro'), document.getElementById('e-verificentro')];
 
       allClientes.forEach(c => {
-        if(c.activo) selectsCli.forEach(sel => sel.innerHTML += `<option value="${c.id}">${c.razon_social}</option>`);
-        fCli.innerHTML += `<option value="${c.id}">${c.razon_social}</option>`;
+        if(c.activo) selectsCli.forEach(sel => sel.innerHTML += `<option value="${c.id}">${c.razon_social || c.razonSocial}</option>`);
+        fCli.innerHTML += `<option value="${c.id}">${c.razon_social || c.razonSocial}</option>`;
       });
-
       allVerificentros.forEach(v => {
         if(v.activo) selectsVer.forEach(sel => sel.innerHTML += `<option value="${v.id}">${v.nombre}</option>`);
       });
-    } catch (e) { console.error('Error catálogos', e); }
+    } catch (e) {}
   }
 
-  // --- CARGAR NOTAS ---
   async function loadNotasData() {
     try {
       allNotas = await apiGetNotas();
       renderCards(allNotas);
-    } catch(e) {
-      document.getElementById('cg-notas').innerHTML = '<div style="grid-column:1/-1;text-align:center;color:red">Error cargando notas</div>';
-    }
+    } catch(e) { document.getElementById('cg-notas').innerHTML = '<div style="grid-column:1/-1;text-align:center;color:red">Error cargando notas</div>'; }
   }
 
-  // --- FORMATO ---
   const formatter = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' });
   const formatDate = (dateString) => {
     if(!dateString) return 'N/A';
-    const [y,m,d] = dateString.split('-');
-    return `${d}/${m}/${y}`;
+    const [y,m,d] = dateString.split('-'); return `${d}/${m}/${y}`;
   };
 
   function renderCards(data) {
     const container = document.getElementById('cg-notas');
+    desel(); // Limpia la selección de checks
     if (data && data.length > 0) {
       container.innerHTML = '';
       data.forEach(n => {
         const isActivo = n.activo;
         const actBadge = isActivo ? '<span class="b bg">✔ Activo</span>' : '<span class="b br">✘ Cancelada</span>';
 
+        // 🟢 CÁLCULO DE VERIFICACIONES (Vista 3)
+        const verifHtml = n.resumen_verificaciones === '0 Registradas'
+                ? `<div class="ncr" style="margin-top:8px;"><span class="b bx">Verificaciones: ${n.resumen_verificaciones}</span></div>`
+                : `<div class="ncr" style="margin-top:8px;"><span class="b bp">Verificaciones: ${n.resumen_verificaciones}</span></div>`;
+
         container.innerHTML += `
-          <div class="nc" style="opacity: ${isActivo ? '1' : '0.6'}">
+          <div class="nc" style="opacity: ${isActivo ? '1' : '0.6'}" data-id="${n.id}">
+            <input type="checkbox" class="nc-checkbox" onchange="updTb()">
+
             <div class="nch">
               <div style="display:flex;align-items:center;gap:8px">
-                <span style="font-size:20px">📄</span>
+                <span style="font-size:20px; display:none;">📄</span>
                 <div>
                   <div class="ncf">${n.folio}</div>
                   <div class="ncc">${n.cliente_nombre}</div>
@@ -215,17 +239,18 @@
               </div>
               ${actBadge}
             </div>
-            <div class="ncr">📅 Contrato: <strong>${formatDate(n.fecha_contrato)}</strong></div>
+
+            ${verifHtml} <div class="ncr" style="margin-top:8px;">📅 Contrato: <strong>${formatDate(n.fecha_contrato)}</strong></div>
             <div class="ncr">🕐 Vigencia: <strong>${formatDate(n.fecha_vigencia)}</strong></div>
             <div class="ncr">💲 Anticipo: <strong style="color:${n.pagado_completo?'var(--green)':'var(--orange)'}">${formatter.format(n.anticipo)} ${n.pagado_completo ? '(Pagado)' : ''}</strong></div>
             <div class="ncr">🔧 ${n.verificentro_nombre}</div>
             <div class="ncr">💳 Tipo pago: ${n.tipo_pago}</div>
+
             <div class="ncft">
-              <span style="font-size:11px;color:var(--g400)">Atendió: ${n.atendio}</span>
-              <div style="display:flex;gap:7px">
+              <span style="font-size:11px;color:var(--g400)">Atendió: ${n.atendio || 'N/A'}<br>Revisó: ${n.reviso || 'N/A'}</span>
+              <div style="display:flex;gap:7px; align-items:center;">
                 <button class="btn btn-outline btn-sm" onclick="generarPDF(${n.id})">🖨️ PDF</button>
                 <button class="btn btn-blue btn-sm" onclick="openEdit(${n.id})">✏️</button>
-                <button class="btn btn-red btn-sm" onclick="deleteNota(${n.id}, '${n.folio}')">🗑️</button>
               </div>
             </div>
           </div>
@@ -236,14 +261,62 @@
     }
   }
 
-  // --- FILTROS ---
+  // ════════ LÓGICA MASIVA (VISTA 3) ════════
+  function updTb(){
+    const checkboxes = [...document.querySelectorAll('.nc-checkbox')];
+    const n = checkboxes.filter(c => c.checked).length;
+    const panel = document.getElementById('nota-tb');
+
+    document.getElementById('nota-ct').textContent = n + ' seleccionada' + (n!==1?'s':'');
+    if(n > 0) {
+      panel.style.display = 'block';
+    } else {
+      panel.style.display = 'none';
+    }
+  }
+
+  function desel(){
+    document.querySelectorAll('.nc-checkbox').forEach(c => c.checked = false);
+    updTb();
+  }
+
+  async function mkPaid(){
+    const checkboxes = [...document.querySelectorAll('.nc-checkbox:checked')];
+    if(!checkboxes.length) return;
+    const ids = checkboxes.map(c => parseInt(c.closest('.nc').dataset.id));
+
+    try {
+      toast('⏳ Actualizando pagos de Notas...');
+      await apiMarkNotasPaid(ids);
+      toast('✔ Notas marcadas como pagadas');
+      desel();
+      loadNotasData();
+    } catch(e) { toast('❌ Error al procesar pagos'); }
+  }
+
+  async function del(){
+    const checkboxes = [...document.querySelectorAll('.nc-checkbox:checked')];
+    if(!checkboxes.length) return;
+    if(!confirm(`⚠️ ¿Seguro que deseas cancelar (borrado lógico) ${checkboxes.length} notas seleccionadas?`)) return;
+
+    const ids = checkboxes.map(c => parseInt(c.closest('.nc').dataset.id));
+
+    try {
+      toast('⏳ Cancelando Notas...');
+      await apiDeleteNotasMasivo(ids);
+      toast(`🗑️ ${ids.length} Notas canceladas`);
+      desel();
+      loadNotasData();
+    } catch(e) { toast('❌ Error al cancelar'); }
+  }
+
   function applyFilters() {
     const txt = document.getElementById('f-buscar').value.toLowerCase();
     const fClienteId = document.getElementById('f-cliente').value;
     const fEstado = document.getElementById('f-estado').value;
 
     const filtrados = allNotas.filter(n => {
-      const matchTxt = n.folio && n.folio.toLowerCase().includes(txt);
+      const matchTxt = n.folio && n.folio.toLowerCase().includes(txt) || n.cliente_nombre && n.cliente_nombre.toLowerCase().includes(txt);
       const matchCliente = (fClienteId === 'ALL') ? true : (n.cliente_id == fClienteId);
       let matchEstado = true;
       if (fEstado === 'true') matchEstado = (n.activo === true);
@@ -254,7 +327,6 @@
     renderCards(filtrados);
   }
 
-  // --- CRUD ---
   async function saveNota() {
     const folio = document.getElementById('n-folio').value.toUpperCase();
     const clienteId = document.getElementById('n-cliente').value;
@@ -282,7 +354,7 @@
       cm('m-not');
       document.querySelectorAll('#m-not input, #m-not textarea').forEach(i => i.value = '');
       loadNotasData();
-    } catch (e) { toast('❌ Error al guardar. Verifica que el Folio no esté repetido.'); }
+    } catch (e) { toast('❌ Error al guardar.'); }
   }
 
   function openEdit(id) {
@@ -296,8 +368,8 @@
     document.getElementById('e-anticipo').value = n.anticipo || 0;
     document.getElementById('e-pagado').value = n.pagado_completo ? 'true' : 'false';
     document.getElementById('e-atendio').value = n.atendio || '';
-    document.getElementById('e-comentario').value = n.comentario || '';
     document.getElementById('e-activo').value = n.activo ? 'true' : 'false';
+    document.getElementById('e-comentario').value = n.comentario || '';
     om('m-not-ed');
   }
 
@@ -324,34 +396,18 @@
     } catch (e) { toast('❌ Error al actualizar'); }
   }
 
-  async function deleteNota(id, folio) {
-    if(confirm(`⚠️ ¿Deseas CANCELAR la nota ${folio}?`)) {
-      try {
-        await apiDeleteNota(id);
-        toast('🗑️ Nota cancelada');
-        loadNotasData();
-      } catch (e) { toast('❌ Error al cancelar'); }
-    }
-  }
-
-
-  // --- GENERADOR DE PDF ---
   function generarPDF(id) {
-      const n = allNotas.find(x => x.id === id);
-      if (!n) return;
+    const n = allNotas.find(x => x.id === id);
+    if (!n) return;
+    toast('⏳ Generando documento PDF...');
 
-      toast('⏳ Generando documento PDF...');
+    const contenidoPDF = document.createElement('div');
+    contenidoPDF.style.padding = '20px';
+    contenidoPDF.style.fontFamily = 'Inter, sans-serif';
+    contenidoPDF.style.color = '#0f2544';
+    contenidoPDF.style.backgroundColor = '#ffffff';
 
-      // 1. Creamos un elemento HTML real (sin ancho fijo en píxeles)
-      const contenidoPDF = document.createElement('div');
-      contenidoPDF.style.padding = '20px';
-      contenidoPDF.style.fontFamily = 'Inter, sans-serif';
-      contenidoPDF.style.color = '#0f2544';
-      contenidoPDF.style.backgroundColor = '#ffffff';
-
-      // 2. Armamos el diseño (Incluye la etiqueta <img> para tu logo)
-      // NOTA: Cambia "/img/logo.png" por la ruta real donde tengas guardado tu logo
-      contenidoPDF.innerHTML = `
+    contenidoPDF.innerHTML = `
       <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:3px solid #1d4ed8; padding-bottom:15px; margin-bottom:20px;">
         <div style="display:flex; align-items:center; gap:15px; width:60%;">
           <img src="/img/logo.png" alt="Logo" style="height:55px; object-fit:contain;" onerror="this.style.display='none'">
@@ -365,74 +421,30 @@
           <p style="margin:5px 0 0 0; font-size:13px; font-weight:bold;">Fecha: ${formatDate(n.fecha_contrato)}</p>
         </div>
       </div>
-
       <div style="background:#f3f4f6; padding:12px; border-radius:6px; margin-bottom:15px;">
         <h3 style="margin:0 0 8px 0; font-size:14px;">DATOS DEL CLIENTE</h3>
         <p style="margin:0; font-size:13px;"><strong>Razón Social:</strong> ${n.cliente_nombre}</p>
       </div>
-
       <h3 style="margin:0 0 8px 0; font-size:14px; border-bottom:1px solid #e5e7eb; padding-bottom:4px;">DETALLES DEL SERVICIO / CONTRATO</h3>
       <table style="width:100%; border-collapse:collapse; margin-bottom:15px; font-size:13px; text-align:left;">
-        <tr>
-          <td style="padding:8px; border-bottom:1px solid #e5e7eb; width:40%;"><strong>Verificentro Asignado:</strong></td>
-          <td style="padding:8px; border-bottom:1px solid #e5e7eb;">${n.verificentro_nombre}</td>
-        </tr>
-        <tr>
-          <td style="padding:8px; border-bottom:1px solid #e5e7eb;"><strong>Vigencia del Contrato:</strong></td>
-          <td style="padding:8px; border-bottom:1px solid #e5e7eb;">${formatDate(n.fecha_vigencia)}</td>
-        </tr>
-        <tr>
-          <td style="padding:8px; border-bottom:1px solid #e5e7eb;"><strong>Atendió:</strong></td>
-          <td style="padding:8px; border-bottom:1px solid #e5e7eb;">${n.atendio || 'N/A'}</td>
-        </tr>
-        <tr>
-          <td style="padding:8px; border-bottom:1px solid #e5e7eb;"><strong>Método de Pago:</strong></td>
-          <td style="padding:8px; border-bottom:1px solid #e5e7eb;">${n.tipo_pago}</td>
-        </tr>
-        <tr>
-          <td style="padding:8px; border-bottom:1px solid #e5e7eb;"><strong>Estado de la Nota:</strong></td>
-          <td style="padding:8px; border-bottom:1px solid #e5e7eb; color:${n.pagado_completo ? '#16a34a' : '#d97706'}; font-weight:bold;">
-            ${n.pagado_completo ? 'PAGADO EN SU TOTALIDAD' : 'PAGO PARCIAL / ANTICIPO'}
-          </td>
-        </tr>
+        <tr><td style="padding:8px; border-bottom:1px solid #e5e7eb; width:40%;"><strong>Verificentro Asignado:</strong></td><td style="padding:8px; border-bottom:1px solid #e5e7eb;">${n.verificentro_nombre}</td></tr>
+        <tr><td style="padding:8px; border-bottom:1px solid #e5e7eb;"><strong>Verificaciones Registradas:</strong></td><td style="padding:8px; border-bottom:1px solid #e5e7eb; font-weight:bold;">${n.resumen_verificaciones}</td></tr>
+        <tr><td style="padding:8px; border-bottom:1px solid #e5e7eb;"><strong>Atendió:</strong></td><td style="padding:8px; border-bottom:1px solid #e5e7eb;">${n.atendio || 'N/A'}</td></tr>
+        <tr><td style="padding:8px; border-bottom:1px solid #e5e7eb;"><strong>Método de Pago:</strong></td><td style="padding:8px; border-bottom:1px solid #e5e7eb;">${n.tipo_pago}</td></tr>
+        <tr><td style="padding:8px; border-bottom:1px solid #e5e7eb;"><strong>Estado de la Nota:</strong></td><td style="padding:8px; border-bottom:1px solid #e5e7eb; color:${n.pagado_completo ? '#16a34a' : '#d97706'}; font-weight:bold;">${n.pagado_completo ? 'PAGADO EN SU TOTALIDAD' : 'PAGO PARCIAL / ANTICIPO'}</td></tr>
       </table>
-
       <div style="text-align:right; font-size:18px; margin-bottom:30px; background:#f0f2f8; padding:12px; border-radius:6px;">
-        <strong>Total/Anticipo Recibido: </strong>
-        <span style="color:#1d4ed8; font-weight:bold;">${formatter.format(n.anticipo)} MXN</span>
+        <strong>Total/Anticipo Recibido: </strong><span style="color:#1d4ed8; font-weight:bold;">${formatter.format(n.anticipo)} MXN</span>
       </div>
-
       ${n.comentario ? `<div style="font-size:12px; color:#4b5563; margin-bottom:40px;"><strong>Notas adicionales:</strong> ${n.comentario}</div>` : '<div style="margin-bottom:40px;"></div>'}
-
       <div style="display:flex; justify-content:space-around; margin-top:50px; text-align:center;">
-        <div style="width:40%;">
-          <div style="border-top:1px solid #0f2544; padding-top:8px; font-weight:bold; font-size:13px;">Firma del Cliente</div>
-          <div style="font-size:11px; color:#4b5563; margin-top:4px;">${n.cliente_nombre}</div>
-        </div>
-        <div style="width:40%;">
-          <div style="border-top:1px solid #0f2544; padding-top:8px; font-weight:bold; font-size:13px;">Firma de Conformidad</div>
-          <div style="font-size:11px; color:#4b5563; margin-top:4px;">SP Scan Pesado - ${n.atendio || 'Representante'}</div>
-        </div>
+        <div style="width:40%;"><div style="border-top:1px solid #0f2544; padding-top:8px; font-weight:bold; font-size:13px;">Firma del Cliente</div><div style="font-size:11px; color:#4b5563; margin-top:4px;">${n.cliente_nombre}</div></div>
+        <div style="width:40%;"><div style="border-top:1px solid #0f2544; padding-top:8px; font-weight:bold; font-size:13px;">Firma de Conformidad</div><div style="font-size:11px; color:#4b5563; margin-top:4px;">SP Scan Pesado - ${n.atendio || 'Representante'}</div></div>
       </div>
     `;
 
-      // 3. Opciones de PDF
-      const opt = {
-          margin:       10,
-          filename:     `Contrato_${n.folio}.pdf`,
-          image:        { type: 'jpeg', quality: 0.98 },
-          // useCORS: true es obligatorio para que la librería pueda cargar la imagen de tu logo
-          html2canvas:  { scale: 2, useCORS: true },
-          jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-      };
-
-      // 4. Mandamos generar
-      html2pdf().set(opt).from(contenidoPDF).save().then(() => {
-          toast('✅ PDF Descargado exitosamente');
-      }).catch(err => {
-          console.error(err);
-          toast('❌ Error al generar el PDF');
-      });
+    const opt = { margin: 10, filename: `Contrato_${n.folio}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
+    html2pdf().set(opt).from(contenidoPDF).save().then(() => { toast('✅ PDF Descargado exitosamente'); }).catch(err => { toast('❌ Error al generar el PDF'); });
   }
 </script>
 </body>

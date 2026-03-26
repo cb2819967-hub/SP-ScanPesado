@@ -73,9 +73,6 @@
     <div class="tb2">
       <div class="sbox">🔍 <input id="f-buscar" placeholder="Buscar por razón social, RFC o gestor..." oninput="applyFilters()"></div>
       <select class="fsel" id="f-gestor" onchange="applyFilters()">
-        <option value="ALL">Todos los gestores</option>
-        <option value="María González">María González</option>
-        <option value="Ana Solís">Ana Solís</option>
       </select>
       <select class="fsel" id="f-estado" onchange="applyFilters()">
         <option value="ALL">Todos los estados</option>
@@ -103,7 +100,10 @@
     <div class="ff"><label>Correo *</label><input id="n-correo" type="email"></div>
     <div class="ff"><label>Teléfono *</label><input id="n-tel" placeholder="000-000-0000"></div>
     <div class="ff"><label>Tel. Alternativo</label><input id="n-telalt" placeholder="000-000-0000"></div>
-    <div class="ff"><label>Gestor *</label><select id="n-gestor"><option>María González</option><option>Ana Solís</option></select></div>
+    <div class="ff"><label>Gestor *</label>
+      <select id="n-gestor">
+      </select>
+    </div>
   </div>
   <div class="ma">
     <button class="btn btn-outline" onclick="cm('m-cli')">Cancelar</button>
@@ -120,7 +120,10 @@
     <div class="ff"><label>Correo *</label><input id="e-correo" type="email"></div>
     <div class="ff"><label>Teléfono *</label><input id="e-tel"></div>
     <div class="ff"><label>Tel. Alternativo</label><input id="e-telalt"></div>
-    <div class="ff"><label>Gestor *</label><select id="e-gestor"><option>María González</option><option>Ana Solís</option></select></div>
+    <div class="ff"><label>Gestor *</label>
+      <select id="e-gestor">
+      </select>
+    </div>
   </div>
   <div class="ma">
     <button class="btn btn-outline" onclick="cm('m-cli-ed')">Cancelar</button>
@@ -128,18 +131,85 @@
   </div>
 </div></div>
 
+<div id="m-cli-det" class="mo" onclick="mc(event,'m-cli-det')"><div class="md">
+  <div class="mdt">👁️ Detalles del Cliente</div>
+  <div class="fg" style="background: #f8fafc; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0;">
+    <div class="ff fw" style="border-bottom: 2px solid #e2e8f0; padding-bottom: 10px;">
+      <label style="font-size: 12px; color: #64748b; font-weight: bold; text-transform: uppercase;">Razón Social</label>
+      <div id="d-razon" style="font-size: 20px; font-weight: 800; color: #1e3a8a; margin-top: 5px;"></div>
+    </div>
+    <div class="ff">
+      <label style="font-size: 12px; color: #64748b; font-weight: bold; text-transform: uppercase;">RFC</label>
+      <div id="d-rfc" style="font-family: monospace; font-size: 15px; color: #334155; margin-top: 5px;"></div>
+    </div>
+    <div class="ff">
+      <label style="font-size: 12px; color: #64748b; font-weight: bold; text-transform: uppercase;">Estado en el Sistema</label>
+      <div id="d-activo" style="margin-top: 5px;"></div>
+    </div>
+    <div class="ff">
+      <label style="font-size: 12px; color: #64748b; font-weight: bold; text-transform: uppercase;">Correo Electrónico</label>
+      <div id="d-correo" style="font-size: 14px; color: #334155; margin-top: 5px;"></div>
+    </div>
+    <div class="ff">
+      <label style="font-size: 12px; color: #64748b; font-weight: bold; text-transform: uppercase;">Gestor Asignado</label>
+      <div id="d-gestor" style="font-size: 14px; font-weight: 600; color: #0f766e; margin-top: 5px;"></div>
+    </div>
+    <div class="ff">
+      <label style="font-size: 12px; color: #64748b; font-weight: bold; text-transform: uppercase;">Teléfono Principal</label>
+      <div id="d-tel" style="font-size: 14px; color: #334155; margin-top: 5px;"></div>
+    </div>
+    <div class="ff">
+      <label style="font-size: 12px; color: #64748b; font-weight: bold; text-transform: uppercase;">Teléfono Alternativo</label>
+      <div id="d-telalt" style="font-size: 14px; color: #334155; margin-top: 5px;"></div>
+    </div>
+  </div>
+  <div class="ma">
+    <button class="btn btn-blue" onclick="cm('m-cli-det')" style="width: 100%;">Cerrar Detalles</button>
+  </div>
+</div></div>
+
 <script src="/js/api.js"></script>
 <script>
-  let allClientes = []; // Almacenamiento local para filtros rápidos
+  let allClientes = [];
+
+  // 🟢 AQUÍ DEFINES A TUS 4 GESTORES OFICIALES
+  const GESTORES_OFICIALES = [
+    "María González",
+    "Ana Solís",
+    "Carlos Méndez",
+    "Laura Torres"
+  ];
 
   document.addEventListener('DOMContentLoaded', () => {
     const userName = localStorage.getItem('userName') || 'Admin';
     document.getElementById('sb-uname').textContent = userName;
 
+    // Llenar los desplegables de gestores automáticamente
+    cargarSelectoresGestor();
+
     if (typeof apiGetClientes === 'function') {
       loadClientesData();
     }
   });
+
+  // --- FUNCIÓN PARA LLENAR LOS SELECTORES ---
+  function cargarSelectoresGestor() {
+    const fGestor = document.getElementById('f-gestor'); // Filtro
+    const nGestor = document.getElementById('n-gestor'); // Nuevo
+    const eGestor = document.getElementById('e-gestor'); // Editar
+
+    // Limpiamos
+    fGestor.innerHTML = '<option value="ALL">Todos los gestores</option>';
+    nGestor.innerHTML = '';
+    eGestor.innerHTML = '';
+
+    // Recorremos la lista de los 4 gestores y los inyectamos
+    GESTORES_OFICIALES.forEach(gestor => {
+      fGestor.innerHTML += `<option value="${gestor}">${gestor}</option>`;
+      nGestor.innerHTML += `<option value="${gestor}">${gestor}</option>`;
+      eGestor.innerHTML += `<option value="${gestor}">${gestor}</option>`;
+    });
+  }
 
   // Utilidades de UI
   function om(id){document.getElementById(id).classList.add('on');}
@@ -182,17 +252,17 @@
 
         tbody.innerHTML += `
           <tr>
-            <td><strong>${c.razon_social}</strong></td>
+            <td><strong>${c.razon_social || c.razonSocial || '—'}</strong></td>
             <td><code>${c.rfc || '—'}</code></td>
-            <td>${c.correo || '—'}</td>
+            <td>${c.correo || c.email || '—'}</td>
             <td>${c.telefono || '—'}</td>
-            <td>${c.telefono_alternativo || '—'}</td>
+            <td>${c.telefono_alternativo || c.telefonoAlternativo || '—'}</td>
             <td>${c.gestor || '—'}</td>
             <td><span class="b ${actClass}">${actText}</span></td>
             <td><div class="ax">
-              <button class="ab" onclick="toast('Vista detalle no implementada aún')">👁️</button>
+              <button class="ab" onclick="openDetail(${c.id})">👁️</button>
               <button class="ab" onclick="openEdit(${c.id})">✏️</button>
-              <button class="ab" onclick="deleteCliente(${c.id}, '${c.razon_social}')">🗑️</button>
+              <button class="ab" onclick="deleteCliente(${c.id}, '${c.razon_social || c.razonSocial}')">🗑️</button>
             </div></td>
           </tr>
         `;
@@ -209,15 +279,14 @@
     const estado = document.getElementById('f-estado').value;
 
     const filtrados = allClientes.filter(c => {
-      // Filtrar por texto (Razón Social, RFC o Gestor)
-      const matchTxt = (c.razon_social && c.razon_social.toLowerCase().includes(txt)) ||
+      const razon = c.razon_social || c.razonSocial || '';
+
+      const matchTxt = razon.toLowerCase().includes(txt) ||
               (c.rfc && c.rfc.toLowerCase().includes(txt)) ||
               (c.gestor && c.gestor.toLowerCase().includes(txt));
 
-      // Filtrar por Gestor seleccionado
       const matchGestor = (gestor === 'ALL') ? true : (c.gestor === gestor);
 
-      // Filtrar por Estado (Activo / Inactivo)
       let matchEstado = true;
       if (estado === 'true') matchEstado = (c.activo === true);
       if (estado === 'false') matchEstado = (c.activo === false);
@@ -225,12 +294,11 @@
       return matchTxt && matchGestor && matchEstado;
     });
 
-    renderTable(filtrados); // Redibuja solo con los resultados del filtro
+    renderTable(filtrados);
   }
 
   // --- 3. ACCIONES DE GUARDADO, EDICIÓN Y BORRADO ---
 
-  // Crear Cliente
   async function saveCliente() {
     const razon = document.getElementById('n-razon').value;
     const rfc = document.getElementById('n-rfc').value;
@@ -264,24 +332,46 @@
     }
   }
 
-  // Abrir modal de edición
+  // Función nueva para abrir el Modal de Detalles 👁️
+  function openDetail(id) {
+    const cliente = allClientes.find(c => c.id === id);
+    if (!cliente) return;
+
+    document.getElementById('d-razon').textContent = cliente.razon_social || cliente.razonSocial || '—';
+    document.getElementById('d-rfc').textContent = cliente.rfc || '—';
+    document.getElementById('d-correo').textContent = cliente.correo || cliente.email || '—';
+    document.getElementById('d-tel').textContent = cliente.telefono || '—';
+    document.getElementById('d-telalt').textContent = cliente.telefono_alternativo || cliente.telefonoAlternativo || '—';
+    document.getElementById('d-gestor').textContent = cliente.gestor || '—';
+
+    // Formato bonito para el badge de Activo/Inactivo
+    const isActivo = cliente.activo !== false;
+    document.getElementById('d-activo').innerHTML = isActivo
+            ? '<span class="b bg" style="font-size: 13px;">✔ Activo</span>'
+            : '<span class="b br" style="font-size: 13px;">✘ Inactivo</span>';
+
+    om('m-cli-det');
+  }
+
   function openEdit(id) {
     const cliente = allClientes.find(c => c.id === id);
     if (!cliente) return;
 
     document.getElementById('e-id').value = cliente.id;
-    document.getElementById('e-razon').value = cliente.razon_social || '';
+    document.getElementById('e-razon').value = cliente.razon_social || cliente.razonSocial || '';
     document.getElementById('e-rfc').value = cliente.rfc || '';
-    document.getElementById('e-correo').value = cliente.correo || '';
+    document.getElementById('e-correo').value = cliente.correo || cliente.email || '';
     document.getElementById('e-tel').value = cliente.telefono || '';
-    document.getElementById('e-telalt').value = cliente.telefono_alternativo || '';
-    document.getElementById('e-gestor').value = cliente.gestor || 'María González';
+    document.getElementById('e-telalt').value = cliente.telefono_alternativo || cliente.telefonoAlternativo || '';
+
+    const gestorActual = GESTORES_OFICIALES.includes(cliente.gestor) ? cliente.gestor : GESTORES_OFICIALES[0];
+    document.getElementById('e-gestor').value = gestorActual;
+
     document.getElementById('e-activo').value = cliente.activo ? 'true' : 'false';
 
     om('m-cli-ed');
   }
 
-  // Actualizar Cliente
   async function updateCliente() {
     const id = document.getElementById('e-id').value;
 
@@ -304,7 +394,6 @@
     }
   }
 
-  // Borrar Cliente (Borrado lógico)
   async function deleteCliente(id, nombre) {
     if(confirm(`⚠️ ¿Estás seguro de que deseas desactivar a la empresa:\n${nombre}?`)) {
       try {

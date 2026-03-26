@@ -27,11 +27,13 @@ public class VehiculoController {
                     map.put("serie", v.getSerie());
                     map.put("tipo", v.getTipo() != null ? v.getTipo() : "N/A");
 
-                    // Mapeo del cliente
+                    // 🟢 Mapeo del cliente (ID y Nombre)
                     map.put("cliente_id", v.getCliente() != null ? v.getCliente().getId() : null);
+                    map.put("cliente_nombre", v.getCliente() != null ? v.getCliente().getRazonSocial() : "N/A");
 
-                    // Mapeo del CEDIS (Como es un Long directo, lo pasamos tal cual)
-                    map.put("cedis_id", v.getIdCedis());
+                    // 🟢 Mapeo del CEDIS corregido (ID y Nombre)
+                    map.put("cedis_id", v.getCedis() != null ? v.getCedis().getId() : null);
+                    map.put("cedis_nombre", v.getCedis() != null ? v.getCedis().getNombre() : "N/A");
 
                     map.put("activo", v.getActivo());
                     return map;

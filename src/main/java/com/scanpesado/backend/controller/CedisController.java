@@ -32,6 +32,7 @@ public class CedisController {
                     // Mapeo de IDs para poder editar en el modal
                     map.put("cliente_id", c.getCliente() != null ? c.getCliente().getId() : null);
                     map.put("region_id", c.getRegion() != null ? c.getRegion().getId() : null);
+                    map.put("region_nombre", c.getRegion() != null ? c.getRegion().getNombreRegion() : "N/A");
 
                     map.put("direccion", c.getDireccion() != null ? c.getDireccion() : "");
                     map.put("encargado", c.getEncargado() != null ? c.getEncargado() : "N/A");

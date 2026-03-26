@@ -23,7 +23,12 @@ public class VerificacionController {
                 .map(v -> {
                     Map<String, Object> map = new HashMap<>();
                     map.put("id", v.getId());
-                    map.put("id_nota", v.getIdNota() != null ? v.getIdNota() : "N/A");
+
+                    // 🟢 CORRECCIÓN: Extraer el ID desde el objeto Nota
+                    map.put("id_nota", v.getNota() != null ? v.getNota().getId() : "N/A");
+                    // 💡 De paso, enviamos el folio de la nota que siempre es útil en el frontend
+                    map.put("nota_folio", v.getNota() != null ? v.getNota().getFolio() : "N/A");
+
                     map.put("vehiculo_id", v.getVehiculo() != null ? v.getVehiculo().getId() : null);
                     map.put("unidad", v.getVehiculo() != null ? v.getVehiculo().getPlaca() : "N/A");
                     map.put("materia", v.getMateria() != null ? v.getMateria().name() : "N/A");

@@ -1,15 +1,25 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard - SP Scan Pesado</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link href="/css/styles.css" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - SP Scan Pesado</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="/css/styles.css" rel="stylesheet">
+  <style>
+    /* Efecto para hacer las tarjetas clickables */
+    .clickable-card {
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .clickable-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+  </style>
 </head>
 <body>
 
-<!-- ════════ SIDEBAR ════════ -->
 <nav id="sb">
   <div class="sb-hd">
     <div class="sb-logo"></div>
@@ -22,7 +32,6 @@
   </div>
 
   <div class="sb-scroll">
-    <!-- ADMIN MENU -->
     <div id="menu-admin">
       <div class="grp">General</div>
       <div class="ni on" onclick="window.location.href='/dashboard.html'"><span class="ni-ic">📊</span><span class="ni-lb">Dashboard</span></div>
@@ -61,113 +70,123 @@
   </div>
 </nav>
 
-<!-- ════════ MAIN ════════ -->
 <div id="mn">
-<div class="topbar no-print">
-  <div class="tb-title" id="tbt">Dashboard</div>
-  <span class="tb-role tb-admin" id="role-badge">ADMIN</span>
-  <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
-    <button class="role-btn no-print" onclick="window.location.href='/tec-unidades.html'" id="role-switch-btn">Cambiar a Técnico →</button>
-  </div>
-</div>
-
-<!-- ══ DASHBOARD ══ -->
-<div class="pc">
-  <div class="sh"><div class="st">Dashboard</div><div class="ss">Resumen general del sistema</div></div>
-  <div class="sr c4">
-    <div class="sc"><div class="si2">🏢</div><div><div class="sn" id="stat-clientes">0</div><div class="sl">Clientes</div></div></div>
-    <div class="sc g"><div class="si2">🚛</div><div><div class="sn" id="stat-vehiculos">0</div><div class="sl">Unidades</div></div></div>
-    <div class="sc o"><div class="si2">📋</div><div><div class="sn" id="stat-notas">0</div><div class="sl">Notas Activas</div></div></div>
-    <div class="sc p"><div class="si2">🔍</div><div><div class="sn" id="stat-verificaciones">0</div><div class="sl">Evaluaciones</div></div></div>
-  </div>
-  <div class="dg">
-    <div class="pn">
-      <div class="pnt">Inspecciones Recientes</div><div class="pns">Últimas inspecciones</div>
-      <table><thead><tr><th>Folio</th><th>Unidad</th><th>Técnico</th><th>Fecha</th><th>Resultado</th></tr></thead>
-      <tbody id="tb-verificaciones">
-        <tr><td colspan="5" style="text-align:center">Cargando datos...</td></tr>
-      </tbody></table>
+  <div class="topbar no-print">
+    <div class="tb-title" id="tbt">Dashboard</div>
+    <span class="tb-role tb-admin" id="role-badge">ADMIN</span>
+    <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+      <button class="role-btn no-print" onclick="window.location.href='/tec-unidades.html'" id="role-switch-btn">Cambiar a Técnico →</button>
     </div>
-    <div class="pn" style="text-align:center">
-      <div class="pnt">Tasa de Aprobación</div><div class="pns">Verificaciones del período</div>
-      <div class="dw">
-        <svg width="100" height="100" viewBox="0 0 100 100">
-          <circle cx="50" cy="50" r="40" fill="none" stroke="#e5e7eb" stroke-width="13"/>
-          <circle cx="50" cy="50" r="40" fill="none" stroke="#16a34a" stroke-width="13" stroke-dasharray="150 251" stroke-linecap="round"/>
-        </svg>
-        <div class="dl">60%</div>
+  </div>
+
+  <div class="pc">
+    <div class="sh"><div class="st">Dashboard</div><div class="ss">Resumen general del sistema</div></div>
+
+    <div class="sr c4">
+      <div class="sc clickable-card" onclick="window.location.href='/clientes.html'"><div class="si2">🏢</div><div><div class="sn" id="stat-clientes">0</div><div class="sl">Clientes</div></div></div>
+      <div class="sc g clickable-card" onclick="window.location.href='/vehiculos.html'"><div class="si2">🚛</div><div><div class="sn" id="stat-vehiculos">0</div><div class="sl">Unidades</div></div></div>
+      <div class="sc o clickable-card" onclick="window.location.href='/notas.html'"><div class="si2">📋</div><div><div class="sn" id="stat-notas">0</div><div class="sl">Notas Activas</div></div></div>
+      <div class="sc p clickable-card" onclick="window.location.href='/verificacion.html'"><div class="si2">🔍</div><div><div class="sn" id="stat-verificaciones">0</div><div class="sl">Evaluaciones</div></div></div>
+    </div>
+
+    <div class="dg">
+      <div class="pn">
+        <div class="pnt">Inspecciones Recientes</div><div class="pns">Últimas inspecciones</div>
+        <table><thead><tr><th>Folio</th><th>Unidad</th><th>Técnico</th><th>Fecha</th><th>Resultado</th></tr></thead>
+          <tbody id="tb-verificaciones">
+          <tr><td colspan="5" style="text-align:center">Cargando datos...</td></tr>
+          </tbody></table>
       </div>
-      <div class="ar"><span>✅ Aprobadas</span><strong>6</strong></div>
-      <div class="ar"><span>❌ Reprobadas</span><strong>3</strong></div>
-      <div class="ar"><span>⏳ Pendientes</span><strong>1</strong></div>
+      <div class="pn" style="text-align:center">
+        <div class="pnt">Tasa de Aprobación</div><div class="pns">Verificaciones del período</div>
+        <div class="dw">
+          <svg width="100" height="100" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="40" fill="none" stroke="#e5e7eb" stroke-width="13"/>
+            <circle id="chart-circle" cx="50" cy="50" r="40" fill="none" stroke="#16a34a" stroke-width="13" stroke-dasharray="0 251.32" stroke-linecap="round" style="transition: stroke-dasharray 1s ease-out;"/>
+          </svg>
+          <div class="dl" id="chart-percent">0%</div>
+        </div>
+        <div class="ar"><span>✅ Aprobadas</span><strong id="chart-aprobadas">0</strong></div>
+        <div class="ar"><span>❌ Reprobadas</span><strong id="chart-reprobadas">0</strong></div>
+        <div class="ar"><span>⏳ Pendientes</span><strong id="chart-pendientes">0</strong></div>
+      </div>
     </div>
+
+    <div class="sh" style="margin-top: 30px;"><div class="st">Vistas Avanzadas</div><div class="ss">Reportes consolidados y acciones masivas</div></div>
+    <div class="sr c3">
+      <div class="sc g clickable-card" onclick="window.location.href='/vehiculos.html'"><div class="si2">🚚</div><div><div class="sn">Vehiculos</div><div class="sl">Historial por Unidad</div></div></div>
+      <div class="sc o clickable-card" onclick="window.location.href='/transacciones.html'"><div class="si2">📑</div><div><div class="sn">Transacciones</div><div class="sl">Resumen de Verificaciones</div></div></div>
+      <div class="sc p clickable-card" onclick="window.location.href='/notas.html'"><div class="si2">📊</div><div><div class="sn">Notas</div><div class="sl">Resumen General de Notas</div></div></div>
+    </div>
+
   </div>
-</div>
 
-</div><!-- /#mn -->
+</div><div id="toast"></div>
 
-<div id="toast"></div>
-
-<!-- ════════════════════════════════════
-     SCRIPTS
-════════════════════════════════════ -->
 <script src="/js/api.js"></script>
 <script>
   // Inicialización básica
   document.addEventListener('DOMContentLoaded', () => {
-    // Restaurar usuario
     const userName = localStorage.getItem('userName') || 'Admin';
     document.getElementById('sb-uname').textContent = userName;
 
-    // Cargar datos reales si la API está disponible
     if (typeof apiGetStats === 'function') {
       loadDashboardData();
     }
   });
 
-  // Función para manejar el sidebar
-  function togSb(){
-    document.getElementById('sb').classList.toggle('col');
-    document.getElementById('mn').classList.toggle('col');
-  }
-
-  // Toast
+  function togSb(){ document.getElementById('sb').classList.toggle('col'); document.getElementById('mn').classList.toggle('col'); }
   function toast(msg){
-    const t=document.getElementById('toast');
-    t.textContent=msg;
-    t.style.display='block';
-    clearTimeout(t._t);
-    t._t=setTimeout(()=>t.style.display='none',2800);
+    const t=document.getElementById('toast'); t.textContent=msg; t.style.display='block';
+    clearTimeout(t._t); t._t=setTimeout(()=>t.style.display='none',2800);
   }
-
-  // Logout visibility
-  function toggleLogout() {
-    const btn = document.getElementById('btn-logout');
-    btn.style.display = btn.style.display === 'none' ? 'block' : 'none';
-  }
-
-  // Ejecutar Logout
-  function logout() {
-    localStorage.removeItem('userRole');
-    localStorage.removeItem('userName');
-    window.location.href = '/login.html';
-  }
+  function toggleLogout() { const btn = document.getElementById('btn-logout'); btn.style.display = btn.style.display === 'none' ? 'block' : 'none'; }
+  function logout() { localStorage.removeItem('userRole'); localStorage.removeItem('userName'); window.location.href = '/login.html'; }
 
   async function loadDashboardData() {
     try {
       const stats = await apiGetStats();
+
+      // Llenar tarjetas superiores
       document.getElementById('stat-clientes').textContent = stats.clientes || 0;
       document.getElementById('stat-vehiculos').textContent = stats.vehiculos || 0;
       document.getElementById('stat-notas').textContent = stats.notas || 0;
       document.getElementById('stat-verificaciones').textContent = stats.verificaciones || 0;
 
+      // === LÓGICA DE LA GRÁFICA DINÁMICA ===
+      const ap = stats.aprobadas || 0;
+      const rep = stats.reprobadas || 0;
+      const pen = stats.pendientes || 0;
+      const total = ap + rep + pen;
+
+      document.getElementById('chart-aprobadas').textContent = ap;
+      document.getElementById('chart-reprobadas').textContent = rep;
+      document.getElementById('chart-pendientes').textContent = pen;
+
+      let pct = 0;
+      if (total > 0) {
+        pct = Math.round((ap / total) * 100);
+      }
+
+      document.getElementById('chart-percent').textContent = pct + '%';
+
+      // La circunferencia de un círculo con r=40 es ~251.32.
+      // Calculamos qué pedazo de esos 251.32 le toca al porcentaje de aprobados.
+      const dashValue = (pct / 100) * 251.32;
+
+      // Animar el trazo de la gráfica
+      setTimeout(() => {
+        document.getElementById('chart-circle').setAttribute('stroke-dasharray', `${dashValue} 251.32`);
+      }, 100);
+
+
+      // Llenar tabla de recientes
       const verificaciones = await apiGetVerificaciones();
       const tbody = document.getElementById('tb-verificaciones');
       if (tbody && verificaciones.length > 0) {
         tbody.innerHTML = '';
         verificaciones.slice(0, 5).forEach(v => {
-          let badgeClass = 'bg';
-          let icon = '✔';
+          let badgeClass = 'bg'; let icon = '✔';
           if (v.resultado === 'REPROBADO') { badgeClass = 'br'; icon = '✘'; }
           else if (v.resultado === 'PENDIENTE') { badgeClass = 'bo'; icon = '⏳'; }
 

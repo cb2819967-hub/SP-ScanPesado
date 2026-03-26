@@ -16,6 +16,9 @@ public class Nota {
     @Column(nullable = false, unique = true)
     private String folio;
 
+    @Column(name = "fecha_creacion")
+    private java.time.LocalDate fechaCreacion;
+
     @ManyToOne
     @JoinColumn(name = "id_cliente")
     private Cliente cliente;

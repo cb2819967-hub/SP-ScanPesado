@@ -513,14 +513,9 @@ async function apiDeleteVerificentro(id) {
  * @returns {Promise<{clientes, vehiculos, notas, verificaciones}>}
  */
 async function apiGetStats() {
-    try {
-        const res = await fetch(`${API_BASE}/stats`);
-        if (!res.ok) throw new Error('Error al obtener estadísticas');
-        return await res.json();
-    } catch (err) {
-        console.error('❌ Error en apiGetStats:', err.message);
-        return { clientes: 0, vehiculos: 0, notas: 0, verificaciones: 0 };
-    }
+    const response = await fetch('/api/stats');
+    if (!response.ok) throw new Error('Error al obtener estadísticas');
+    return await response.json();
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -618,4 +613,117 @@ async function apiDeleteNota(id) {
         console.error('❌ Error en apiDeleteNota:', err.message);
         throw err;
     }
+}
+
+//Pagar varios
+async function apiMarkNotasPaid(ids) {
+    await fetch(`${API_BASE}/notas/pagar-masivo`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(ids)
+    });
+}
+//Elimina varios
+async function apiDeleteNotasMasivo(ids) {
+    await fetch(`${API_BASE}/notas/eliminar-masivo`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(ids)
+    });
+}
+
+// ════════════════════════════════════════════════════════════════
+// COSTOS
+// ════════════════════════════════════════════════════════════════
+
+async function apiGetCostos() {
+    try {
+        const res = await fetch(`${API_BASE}/costos`);
+        if (!res.ok) throw new Error('Error al obtener costos');
+        return await res.json();
+    } catch (err) { console.error('❌ Error en apiGetCostos:', err.message); return []; }
+}
+
+async function apiCreateCosto(costo) {
+    try {
+        const res = await fetch(`${API_BASE}/costos`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(costo)
+        });
+        if (!res.ok) throw new Error('Error al crear costo');
+        return await res.json();
+    } catch (err) { throw err; }
+}
+
+async function apiUpdateCosto(id, costo) {
+    try {
+        const res = await fetch(`${API_BASE}/costos/${id}`, {
+            method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(costo)
+        });
+        if (!res.ok) throw new Error('Error al actualizar costo');
+        return await res.json();
+    } catch (err) { throw err; }
+}
+
+async function apiDeleteCosto(id) {
+    try {
+        const res = await fetch(`${API_BASE}/costos/${id}`, { method: 'DELETE' });
+        if (!res.ok) throw new Error('Error al eliminar costo');
+    } catch (err) { throw err; }
+}
+
+// ════════════════════════════════════════════════════════════════
+// TRANSACCIONES
+// ════════════════════════════════════════════════════════════════
+async function apiGetTransacciones() {
+    const res = await fetch(`${API_BASE}/transacciones`);
+    return await res.json();
+}
+async function apiCreateTransaccion(t) {
+    const res = await fetch(`${API_BASE}/transacciones`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(t) });
+    return await res.json();
+}
+// ACCIONES MASIVAS
+async function apiMarkTransaccionesPaid(ids) {
+    await fetch(`${API_BASE}/transacciones/pagar-masivo`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(ids) });
+}
+async function apiDeleteTransacciones(ids) {
+    await fetch(`${API_BASE}/transacciones/eliminar-masivo`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(ids) });
+}
+
+
+// --- PEDIDOS (ENVÍOS) ---
+async function apiGetPedidos() {
+    const r = await fetch(`${API_BASE}/pedidos`);
+    return r.json();
+}
+async function apiCreatePedido(data) {
+    const r = await fetch(`${API_BASE}/pedidos`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)
+    });
+    if (!r.ok) throw new Error('Error al crear pedido');
+    return r.json();
+}
+async function apiUpdatePedido(id, data) {
+    const r = await fetch(`${API_BASE}/pedidos/${id}`, {
+        method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)
+    });
+    if (!r.ok) throw new Error('Error al actualizar pedido');
+    return r.json();
+}
+async function apiDeletePedido(id) {
+    const r = await fetch(`${API_BASE}/pedidos/${id}`, { method: 'DELETE' });
+    if (!r.ok) throw new Error('Error al eliminar pedido');
+}
+async function apiDeletePedidosMasivo(ids) {
+    const r = await fetch(`${API_BASE}/pedidos/eliminar-masivo`, {
+        method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(ids)
+    });
+    if (!r.ok) throw new Error('Error al eliminar pedidos masivamente');
+}
+
+// --- REPORTES ---
+async function apiGetReportes() {
+    const r = await fetch(`${API_BASE}/reportes`);
+    if (!r.ok) throw new Error('Error al cargar reportes');
+    return r.json();
 }

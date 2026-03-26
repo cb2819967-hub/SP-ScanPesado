@@ -3,9 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vehículos - SP Scan Pesado</title>
+  <title>Vehículos (Vista 1) - SP Scan Pesado</title>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link href="/css/styles.css" rel="stylesheet">
+  <style>
+    /* Estilos para la sub-tabla de historial (Vista 1) */
+    .historial-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; background: #f8fafc; border-radius: 6px; overflow: hidden; border: 1px solid #e2e8f0; }
+    .historial-table th { background: #e2e8f0; color: #475569; padding: 8px 12px; text-align: left; font-weight: 600; text-transform: uppercase; font-size: 10px; }
+    .historial-table td { padding: 8px 12px; border-bottom: 1px solid #e2e8f0; color: #334155; }
+    .historial-table tr:last-child td { border-bottom: none; }
+    .historial-table tr:hover td { background-color: #f1f5f9; }
+
+    /* Pequeño badge para el estatus en el historial */
+    .h-badge { padding: 2px 6px; border-radius: 4px; font-weight: 600; font-size: 10px; }
+    .h-ap { background: #dcfce7; color: #16a34a; }
+    .h-rep { background: #fee2e2; color: #dc2626; }
+    .h-pen { background: #fef3c7; color: #d97706; }
+  </style>
 </head>
 <body>
 
@@ -13,11 +27,8 @@
   <div class="sb-hd">
     <div class="sb-logo"></div>
     <div class="sb-brand">SP Scan<br>Pesado</div>
-    <button class="sb-tog" onclick="togSb()">
-      <span></span><span></span><span></span>
-    </button>
+    <button class="sb-tog" onclick="togSb()"><span></span><span></span><span></span></button>
   </div>
-
   <div class="sb-scroll">
     <div id="menu-admin">
       <div class="grp">General</div>
@@ -54,7 +65,7 @@
 
 <div id="mn">
   <div class="topbar no-print">
-    <div class="tb-title" id="tbt">Vehículos</div>
+    <div class="tb-title" id="tbt">Vehículos (Vista 1)</div>
     <span class="tb-role tb-admin" id="role-badge">ADMIN</span>
     <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
       <button class="role-btn no-print" onclick="window.location.href='/tec-unidades.html'" id="role-switch-btn">Cambiar a Técnico →</button>
@@ -62,7 +73,7 @@
   </div>
 
   <div class="pc">
-    <div class="sh"><div class="st">Vehículos</div><div class="ss">Flota registrada — Historial de evaluaciones por unidad</div></div>
+    <div class="sh"><div class="st">Flota Vehicular y Expedientes</div><div class="ss">Vista 1: Detalles de la unidad e historial de evaluaciones completas</div></div>
     <div class="tb2">
       <div class="sbox">🔍 <input id="f-buscar" placeholder="Buscar por placa o serie..." oninput="applyFilters()"></div>
       <select class="fsel" id="f-cliente" onchange="applyFilters()"><option value="ALL">Todos los clientes</option></select>
@@ -75,9 +86,9 @@
       <button class="btn btn-blue" onclick="om('m-veh')">+ Nueva unidad</button>
     </div>
     <div class="tc"><table>
-      <thead><tr><th>Placa</th><th>Serie</th><th>CEDIS</th><th>Cliente</th><th>Tipo</th><th>Activo</th><th>Historial</th><th>Acc.</th></tr></thead>
+      <thead><tr><th>Placa</th><th>Serie</th><th>CEDIS</th><th>Región</th><th>Cliente</th><th>Tipo</th><th>Activo</th><th>Historial</th><th>Acc.</th></tr></thead>
       <tbody id="tb-vehiculos">
-      <tr><td colspan="8" style="text-align:center">Cargando datos...</td></tr>
+      <tr><td colspan="9" style="text-align:center">Cargando datos...</td></tr>
       </tbody>
     </table></div>
   </div>
@@ -91,9 +102,7 @@
     <div class="ff"><label>Placa *</label><input id="n-placa" placeholder="AAA-00-A" style="text-transform:uppercase"></div>
     <div class="ff"><label>Número de Serie *</label><input id="n-serie" placeholder="1FUJGLDR5KS..." style="text-transform:uppercase"></div>
     <div class="ff"><label>Tipo *</label>
-      <select id="n-tipo">
-        <option value="Camión Rabón (4x2)">Camión Rabón (4x2)</option>
-      </select>
+      <select id="n-tipo"><option value="Camión Rabón (4x2) Doble Rodada Trasera">Camión Rabón (4x2) Doble Rodada Trasera</option></select>
     </div>
     <div class="ff"><label>Cliente *</label><select id="n-cliente"></select></div>
     <div class="ff"><label>CEDIS *</label><select id="n-cedis"></select></div>
@@ -108,9 +117,7 @@
     <div class="ff"><label>Placa *</label><input id="e-placa" style="text-transform:uppercase"></div>
     <div class="ff"><label>Número de Serie *</label><input id="e-serie" style="text-transform:uppercase"></div>
     <div class="ff"><label>Tipo *</label>
-      <select id="e-tipo">
-        <option value="Camión Rabón (4x2)">Camión Rabón (4x2)</option>
-      </select>
+      <select id="e-tipo"><option value="Camión Rabón (4x2) Doble Rodada Trasera">Camión Rabón (4x2) Doble Rodada Trasera</option></select>
     </div>
     <div class="ff"><label>Cliente *</label><select id="e-cliente"></select></div>
     <div class="ff"><label>CEDIS *</label><select id="e-cedis"></select></div>
@@ -126,21 +133,68 @@
   let allVehiculos = [];
   let allClientes = [];
   let allCedis = [];
+  let allVerificaciones = []; // Almacenará el historial global temporalmente
 
   document.addEventListener('DOMContentLoaded', async () => {
     const userName = localStorage.getItem('userName') || 'Admin';
     document.getElementById('sb-uname').textContent = userName;
 
-    // Cargamos catálogos de dependencias antes de cargar los vehículos
     await loadDependencies();
     if (typeof apiGetVehiculos === 'function') loadVehiculosData();
   });
 
-  // Utilidades UI
   function om(id){document.getElementById(id).classList.add('on');}
   function cm(id){document.getElementById(id).classList.remove('on');}
   function mc(e,id){if(e.target.id===id)cm(id);}
-  function th(id){document.getElementById('hr-'+id).classList.toggle('on');}
+
+  // 🟢 MAGIA DE LA VISTA 1: Desplegar Historial y cargar datos dinámicamente
+  async function th(id, vehiculoId){
+    const row = document.getElementById('hr-'+id);
+    const isOpening = !row.classList.contains('on');
+    row.classList.toggle('on');
+
+    if(isOpening) {
+      const tbodyId = `hist-body-${vehiculoId}`;
+      const tbody = document.getElementById(tbodyId);
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center">⏳ Consultando expediente...</td></tr>';
+
+      try {
+        // En un escenario ideal, tendrías un endpoint /api/verificaciones/vehiculo/{id}
+        // Como no lo tenemos, traemos todas y filtramos aquí (rápido para prototipos)
+        if(allVerificaciones.length === 0) {
+          allVerificaciones = await apiGetVerificaciones();
+        }
+
+        const historial = allVerificaciones.filter(v => v.vehiculo_id === vehiculoId);
+
+        if(historial.length > 0) {
+          tbody.innerHTML = '';
+          historial.forEach(h => {
+            let badge = 'h-pen';
+            if(h.resultado === 'APROBADO') badge = 'h-ap';
+            if(h.resultado === 'REPROBADO') badge = 'h-rep';
+
+            tbody.innerHTML += `
+              <tr>
+                <td><strong>${h.folio || 'N/A'}</strong></td>
+                <td><span style="color:var(--blue)">${h.nota_folio || 'S/N'}</span></td>
+                <td>${h.fecha || 'N/A'}</td>
+                <td>${h.materia || 'N/A'}</td>
+                <td><span class="h-badge ${badge}">${h.resultado}</span></td>
+                <td>${h.tecnico || 'Por asignar'}</td>
+                <td><button class="btn btn-blue btn-sm" onclick="window.location.href='/verificacion.html'" style="padding: 2px 8px; font-size:10px;">✏️ Editar Eval.</button></td>
+              </tr>
+            `;
+          });
+        } else {
+          tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--g500)">No hay evaluaciones registradas para esta unidad.</td></tr>';
+        }
+      } catch(e) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:red">Error cargando historial</td></tr>';
+      }
+    }
+  }
+
   function togSb(){ document.getElementById('sb').classList.toggle('col'); document.getElementById('mn').classList.toggle('col'); }
   function toast(msg){
     const t=document.getElementById('toast');
@@ -156,7 +210,6 @@
     window.location.href = '/login.html';
   }
 
-  // --- 1. CARGAR DEPENDENCIAS (Clientes y CEDIS) ---
   async function loadDependencies() {
     try {
       allClientes = await apiGetClientes();
@@ -170,7 +223,6 @@
       const nCed = document.getElementById('n-cedis');
       const eCed = document.getElementById('e-cedis');
 
-      // Llenar Clientes
       allClientes.forEach(c => {
         if(c.activo) {
           nCli.innerHTML += `<option value="${c.id}">${c.razon_social}</option>`;
@@ -179,7 +231,6 @@
         fCli.innerHTML += `<option value="${c.id}">${c.razon_social}</option>`;
       });
 
-      // Llenar CEDIS
       allCedis.forEach(ced => {
         if(ced.activo) {
           nCed.innerHTML += `<option value="${ced.id}">${ced.nombre}</option>`;
@@ -188,32 +239,27 @@
         fCed.innerHTML += `<option value="${ced.id}">${ced.nombre}</option>`;
       });
 
-    } catch (e) {
-      console.error('Error cargando catálogos de soporte', e);
-    }
+    } catch (e) { console.error('Error cargando catálogos de soporte', e); }
   }
 
-  // Helper para buscar nombre de CEDIS desde su ID
-  function getCedisName(idCedis) {
-    if (!idCedis) return '—';
+  function getCedisData(idCedis) {
+    if (!idCedis) return { nombre: '—', region: '—' };
     const c = allCedis.find(x => x.id === idCedis);
-    return c ? c.nombre : '—';
+    return c ? { nombre: c.nombre, region: c.region_nombre || '—' } : { nombre: '—', region: '—' };
   }
 
-  // Helper para buscar nombre de Cliente desde su ID
   function getClienteName(idCliente) {
     if (!idCliente) return '—';
     const c = allClientes.find(x => x.id === idCliente);
     return c ? c.razon_social : '—';
   }
 
-  // --- 2. CARGAR Y DIBUJAR TABLA ---
   async function loadVehiculosData() {
     try {
       allVehiculos = await apiGetVehiculos();
       renderTable(allVehiculos);
     } catch(e) {
-      document.getElementById('tb-vehiculos').innerHTML = '<tr><td colspan="8" style="text-align:center;color:red">Error cargando datos</td></tr>';
+      document.getElementById('tb-vehiculos').innerHTML = '<tr><td colspan="9" style="text-align:center;color:red">Error cargando datos</td></tr>';
     }
   }
 
@@ -226,37 +272,41 @@
         const actClass = isActivo ? 'bg' : 'br';
         const actText = isActivo ? '✔ Sí' : '✘ No';
 
-        // Cruzamos datos usando los helpers
-        const nombreCedis = getCedisName(v.cedis_id);
+        const cedisInfo = getCedisData(v.cedis_id);
         const nombreCliente = getClienteName(v.cliente_id);
 
         tbody.innerHTML += `
           <tr>
             <td><strong>${v.placa}</strong></td>
             <td style="font-size:11px;color:var(--g400)">${v.serie}</td>
-            <td>${nombreCedis}</td>
-            <td><span class="b bb">${nombreCliente}</span></td>
-            <td>${v.tipo}</td>
+            <td>${cedisInfo.nombre}</td>
+            <td><span class="b bb">${cedisInfo.region}</span></td>
+            <td>${nombreCliente}</td>
+            <td style="font-size:11px;">${v.tipo}</td>
             <td><span class="b ${actClass}">${actText}</span></td>
-            <td><button class="btn btn-outline btn-sm" onclick="th('h${v.id}')">📋 Historial</button></td>
+            <td><button class="btn btn-outline btn-sm" onclick="th('h${v.id}', ${v.id})">📋 Expediente</button></td>
             <td><div class="ax">
-              <button class="ab" onclick="openEdit(${v.id})">✏️</button>
-              <button class="ab" onclick="deleteVehiculo(${v.id}, '${v.placa}')">🗑️</button>
+              <button class="ab" onclick="openEdit(${v.id})" title="Editar Unidad">✏️</button>
+              <button class="ab" onclick="deleteVehiculo(${v.id}, '${v.placa}')" title="Dar de baja">🗑️</button>
             </div></td>
           </tr>
-          <tr class="hrow" id="hr-h${v.id}"><td colspan="8" style="padding:0">
-            <div class="hp"><div class="ht">📋 Historial — ${v.placa}</div>
-              <table style="font-size:12px"><thead><tr><th style="color:var(--g400);text-align:center">Historial no implementado aún en API</th></tr></thead><tbody></tbody></table>
+
+          <tr class="hrow" id="hr-h${v.id}"><td colspan="9" style="padding:0">
+            <div class="hp">
+              <div class="ht">Expediente de Evaluaciones — Unidad: ${v.placa}</div>
+              <table class="historial-table">
+                <thead><tr><th>Folio Eval.</th><th>Nota Relacionada</th><th>Fecha</th><th>Materia</th><th>Dictamen</th><th>Técnico</th><th>Acción</th></tr></thead>
+                <tbody id="hist-body-${v.id}"></tbody>
+              </table>
             </div>
           </td></tr>
         `;
       });
     } else {
-      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center">No se encontraron vehículos</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="9" style="text-align:center">No se encontraron vehículos</td></tr>';
     }
   }
 
-  // --- 3. FILTROS ---
   function applyFilters() {
     const txt = document.getElementById('f-buscar').value.toLowerCase();
     const fClienteId = document.getElementById('f-cliente').value;
@@ -264,12 +314,9 @@
     const fEstado = document.getElementById('f-estado').value;
 
     const filtrados = allVehiculos.filter(v => {
-      const matchTxt = (v.placa && v.placa.toLowerCase().includes(txt)) ||
-              (v.serie && v.serie.toLowerCase().includes(txt));
-
+      const matchTxt = (v.placa && v.placa.toLowerCase().includes(txt)) || (v.serie && v.serie.toLowerCase().includes(txt));
       const matchCliente = (fClienteId === 'ALL') ? true : (v.cliente_id == fClienteId);
       const matchCedis = (fCedisId === 'ALL') ? true : (v.cedis_id == fCedisId);
-
       let matchEstado = true;
       if (fEstado === 'true') matchEstado = (v.activo === true);
       if (fEstado === 'false') matchEstado = (v.activo === false);
@@ -280,7 +327,6 @@
     renderTable(filtrados);
   }
 
-  // --- 4. CRUD ---
   async function saveVehiculo() {
     const placa = document.getElementById('n-placa').value.toUpperCase();
     const serie = document.getElementById('n-serie').value.toUpperCase();
@@ -288,19 +334,9 @@
     const clienteId = document.getElementById('n-cliente').value;
     const cedisId = document.getElementById('n-cedis').value;
 
-    if (!placa || !serie || !clienteId || !cedisId) {
-      toast('⚠️ Placa, Serie, Cliente y CEDIS son obligatorios');
-      return;
-    }
+    if (!placa || !serie || !clienteId || !cedisId) return toast('⚠️ Placa, Serie, Cliente y CEDIS son obligatorios');
 
-    const payload = {
-      placa: placa,
-      serie: serie,
-      tipo: tipo,
-      cliente: { id: parseInt(clienteId) },
-      idCedis: parseInt(cedisId),  // Atributo simplificado según tu Modelo Java
-      activo: true
-    };
+    const payload = { placa: placa, serie: serie, tipo: tipo, cliente: { id: parseInt(clienteId) }, cedis: { id: parseInt(cedisId) }, activo: true };
 
     try {
       toast('⏳ Guardando vehículo...');
@@ -309,9 +345,7 @@
       cm('m-veh');
       document.querySelectorAll('#m-veh input').forEach(i => i.value = '');
       loadVehiculosData();
-    } catch (e) {
-      toast('❌ Error al guardar. Verifica que la placa/serie no estén duplicadas.');
-    }
+    } catch (e) { toast('❌ Error al guardar. Verifica que la placa/serie no estén duplicadas.'); }
   }
 
   function openEdit(id) {
@@ -321,11 +355,9 @@
     document.getElementById('e-id').value = v.id;
     document.getElementById('e-placa').value = v.placa || '';
     document.getElementById('e-serie').value = v.serie || '';
-
     if(v.tipo) document.getElementById('e-tipo').value = v.tipo;
     if(v.cliente_id) document.getElementById('e-cliente').value = v.cliente_id;
     if(v.cedis_id) document.getElementById('e-cedis').value = v.cedis_id;
-
     document.getElementById('e-activo').value = v.activo ? 'true' : 'false';
 
     om('m-veh-ed');
@@ -333,13 +365,12 @@
 
   async function updateVehiculo() {
     const id = document.getElementById('e-id').value;
-
     const payload = {
       placa: document.getElementById('e-placa').value.toUpperCase(),
       serie: document.getElementById('e-serie').value.toUpperCase(),
       tipo: document.getElementById('e-tipo').value,
       cliente: { id: parseInt(document.getElementById('e-cliente').value) },
-      idCedis: parseInt(document.getElementById('e-cedis').value),
+      cedis: { id: parseInt(document.getElementById('e-cedis').value) },
       activo: document.getElementById('e-activo').value === 'true'
     };
 
@@ -349,9 +380,7 @@
       toast('✅ Vehículo actualizado');
       cm('m-veh-ed');
       loadVehiculosData();
-    } catch (e) {
-      toast('❌ Error al actualizar');
-    }
+    } catch (e) { toast('❌ Error al actualizar'); }
   }
 
   async function deleteVehiculo(id, placa) {
@@ -360,9 +389,7 @@
         await apiDeleteVehiculo(id);
         toast('🗑️ Unidad dada de baja');
         loadVehiculosData();
-      } catch (e) {
-        toast('❌ Error al eliminar');
-      }
+      } catch (e) { toast('❌ Error al eliminar'); }
     }
   }
 </script>

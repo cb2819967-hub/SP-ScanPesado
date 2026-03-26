@@ -14,9 +14,10 @@ public class Verificacion {
     @Column(name = "id_verificacion")
     private Long id;
 
-    // Simplified relation to Nota
-    @Column(name = "id_nota")
-    private Long idNota;
+    // 🟢 ESTA ES LA ÚNICA RELACIÓN CON NOTA QUE DEBE EXISTIR
+    @ManyToOne
+    @JoinColumn(name = "id_nota")
+    private Nota nota;
 
     @ManyToOne
     @JoinColumn(name = "id_vehiculo")
@@ -42,8 +43,8 @@ public class Verificacion {
     public enum Materia {
         MOTRIZ, ARRASTRE, GASOLINA, HUMO
     }
-    
+
     public enum Dictamen {
-        APROBADO, REPROBADO
+        APROBADO, PENDIENTE, REPROBADO
     }
 }

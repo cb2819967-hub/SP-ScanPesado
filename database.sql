@@ -1,9 +1,10 @@
 CREATE DATABASE IF NOT EXISTS SP;
 USE SP;
-SELECT * FROM clientes;
+
+
 -- 1. Quitamos el candado de la llave foránea de reviso (casi siempre es el 4)
 ALTER TABLE notas DROP FOREIGN KEY notas_ibfk_4;
-select * from verificaciones;
+select * from usuarios;
 
 -- 2. Cambiamos la columna a texto
 ALTER TABLE notas MODIFY COLUMN reviso VARCHAR(100);
@@ -200,3 +201,115 @@ CREATE TABLE IF NOT EXISTS evidencias_evaluacion (
     fecha_subida TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_evaluacion) REFERENCES evaluaciones(id_evaluacion) ON DELETE CASCADE
 );
+
+-- 1. Desactivamos la revisión de llaves foráneas temporalmente
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- 2. Vaciamos todas las tablas (el orden ya no importa gracias al paso 1)
+TRUNCATE TABLE evidencias_evaluacion;
+TRUNCATE TABLE evaluaciones;
+TRUNCATE TABLE verificaciones;
+TRUNCATE TABLE notas;
+TRUNCATE TABLE costos;
+TRUNCATE TABLE verificentros;
+TRUNCATE TABLE vehiculos;
+TRUNCATE TABLE cedis;
+TRUNCATE TABLE clientes;
+TRUNCATE TABLE regiones;
+TRUNCATE TABLE usuarios;
+
+-- 3. Volvemos a activar la revisión de llaves foráneas (¡Muy importante!)
+SET FOREIGN_KEY_CHECKS = 1;
+
+-- 1. REGIONES (Agrupamos las zonas solicitadas)
+INSERT INTO regiones (nombre_region, activo) VALUES
+                                                 ('Norte (Nuevo León)', 1),
+                                                 ('Centro (CDMX, Edomex, Morelos)', 1),
+                                                 ('Sur (Oaxaca)', 1);
+
+-- 2. USUARIOS (Añadimos un par de técnicos para operar los verificentros)
+INSERT INTO usuarios (nombre_usuario, email, contrasena, tipo_usuario) VALUES
+                                                                           ('Kioga Lee', 'kioga@scanpesado.com', 'admin123', 'ADMIN'),
+                                                                           ('Carlos Daniel', 'carlos.d@scanpesado.com', 'tecnico123', 'TECNICO');
+
+-- 3. CLIENTES (Empresas de transporte ficticias)
+INSERT INTO clientes (razon_social, rfc, email, telefono, gestor) VALUES
+                                                                      ('Transportes Regios S.A. de C.V.', 'TRE123456789', 'contacto@transregios.com', '8112345678', 'Roberto Garza'),
+                                                                      ('Logística Central MX', 'LCM987654321', 'operaciones@logcentral.com.mx', '5512345678', 'Ana Martínez'),
+                                                                      ('Fletes del Sur', 'FDS112233445', 'info@fletessur.com', '9512345678', 'Carlos Ruiz');
+
+-- 4. CEDIS (Distribuidos en los estados que pediste)
+-- Asumiendo que: ID 1=Norte, ID 2=Centro, ID 3=Sur
+-- Asumiendo que: ID 1=Transp. Regios, ID 2=Logística Central, ID 3=Fletes Sur
+INSERT INTO cedis (id_cliente, id_region, nombre, direccion, encargado, telefono) VALUES
+                                                                                      (1, 1, 'CEDIS Monterrey', 'Av. Ruiz Cortines 123, Monterrey, N.L.', 'Luis Hernández', '8187654321'),
+                                                                                      (2, 2, 'CEDIS Vallejo', 'Poniente 128, Azcapotzalco, CDMX', 'Pedro Jiménez', '5551234567'),
+                                                                                      (2, 2, 'CEDIS Toluca', 'Blvd. Aeropuerto 456, Toluca, Estado de México', 'Diana Sofía', '7221234567'),
+                                                                                      (2, 2, 'CEDIS Cuernavaca', 'Av. Plan de Ayala 789, Cuernavaca, Morelos', 'Jorge Gómez', '7771234567'),
+                                                                                      (3, 3, 'CEDIS Oaxaca Centro', 'Periférico Sur 101, Oaxaca de Juárez, Oaxaca', 'Marta Flores', '9511234567');
+
+-- 5. VEHÍCULOS (Asignados a los CEDIS anteriores)
+INSERT INTO vehiculos (id_cliente, id_cedis, placa, serie, tipo) VALUES
+                                                                     (1, 1, 'RJ-12-345', 'VIN1234567890NORT1', 'CAMION RABON (4x2) DOBLE RODADA TRASERA'),
+                                                                     (2, 2, 'LE-98-765', 'VIN0987654321CENT1', 'CAMION RABON (4x2) DOBLE RODADA TRASERA'),
+                                                                     (2, 3, 'LE-11-222', 'VIN1122334455CENT2', 'CAMION RABON (4x2) DOBLE RODADA TRASERA'),
+                                                                     (2, 4, 'LE-33-444', 'VIN5566778899CENT3', 'CAMION RABON (4x2) DOBLE RODADA TRASERA'),
+                                                                     (3, 5, 'OX-55-666', 'VIN9988776655SUR01', 'CAMION RABON (4x2) DOBLE RODADA TRASERA');
+
+-- 6. VERIFICENTROS (Ubicaciones físicas en los estados solicitados)
+INSERT INTO verificentros (id_region, nombre, clave_verificentro, direccion, responsable, horario) VALUES
+                                                                                                       (1, 'Verificentro Monterrey Norte', 'VN-MTY-01', 'Av. Universidad 404, San Nicolás de los Garza, N.L.', 'Héctor Salinas', 'L-V 8:00 a 18:00, S 8:00 a 14:00'),
+                                                                                                       (2, 'Verificentro CDMX Iztapalapa', 'VC-CDMX-05', 'Eje 5 Sur 100, Iztapalapa, CDMX', 'Carmen Vega', 'L-V 8:00 a 20:00, S 8:00 a 15:00'),
+                                                                                                       (2, 'Verificentro Edomex Tlalnepantla', 'VC-EDO-12', 'Vía Gustavo Baz 200, Tlalnepantla, Estado de México', 'Ricardo Soto', 'L-V 8:00 a 18:00, S 8:00 a 14:00'),
+                                                                                                       (2, 'Verificentro Morelos Jiutepec', 'VC-MOR-03', 'Carr. Cuernavaca-Cuautla Km 5, Jiutepec, Morelos', 'Laura Medina', 'L-V 8:00 a 18:00, S 8:00 a 14:00'),
+                                                                                                       (3, 'Verificentro Oaxaca Valles', 'VS-OAX-01', 'Símbolos Patrios 500, Oaxaca, Oaxaca', 'Raúl Castro', 'L-V 8:00 a 17:00, S 8:00 a 13:00');
+
+ALTER TABLE costos
+-- Cambiamos id_encargado a encargado (texto)
+    CHANGE COLUMN id_encargado encargado VARCHAR(100),
+
+-- Cambiamos id_atencion_cobro a atiende_y_cobra (texto)
+    CHANGE COLUMN id_atencion_cobro atiende_y_cobra VARCHAR(100),
+
+-- Relajamos el ENUM a VARCHAR para que Java no tenga problemas
+    MODIFY COLUMN materia VARCHAR(50);
+
+
+DROP TABLE IF EXISTS transacciones;
+ALTER TABLE notas ADD COLUMN fecha_creacion DATE;
+CREATE TABLE transacciones (
+                               id_transaccion INT AUTO_INCREMENT PRIMARY KEY,
+                               id_nota INT,
+                               id_vehiculo INT,
+                               materia VARCHAR(50),
+                               precio DOUBLE,
+                               tipo_pago VARCHAR(50),
+                               cotizacion VARCHAR(100),
+                               folio VARCHAR(100),
+                               fecha_folio DATE,
+                               fecha_pedido DATE,
+                               cuenta_deposito VARCHAR(100),
+                               numero_factura VARCHAR(100),
+                               pagado TINYINT(1) DEFAULT 0,
+                               pendiente TINYINT(1) DEFAULT 1,
+                               activo TINYINT(1) DEFAULT 1,
+
+                               FOREIGN KEY (id_nota) REFERENCES notas(id_nota),
+                               FOREIGN KEY (id_vehiculo) REFERENCES vehiculos(id_vehiculo)
+);
+CREATE TABLE pedidos (
+                         id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                         id_nota INT NOT NULL,
+                         fecha_envio DATE,
+                         numero_guia VARCHAR(100),
+                         recibio VARCHAR(100),
+                         foto VARCHAR(255),
+                         estatus_envio VARCHAR(20) DEFAULT 'PENDIENTE',
+                         comentario TEXT,
+                         activo BOOLEAN NOT NULL DEFAULT TRUE,
+                         FOREIGN KEY (id_nota) REFERENCES notas(id_nota) /* ⬅️ ¡CORRECCIÓN AQUÍ! */
+);
+
+UPDATE regiones SET nombre_region = 'Norte' WHERE nombre_region LIKE 'Norte%';
+UPDATE regiones SET nombre_region = 'Centro' WHERE nombre_region LIKE 'Centro%';
+UPDATE regiones SET nombre_region = 'Sur' WHERE nombre_region LIKE 'Sur%';

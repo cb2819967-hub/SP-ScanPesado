@@ -7,7 +7,7 @@ import lombok.Data;
 @Entity
 @Table(name = "vehiculos")
 public class Vehiculo {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_vehiculo")
@@ -17,16 +17,16 @@ public class Vehiculo {
     @JoinColumn(name = "id_cliente")
     private Cliente cliente;
 
-    // Assuming CEDIS is another entity, simplified here
-    @Column(name = "id_cedis")
-    private Long idCedis;
+    @ManyToOne
+    @JoinColumn(name = "id_cedis")
+    private Cedis cedis;
 
     @Column(unique = true, nullable = false)
     private String placa;
 
     @Column(unique = true, nullable = false)
     private String serie;
-    
+
     private String tipo;
     private Boolean activo = true;
 }

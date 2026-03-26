@@ -1,195 +1,399 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pedidos (Envíos) - SP Scan Pesado</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link href="/css/styles.css" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pedidos (Envíos) - SP Scan Pesado</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="/css/styles.css" rel="stylesheet">
+  <style>
+    /* ════ CANDADO NUCLEAR (Anti-scroll global) ════ */
+    html, body { max-width: 100vw; overflow-x: hidden !important; }
+    #mn { min-width: 0; overflow-x: hidden !important; }
+    .pc { width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box; }
+
+    /* ════ MODALES ════ */
+    .md { max-height: 90vh; display: flex; flex-direction: column; width: 650px; max-width: 95vw; box-sizing: border-box; }
+    .fg { overflow-y: auto; overflow-x: hidden; padding-right: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; box-sizing: border-box; }
+    .ff { width: 100%; box-sizing: border-box; }
+    .ff input, .ff select, .ff textarea { width: 100%; box-sizing: border-box; text-overflow: ellipsis; }
+    .fw { grid-column: 1 / -1; }
+
+    /* ════ DATAGRID ESTILO EXCEL ════ */
+    .table-responsive {
+      width: 100%; max-width: 100%; overflow-x: auto; overflow-y: auto; max-height: 65vh;
+      background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; margin-top: 15px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); position: relative; -webkit-overflow-scrolling: touch;
+    }
+    .datagrid { width: max-content; min-width: 100%; border-collapse: separate !important; border-spacing: 0; text-align: left; }
+    .datagrid thead th { position: sticky; top: 0; background: #f8fafc; color: #475569; font-size: 11px; font-weight: 700; text-transform: uppercase; padding: 12px 16px; border-bottom: 2px solid #cbd5e1; white-space: nowrap; z-index: 10; }
+    .datagrid tbody td { padding: 12px 16px; font-size: 13px; color: #334155; border-bottom: 1px solid #e2e8f0; white-space: nowrap; vertical-align: middle; background: #ffffff; }
+    .datagrid tbody tr { display: table-row !important; background: transparent !important; border: none !important; box-shadow: none !important; border-radius: 0 !important; margin: 0 !important; }
+    .datagrid tbody tr:hover td { background-color: #f1f5f9 !important; }
+
+    /* Columna congelada (Checkboxes) */
+    .datagrid tbody td:first-child, .datagrid thead th:first-child { position: -webkit-sticky; position: sticky; left: 0; border-right: 2px solid #cbd5e1; text-align: center; }
+    .datagrid tbody td:first-child { z-index: 11; background-color: #ffffff; }
+    .datagrid thead th:first-child { z-index: 12; background-color: #f8fafc; }
+    .datagrid tbody tr:hover td:first-child { background-color: #f1f5f9 !important; }
+
+    /* Etiquetas de Estatus */
+    .st-pen { background: #fef3c7; color: #d97706; }
+    .st-env { background: #e0e7ff; color: #4338ca; }
+    .st-ent { background: #dcfce7; color: #16a34a; }
+    .st-inc { background: #fee2e2; color: #dc2626; }
+  </style>
 </head>
 <body>
 
-<!-- ════════ SIDEBAR ════════ -->
 <nav id="sb">
   <div class="sb-hd">
     <div class="sb-logo"></div>
     <div class="sb-brand">SP Scan<br>Pesado</div>
-    <button class="sb-tog" onclick="togSb()">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
+    <button class="sb-tog" onclick="togSb()"><span></span><span></span><span></span></button>
   </div>
-
   <div class="sb-scroll">
-    <!-- ADMIN MENU -->
     <div id="menu-admin">
       <div class="grp">General</div>
       <div class="ni" onclick="window.location.href='/dashboard.html'"><span class="ni-ic">📊</span><span class="ni-lb">Dashboard</span></div>
-
       <div class="grp">Catálogos</div>
       <div class="ni" onclick="window.location.href='/usuarios.html'"><span class="ni-ic">👥</span><span class="ni-lb">Usuarios</span></div>
       <div class="ni" onclick="window.location.href='/clientes.html'"><span class="ni-ic">🏢</span><span class="ni-lb">Clientes</span></div>
       <div class="ni" onclick="window.location.href='/cedis.html'"><span class="ni-ic">🏭</span><span class="ni-lb">CEDIS</span></div>
       <div class="ni" onclick="window.location.href='/vehiculos.html'"><span class="ni-ic">🚛</span><span class="ni-lb">Vehículos</span></div>
       <div class="ni" onclick="window.location.href='/verificentros.html'"><span class="ni-ic">🔧</span><span class="ni-lb">Verificentros</span></div>
-
       <div class="sb-div"></div>
       <div class="grp">Operaciones</div>
       <div class="ni" onclick="window.location.href='/notas.html'"><span class="ni-ic">📋</span><span class="ni-lb">Notas</span></div>
       <div class="ni" onclick="window.location.href='/verificacion.html'"><span class="ni-ic">🔍</span><span class="ni-lb">Verificación</span></div>
-
       <div class="sb-div"></div>
       <div class="grp">Finanzas</div>
       <div class="ni" onclick="window.location.href='/costos.html'"><span class="ni-ic">💲</span><span class="ni-lb">Costos</span></div>
       <div class="ni" onclick="window.location.href='/transacciones.html'"><span class="ni-ic">💳</span><span class="ni-lb">Transacciones</span></div>
       <div class="ni on" onclick="window.location.href='/pedidos.html'"><span class="ni-ic">📦</span><span class="ni-lb">Pedidos (Envíos)</span></div>
-
       <div class="sb-div"></div>
       <div class="grp">Análisis</div>
       <div class="ni" onclick="window.location.href='/reportes.html'"><span class="ni-ic">📈</span><span class="ni-lb">Reportes</span></div>
     </div>
-
     <div class="sb-usr" onclick="toggleLogout()">
-    <div class="sb-av av-admin" id="sb-avatar">👤</div>
-    <div class="sb-ui">
-      <div class="sb-un" id="sb-uname">Cargando...</div>
-      <div class="sb-ur" id="sb-urole">Administrador</div>
+      <div class="sb-av av-admin" id="sb-avatar">👤</div>
+      <div class="sb-ui">
+        <div class="sb-un" id="sb-uname">Cargando...</div>
+        <div class="sb-ur" id="sb-urole">Administrador</div>
+      </div>
+      <button id="btn-logout" class="btn btn-red btn-sm" style="display:none; position: absolute; right: 14px; top: -30px;" onclick="logout()">Cerrar Sesión</button>
     </div>
-    <button id="btn-logout" class="btn btn-red btn-sm" style="display:none; position: absolute; right: 14px; top: -30px;" onclick="logout()">Cerrar Sesión</button>
   </div>
 </nav>
 
-<!-- ════════ MAIN ════════ -->
 <div id="mn">
-<div class="topbar no-print">
-  <div class="tb-title" id="tbt">Pedidos (Envíos)</div>
-  <span class="tb-role tb-admin" id="role-badge">ADMIN</span>
-  <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
-    <button class="role-btn no-print" onclick="window.location.href='/tec-unidades.html'" id="role-switch-btn">Cambiar a Técnico →</button>
+  <div class="topbar no-print">
+    <div class="tb-title" id="tbt">Pedidos (Envíos)</div>
+    <span class="tb-role tb-admin" id="role-badge">ADMIN</span>
+  </div>
+
+  <div class="pc">
+    <div class="sh"><div class="st">Gestión de Envíos</div><div class="ss">Seguimiento de envíos físicos de documentación asociados a notas</div></div>
+
+    <div class="tb2">
+      <div class="sbox">🔍 <input id="f-buscar" placeholder="Buscar por guía, recibidor o nota..." oninput="applyFilters()"></div>
+      <select class="fsel" id="f-estatus" onchange="applyFilters()">
+        <option value="ALL">Todos los estatus</option>
+        <option value="PENDIENTE">Pendiente</option>
+        <option value="ENVIADO">Enviado</option>
+        <option value="ENTREGADO">Entregado</option>
+        <option value="INCIDENCIA">Incidencia</option>
+      </select>
+      <button class="btn btn-blue" onclick="om('m-ped')">+ Nuevo envío</button>
+    </div>
+
+    <div id="ped-tb" class="mt2">
+      <span id="ped-ct">0 seleccionados</span>
+      <button class="btn btn-red btn-sm" onclick="delMasivo()">🗑️ Eliminar</button>
+      <button class="btn btn-gray btn-sm" onclick="desel('ped')">✘ Deseleccionar</button>
+    </div>
+
+    <div class="table-responsive">
+      <table class="datagrid">
+        <thead>
+        <tr>
+          <th style="width: 40px;"><input type="checkbox" id="ca-ped" onchange="togAll('ped')"></th>
+          <th># Nota</th>
+          <th>Cliente</th>
+          <th>F. Envío</th>
+          <th># Guía</th>
+          <th>Recibió</th>
+          <th>Estatus</th>
+          <th>Comentario</th>
+          <th>Acc.</th>
+        </tr>
+        </thead>
+        <tbody id="tb-pedidos">
+        <tr><td colspan="9" style="text-align:center; padding: 30px;">Cargando datos...</td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
-
-<!-- ══ PEDIDOS (ENVÍOS FÍSICOS) ══ -->
-<div class="pc">
-  <div class="sh"><div class="st">Pedidos — Envíos</div><div class="ss">Seguimiento de envíos físicos de documentación asociados a notas</div></div>
-  <div class="tb2">
-    <div class="sbox">🔍 <input placeholder="Buscar por nota, guía o cliente..."></div>
-    <select class="fsel"><option>Todos los estados</option><option>PENDIENTE</option><option>ENVIADO</option><option>ENTREGADO</option><option>INCIDENCIA</option></select>
-    <select class="fsel"><option>Todos los clientes</option><option>Transp. del Norte</option><option>Logística Integral</option></select>
-    <button class="btn btn-blue" onclick="om('m-ped')">+ Nuevo envío</button>
-  </div>
-  <div id="ped-tb" class="mt2">
-    <span id="ped-ct">0 seleccionados</span>
-    <button class="btn btn-red btn-sm" onclick="del('ped')">🗑️ Eliminar</button>
-    <button class="btn btn-gray btn-sm" onclick="desel('ped')">✘ Cancelar</button>
-  </div>
-  <div class="tc" style="overflow-x:auto"><table>
-    <thead><tr>
-      <th><input type="checkbox" id="ca-ped" onchange="togAll('ped')"></th>
-      <th># Nota</th><th>Cliente</th><th>Fecha Envío</th><th># Guía</th>
-      <th>Recibió</th><th>Foto</th><th>Estatus</th><th>Comentario</th><th>Acc.</th>
-    </tr></thead>
-    <tbody id="tb-pedidos">
-      <tr><td colspan="10" style="text-align:center">Cargando datos...</td></tr>
-    </tbody>
-  </table></div>
-</div>
-
-</div><!-- /#mn -->
 
 <div id="toast"></div>
 
-<!-- Modal Nuevo Envío -->
 <div id="m-ped" class="mo" onclick="mc(event,'m-ped')"><div class="md">
   <div class="mdt">📦 Nuevo Envío</div>
   <div class="fg">
-    <div class="ff"><label>Nota *</label><select><option>NT-2024-001</option><option>NT-2024-002</option><option>NT-2024-003</option></select></div>
-    <div class="ff"><label>Fecha de Envío</label><input type="date"></div>
-    <div class="ff"><label>Número de Guía</label><input placeholder="DHL-000000 / FEDEX-000000"></div>
-    <div class="ff"><label>Recibió</label><input placeholder="Nombre de quien recibe"></div>
-    <div class="ff"><label>Estatus</label><select><option>PENDIENTE</option><option>ENVIADO</option><option>ENTREGADO</option><option>INCIDENCIA</option></select></div>
-    <div class="ff"><label>Evidencia (foto)</label><input type="file" accept="image/*"></div>
-    <div class="ff fw"><label>Comentario</label><textarea rows="2" placeholder="Observaciones del envío..."></textarea></div>
+    <div class="ff fw"><label>Nota *</label><select id="n-nota"></select></div>
+    <div class="ff"><label>Fecha de Envío</label><input type="date" id="n-fecha"></div>
+    <div class="ff"><label>Número de Guía</label><input id="n-guia" placeholder="Ej. DHL-4421889"></div>
+    <div class="ff"><label>Recibió</label><input id="n-recibio" placeholder="Nombre de quien firma de recibido"></div>
+    <div class="ff"><label>Estatus *</label>
+      <select id="n-estatus">
+        <option value="PENDIENTE">Pendiente (Aún no sale)</option>
+        <option value="ENVIADO">Enviado (En tránsito)</option>
+        <option value="ENTREGADO">Entregado (Ya llegó)</option>
+        <option value="INCIDENCIA">Incidencia (Problema)</option>
+      </select>
+    </div>
+    <div class="ff fw"><label>Comentario / Observaciones</label><textarea id="n-comentario" rows="2" placeholder="Detalles del envío..."></textarea></div>
   </div>
-  <div class="ma"><button class="btn btn-outline" onclick="cm('m-ped')">Cancelar</button><button class="btn btn-blue" onclick="toast('Envío guardado');cm('m-ped')">💾 Guardar</button></div>
+  <div class="ma"><button class="btn btn-outline" onclick="cm('m-ped')">Cancelar</button><button class="btn btn-blue" onclick="savePedido()">💾 Guardar</button></div>
 </div></div>
 
-<!-- ════════════════════════════════════
-     SCRIPTS
-════════════════════════════════════ -->
+<div id="m-ped-ed" class="mo" onclick="mc(event,'m-ped-ed')"><div class="md">
+  <div class="mdt">✏️ Editar Envío</div>
+  <div class="fg">
+    <input type="hidden" id="e-id">
+    <div class="ff fw"><label>Nota *</label><select id="e-nota" disabled style="background:var(--g100)"></select></div>
+    <div class="ff"><label>Fecha de Envío</label><input type="date" id="e-fecha"></div>
+    <div class="ff"><label>Número de Guía</label><input id="e-guia"></div>
+    <div class="ff"><label>Recibió</label><input id="e-recibio"></div>
+    <div class="ff"><label>Estatus *</label>
+      <select id="e-estatus">
+        <option value="PENDIENTE">Pendiente</option>
+        <option value="ENVIADO">Enviado</option>
+        <option value="ENTREGADO">Entregado</option>
+        <option value="INCIDENCIA">Incidencia</option>
+      </select>
+    </div>
+    <div class="ff fw"><label>Comentario / Observaciones</label><textarea id="e-comentario" rows="2"></textarea></div>
+  </div>
+  <div class="ma"><button class="btn btn-outline" onclick="cm('m-ped-ed')">Cancelar</button><button class="btn btn-blue" onclick="updatePedido()">💾 Actualizar</button></div>
+</div></div>
+
 <script src="/js/api.js"></script>
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
+  let allPedidos = [];
+  let allNotas = [];
+
+  document.addEventListener('DOMContentLoaded', async () => {
     const userName = localStorage.getItem('userName') || 'Admin';
     document.getElementById('sb-uname').textContent = userName;
 
-    // Simulación
-    setTimeout(() => {
-        document.getElementById('tb-pedidos').innerHTML = `
-          <tr data-id="p1"><td><input type="checkbox" class="ck-ped" onchange="updTb('ped')"></td><td><strong>NT-2024-001</strong></td><td>Transp. del Norte</td><td>22/02/2026</td><td><code>DHL-4421889</code></td><td>Luis Herrera</td><td><span class="b bb">📷 Ver</span></td><td><span class="b bg">✔ ENTREGADO</span></td><td style="font-size:12px">Entregado en CEDIS Norte.</td><td><div class="ax"><button class="ab">✏️</button><button class="ab" onclick="confirm('¿Eliminar?')">🗑️</button></div></td></tr>
-          <tr data-id="p2"><td><input type="checkbox" class="ck-ped" onchange="updTb('ped')"></td><td><strong>NT-2024-002</strong></td><td>Logística Integral</td><td>23/02/2026</td><td><code>FEDEX-8812034</code></td><td>—</td><td><span class="b bx">Sin foto</span></td><td><span class="b bo">📬 ENVIADO</span></td><td style="font-size:12px">En tránsito, ETA: 25/02.</td><td><div class="ax"><button class="ab">✏️</button><button class="ab" onclick="confirm('¿Eliminar?')">🗑️</button></div></td></tr>
-        `;
-    }, 500);
+    await loadDependencies();
+    if (typeof apiGetPedidos === 'function') loadPedidosData();
   });
 
+  // --- UI LÓGICA ---
   function om(id){document.getElementById(id).classList.add('on');}
   function cm(id){document.getElementById(id).classList.remove('on');}
   function mc(e,id){if(e.target.id===id)cm(id);}
-
-  function togSb(){
-    document.getElementById('sb').classList.toggle('col');
-    document.getElementById('mn').classList.toggle('col');
-  }
-
+  function togSb(){ document.getElementById('sb').classList.toggle('col'); document.getElementById('mn').classList.toggle('col'); }
   function toast(msg){
-    const t=document.getElementById('toast');
-    t.textContent=msg;
-    t.style.display='block';
-    clearTimeout(t._t);
-    t._t=setTimeout(()=>t.style.display='none',2800);
+    const t=document.getElementById('toast'); t.textContent=msg; t.style.display='block';
+    clearTimeout(t._t); t._t=setTimeout(()=>t.style.display='none',2800);
   }
-
   function toggleLogout() {
-    const btn = document.getElementById('btn-logout');
-    btn.style.display = btn.style.display === 'none' ? 'block' : 'none';
+    const btn = document.getElementById('btn-logout'); btn.style.display = btn.style.display === 'none' ? 'block' : 'none';
+  }
+  function logout() { localStorage.removeItem('userRole'); localStorage.removeItem('userName'); window.location.href = '/login.html'; }
+
+  const formatDate = (ds) => ds ? ds.split('-').reverse().join('/') : '—';
+
+  function getBadgeEstatus(estatus) {
+    if(estatus === 'ENTREGADO') return `<span class="b st-ent">✔ ENTREGADO</span>`;
+    if(estatus === 'ENVIADO') return `<span class="b st-env">📬 ENVIADO</span>`;
+    if(estatus === 'INCIDENCIA') return `<span class="b st-inc">⚠️ INCIDENCIA</span>`;
+    return `<span class="b st-pen">⏳ PENDIENTE</span>`;
   }
 
-  function logout() {
-    localStorage.removeItem('userRole');
-    localStorage.removeItem('userName');
-    window.location.href = '/login.html';
+  // --- CARGAR DEPENDENCIAS (NOTAS) ---
+  async function loadDependencies() {
+    try {
+      allNotas = await apiGetNotas();
+      const nNota = document.getElementById('n-nota');
+      const eNota = document.getElementById('e-nota');
+
+      allNotas.forEach(n => {
+        if(n.activo) {
+          const text = `${n.folio} - ${n.cliente_nombre}`;
+          nNota.innerHTML += `<option value="${n.id}">${text}</option>`;
+          eNota.innerHTML += `<option value="${n.id}">${text}</option>`;
+        }
+      });
+    } catch (e) { console.error("Error cargando notas para envíos"); }
   }
 
-  // Multi-select logic
+  // --- CARGAR DATOS (PEDIDOS) ---
+  async function loadPedidosData() {
+    try {
+      allPedidos = await apiGetPedidos();
+      renderTable(allPedidos);
+    } catch(e) { document.getElementById('tb-pedidos').innerHTML = '<tr><td colspan="9" style="text-align:center;color:red;padding:30px;">Error cargando envíos</td></tr>'; }
+  }
+
+  function renderTable(data) {
+    const tbody = document.getElementById('tb-pedidos');
+    desel('ped');
+
+    if (data && data.length > 0) {
+      tbody.innerHTML = '';
+      data.forEach(p => {
+        const tr = document.createElement('tr');
+        tr.dataset.id = p.id;
+
+        tr.innerHTML = `
+          <td style="text-align: center;"><input type="checkbox" class="ck-ped" onchange="updTb('ped')"></td>
+          <td><strong style="color:var(--blue)">${p.nota_folio || '—'}</strong></td>
+          <td>${p.cliente_nombre || '—'}</td>
+          <td>${formatDate(p.fecha_envio)}</td>
+          <td><code>${p.numero_guia || '—'}</code></td>
+          <td>${p.recibio || '—'}</td>
+          <td>${getBadgeEstatus(p.estatus_envio)}</td>
+          <td style="font-size:12px; color:var(--g500); max-width:200px; overflow:hidden; text-overflow:ellipsis;">${p.comentario || '—'}</td>
+          <td><div class="ax">
+            <button class="ab" onclick="openEdit(${p.id})" title="Editar Envío">✏️</button>
+            <button class="ab" onclick="deleteIndividual(${p.id}, '${p.numero_guia || p.nota_folio}')" title="Eliminar">🗑️</button>
+          </div></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    } else {
+      tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding: 30px;">No hay envíos registrados</td></tr>';
+    }
+  }
+
+  // --- FILTROS ---
+  function applyFilters() {
+    const txt = document.getElementById('f-buscar').value.toLowerCase();
+    const estatus = document.getElementById('f-estatus').value;
+
+    const filtrados = allPedidos.filter(p => {
+      const matchTxt = (p.numero_guia && p.numero_guia.toLowerCase().includes(txt)) ||
+              (p.nota_folio && p.nota_folio.toLowerCase().includes(txt)) ||
+              (p.recibio && p.recibio.toLowerCase().includes(txt));
+
+      const matchEstatus = (estatus === 'ALL') ? true : (p.estatus_envio === estatus);
+
+      return matchTxt && matchEstatus;
+    });
+    renderTable(filtrados);
+  }
+
+  // --- CRUD ---
+  async function savePedido() {
+    const notaId = document.getElementById('n-nota').value;
+    if (!notaId) return toast('⚠️ Selecciona una nota primero');
+
+    const payload = {
+      nota: { id: parseInt(notaId) },
+      fechaEnvio: document.getElementById('n-fecha').value || null,
+      numeroGuia: document.getElementById('n-guia').value,
+      recibio: document.getElementById('n-recibio').value,
+      estatusEnvio: document.getElementById('n-estatus').value,
+      comentario: document.getElementById('n-comentario').value,
+      activo: true
+    };
+
+    try {
+      await apiCreatePedido(payload);
+      toast('✅ Envío guardado correctamente');
+      cm('m-ped');
+      document.querySelectorAll('#m-ped input, #m-ped textarea').forEach(i => i.value = '');
+      document.getElementById('n-estatus').value = 'PENDIENTE';
+      loadPedidosData();
+    } catch (e) { toast('❌ Error al guardar el envío'); }
+  }
+
+  function openEdit(id) {
+    const p = allPedidos.find(x => x.id === id);
+    if (!p) return;
+
+    document.getElementById('e-id').value = p.id;
+    if(p.nota_id) document.getElementById('e-nota').value = p.nota_id;
+    document.getElementById('e-fecha').value = p.fecha_envio || '';
+    document.getElementById('e-guia').value = p.numero_guia || '';
+    document.getElementById('e-recibio').value = p.recibio || '';
+    document.getElementById('e-estatus').value = p.estatus_envio || 'PENDIENTE';
+    document.getElementById('e-comentario').value = p.comentario || '';
+
+    om('m-ped-ed');
+  }
+
+  async function updatePedido() {
+    const id = document.getElementById('e-id').value;
+    const payload = {
+      nota: { id: parseInt(document.getElementById('e-nota').value) },
+      fechaEnvio: document.getElementById('e-fecha').value || null,
+      numeroGuia: document.getElementById('e-guia').value,
+      recibio: document.getElementById('e-recibio').value,
+      estatusEnvio: document.getElementById('e-estatus').value,
+      comentario: document.getElementById('e-comentario').value,
+      activo: true
+    };
+
+    try {
+      await apiUpdatePedido(id, payload);
+      toast('✅ Envío actualizado');
+      cm('m-ped-ed');
+      loadPedidosData();
+    } catch (e) { toast('❌ Error al actualizar'); }
+  }
+
+  async function deleteIndividual(id, nombre) {
+    if(!confirm(`¿Seguro que deseas eliminar el registro del envío ${nombre}?`)) return;
+    try {
+      await apiDeletePedido(id);
+      toast('🗑️ Envío eliminado');
+      loadPedidosData();
+    } catch (e) { toast('❌ Error al eliminar'); }
+  }
+
+  // --- SELECCIÓN MÚLTIPLE ---
   function updTb(p){
-    const n=[...document.querySelectorAll('.ck-'+p)].filter(c=>c.checked).length;
-    document.getElementById(p+'-ct').textContent=n+' seleccionado'+(n!==1?'s':'');
-    n>0?document.getElementById(p+'-tb').classList.add('on'):document.getElementById(p+'-tb').classList.remove('on');
-    const a=document.getElementById('ca-'+p);
-    if(a&&!n) a.checked=false;
+    const n = [...document.querySelectorAll('.ck-'+p)].filter(c=>c.checked).length;
+    document.getElementById(p+'-ct').textContent = n + ' seleccionado' + (n!==1?'s':'');
+    n > 0 ? document.getElementById(p+'-tb').classList.add('on') : document.getElementById(p+'-tb').classList.remove('on');
+    const a = document.getElementById('ca-'+p);
+    if(a && !n) a.checked = false;
   }
 
   function togAll(p){
-    const a=document.getElementById('ca-'+p).checked;
-    document.querySelectorAll('.ck-'+p).forEach(c=>c.checked=a);
+    const isChecked = document.getElementById('ca-'+p).checked;
+    document.querySelectorAll('.ck-'+p).forEach(c => c.checked = isChecked);
     updTb(p);
   }
 
   function desel(p){
-    document.querySelectorAll('.ck-'+p).forEach(c=>c.checked=false);
-    const a=document.getElementById('ca-'+p);
-    if(a) a.checked=false;
+    document.querySelectorAll('.ck-'+p).forEach(c => c.checked = false);
+    const a = document.getElementById('ca-'+p);
+    if(a) a.checked = false;
     document.getElementById(p+'-tb').classList.remove('on');
   }
 
-  function del(p){
-    const sel=[...document.querySelectorAll('.ck-'+p+':checked')];
-    if(!sel.length) return;
-    if(!confirm('⚠️ ¿Eliminar '+sel.length+' registro(s) seleccionados?')) return;
-    sel.forEach(c=>c.closest('tr').remove());
-    desel(p);
-    toast('🗑️ '+sel.length+' registro(s) eliminado(s)');
+  async function delMasivo(){
+    const checkboxes = [...document.querySelectorAll('.ck-ped:checked')];
+    if(!checkboxes.length) return;
+
+    if(!confirm(`⚠️ ¿Seguro que deseas eliminar ${checkboxes.length} envíos seleccionados?`)) return;
+
+    const ids = checkboxes.map(c => parseInt(c.closest('tr').dataset.id));
+
+    try {
+      toast('⏳ Eliminando...');
+      await apiDeletePedidosMasivo(ids);
+      toast(`🗑️ ${ids.length} registros eliminados`);
+      desel('ped');
+      loadPedidosData();
+    } catch(e) { toast('❌ Error al eliminar'); }
   }
 </script>
 </body>
