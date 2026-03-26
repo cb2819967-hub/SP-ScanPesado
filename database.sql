@@ -309,7 +309,7 @@ CREATE TABLE pedidos (
                          activo BOOLEAN NOT NULL DEFAULT TRUE,
                          FOREIGN KEY (id_nota) REFERENCES notas(id_nota) /* ⬅️ ¡CORRECCIÓN AQUÍ! */
 );
-
+select * from usuarios;
 UPDATE regiones SET nombre_region = 'Norte' WHERE nombre_region LIKE 'Norte%';
 UPDATE regiones SET nombre_region = 'Centro' WHERE nombre_region LIKE 'Centro%';
 UPDATE regiones SET nombre_region = 'Sur' WHERE nombre_region LIKE 'Sur%';

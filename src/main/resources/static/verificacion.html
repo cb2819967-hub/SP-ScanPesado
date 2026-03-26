@@ -135,11 +135,154 @@
   <div class="ma"><button class="btn btn-outline" onclick="cm('m-vrc')">Cancelar</button><button class="btn btn-blue" onclick="saveVerificacion()">💾 Guardar</button></div>
 </div></div>
 
+<div id="m-wizard" class="mo" onclick="mc(event,'m-wizard')">
+  <div class="md wide">
+    <div class="mdt" id="wz-title">🔧 Editar Evaluación - Formulario de Inspección</div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px;background:#f0f2f8;padding:12px;border-radius:10px;">
+      <div class="ff"><label>Vehículo (Placa) *</label><select id="wz-vehiculo"></select></div>
+      <div class="ff"><label>Materia *</label><select id="wz-materia"><option value="MOTRIZ">MOTRIZ</option><option value="HUMO">HUMO</option><option value="GASOLINA">GASOLINA</option><option value="ARRASTRE">ARRASTRE</option></select></div>
+      <div class="ff"><label>Nota *</label><select id="wz-nota"></select></div>
+    </div>
+
+    <div class="wz-steps" id="wz-steps">
+      <div class="wz-step active" id="ws0"><div class="wz-dot">1</div><div class="wz-lbl">Luces</div></div>
+      <div class="wz-step" id="ws1"><div class="wz-dot">2</div><div class="wz-lbl">Llantas</div></div>
+      <div class="wz-step" id="ws2"><div class="wz-dot">3</div><div class="wz-lbl">Dirección</div></div>
+      <div class="wz-step" id="ws3"><div class="wz-dot">4</div><div class="wz-lbl">Aire/Frenos</div></div>
+      <div class="wz-step" id="ws4"><div class="wz-dot">5</div><div class="wz-lbl">Motor</div></div>
+      <div class="wz-step" id="ws5"><div class="wz-dot">6</div><div class="wz-lbl">Otros</div></div>
+      <div class="wz-step" id="ws6"><div class="wz-dot">7</div><div class="wz-lbl">Evidencias</div></div>
+    </div>
+
+    <div class="wz-panel on" id="wp0">
+      <div class="wz-section-title">💡 A. Luces</div>
+      <div class="ev-row">
+        <div class="ev-field"><label>Luces de Gálibo</label><select><option>Aprobadas</option><option>Izquierda fundida</option><option>Derecha fundida</option><option>Ambas fundidas</option></select></div>
+        <div class="ev-field"><label>Luces Altas</label><select><option>Aprobadas</option><option>Izquierda fundida</option><option>Derecha fundida</option><option>Ambas fundidas</option></select></div>
+        <div class="ev-field"><label>Luces Bajas</label><select><option>Aprobadas</option><option>Izquierda fundida</option><option>Derecha fundida</option><option>Ambas fundidas</option></select></div>
+        <div class="ev-field"><label>Demarcadoras Delanteras</label><select><option>Aprobadas</option><option>Izquierda fundida</option><option>Derecha fundida</option><option>Ambas fundidas</option></select></div>
+        <div class="ev-field"><label>Demarcadoras Traseras</label><select><option>Aprobadas</option><option>Izquierda fundida</option><option>Derecha fundida</option><option>Ambas fundidas</option></select></div>
+        <div class="ev-field"><label>Luces Indicadoras</label><select><option>Aprobadas</option><option>1 fundida</option><option>2 fundidas</option><option>3 fundidas</option></select></div>
+        <div class="ev-field"><label>Faro Izquierdo</label><select><option>Aprobado</option><option>Flojo</option><option>Roto</option></select></div>
+        <div class="ev-field"><label>Faro Derecho</label><select><option>Aprobado</option><option>Flojo</option><option>Roto</option></select></div>
+        <div class="ev-field"><label>Direccionales Delanteras</label><select><option>Aprobadas</option><option>Izquierda fundida</option><option>Derecha fundida</option><option>Ambas fundidas</option></select></div>
+        <div class="ev-field"><label>Direccionales Traseras</label><select><option>Aprobadas</option><option>Izquierda fundida</option><option>Derecha fundida</option><option>Ambas fundidas</option></select></div>
+      </div>
+    </div>
+
+    <div class="wz-panel" id="wp1">
+      <div class="wz-section-title">🛞 B. Llantas</div>
+      <div class="ev-row">
+        <div class="ev-field"><label>Rines Delanteros</label><select><option>Aprobados</option><option>Derecho roto/soldado</option><option>Izquierdo roto/soldado</option><option>Ambos rotos/soldados</option></select></div>
+        <div class="ev-field"><label>Rines Traseros</label><select><option>Aprobados</option><option>Derecho roto/soldado</option><option>Izquierdo roto/soldado</option><option>Ambos rotos/soldados</option></select></div>
+        <div class="ev-field"><label>Masas Delanteras</label><select><option>Aprobadas</option><option>Derecha con fuga</option><option>Izquierda con fuga</option><option>Ambas con fuga</option></select></div>
+        <div class="ev-field"><label>Masas Traseras</label><select><option>Aprobadas</option><option>Derecha con fuga</option><option>Izquierda con fuga</option><option>Ambas con fuga</option></select></div>
+      </div>
+      <p style="font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--g600);margin-bottom:8px">Presión (PSI - mín. 80)</p>
+      <div class="ev-row">
+        <div class="ev-field"><label>Del. Izq.</label><div class="psi-wrap"><input type="number" id="psi1" placeholder="80" oninput="chkPsi(this,'pv1')"><span class="psi-val" id="pv1">-</span></div></div>
+        <div class="ev-field"><label>Del. Der.</label><div class="psi-wrap"><input type="number" id="psi2" placeholder="80" oninput="chkPsi(this,'pv2')"><span class="psi-val" id="pv2">-</span></div></div>
+        <div class="ev-field"><label>Tras. Izq. 1</label><div class="psi-wrap"><input type="number" id="psi3" placeholder="80" oninput="chkPsi(this,'pv3')"><span class="psi-val" id="pv3">-</span></div></div>
+        <div class="ev-field"><label>Tras. Izq. 2</label><div class="psi-wrap"><input type="number" id="psi4" placeholder="80" oninput="chkPsi(this,'pv4')"><span class="psi-val" id="pv4">-</span></div></div>
+        <div class="ev-field"><label>Tras. Der. 1</label><div class="psi-wrap"><input type="number" id="psi5" placeholder="80" oninput="chkPsi(this,'pv5')"><span class="psi-val" id="pv5">-</span></div></div>
+        <div class="ev-field"><label>Tras. Der. 2</label><div class="psi-wrap"><input type="number" id="psi6" placeholder="80" oninput="chkPsi(this,'pv6')"><span class="psi-val" id="pv6">-</span></div></div>
+      </div>
+      <p style="font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--g600);margin:10px 0 6px">Profundidad (mm) | Del ≥3.2 / Tras ≥1.6</p>
+      <div class="ev-row">
+        <div class="ev-field"><label>Del. Izq.</label><div class="psi-wrap"><input type="number" id="mm1" placeholder="3.2" step="0.1" oninput="chkMm(this,'mv1',3.2)"><span class="psi-val" id="mv1">-</span></div></div>
+        <div class="ev-field"><label>Del. Der.</label><div class="psi-wrap"><input type="number" id="mm2" placeholder="3.2" step="0.1" oninput="chkMm(this,'mv2',3.2)"><span class="psi-val" id="mv2">-</span></div></div>
+        <div class="ev-field"><label>Tras. Izq. 1</label><div class="psi-wrap"><input type="number" id="mm3" placeholder="1.6" step="0.1" oninput="chkMm(this,'mv3',1.6)"><span class="psi-val" id="mv3">-</span></div></div>
+        <div class="ev-field"><label>Tras. Izq. 2</label><div class="psi-wrap"><input type="number" id="mm4" placeholder="1.6" step="0.1" oninput="chkMm(this,'mv4',1.6)"><span class="psi-val" id="mv4">-</span></div></div>
+        <div class="ev-field"><label>Tras. Der. 1</label><div class="psi-wrap"><input type="number" id="mm5" placeholder="1.6" step="0.1" oninput="chkMm(this,'mv5',1.6)"><span class="psi-val" id="mv5">-</span></div></div>
+        <div class="ev-field"><label>Tras. Der. 2</label><div class="psi-wrap"><input type="number" id="mm6" placeholder="1.6" step="0.1" oninput="chkMm(this,'mv6',1.6)"><span class="psi-val" id="mv6">-</span></div></div>
+      </div>
+
+      <p style="font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--g600);margin:14px 0 4px">🔩 Birlos y Tuercas - Haz clic en cada elemento para marcar como faltante/roto</p>
+      <p style="font-size:11px;color:var(--g400);margin-bottom:10px">⬜ Normal · 🔴 Faltante o roto (si &gt;2 por llanta → REPRUEBA)</p>
+      <div class="tire-grid">
+        <div class="tire-wrap"><div class="tire-lbl">Delantera Izquierda</div><div id="tire-DI"></div><div class="tire-counter" id="tc-DI">Birlos: 0 faltantes · Tuercas: 0 faltantes</div></div>
+        <div class="tire-wrap"><div class="tire-lbl">Delantera Derecha</div><div id="tire-DD"></div><div class="tire-counter" id="tc-DD">Birlos: 0 faltantes · Tuercas: 0 faltantes</div></div>
+        <div class="tire-wrap"><div class="tire-lbl">Trasera Izquierda</div><div id="tire-TI"></div><div class="tire-counter" id="tc-TI">Birlos: 0 faltantes · Tuercas: 0 faltantes</div></div>
+        <div class="tire-wrap"><div class="tire-lbl">Trasera Derecha</div><div id="tire-TD"></div><div class="tire-counter" id="tc-TD">Birlos: 0 faltantes · Tuercas: 0 faltantes</div></div>
+      </div>
+    </div>
+
+    <div class="wz-panel" id="wp2">
+      <div class="wz-section-title">🔩 C. Dirección, Estructura y Accesos</div>
+      <div class="ev-row">
+        <div class="ev-field"><label>Brazo Pitman</label><select><option>Aprobado</option><option>Golpeado</option></select></div>
+        <div class="ev-field"><label>Manijas de Puertas</label><select><option>Aprobadas</option><option>1 rota</option><option>2 rotas</option></select></div>
+        <div class="ev-field"><label>Chavetas</label><select><option>Aprobadas</option><option>Faltan</option></select></div>
+        <div class="ev-field"><label>Núm. Chavetas Faltantes</label><input type="number" value="0" min="0"></div>
+      </div>
+    </div>
+
+    <div class="wz-panel" id="wp3">
+      <div class="wz-section-title">💨 D. Sistema de Aire / Frenos</div>
+      <div class="ev-row">
+        <div class="ev-field"><label>Compresor</label><select><option>Aprobado</option><option>No corta</option><option>Reprobado</option></select></div>
+        <div class="ev-field"><label>Tanques de Aire</label><select><option>Aprobado</option><option>Reprobado</option></select></div>
+        <div class="ev-field"><label>Tiempo de Carga (PSI)</label><div class="psi-wrap"><input type="number" id="tc_psi" placeholder="70-120" oninput="chkRango(this,'tcv',70,120)"><span class="psi-val" id="tcv">-</span></div></div>
+        <div class="ev-field"><label>Tiempo de Carga (min)</label><div class="psi-wrap"><input type="number" id="tc_min" placeholder="<120" oninput="chkMax(this,'tmv',120)"><span class="psi-val" id="tmv">-</span></div></div>
+      </div>
+      <div class="ev-alert">⚠ Aprobado si PSI está entre 70-120 y tiempo &lt; 120 minutos.</div>
+    </div>
+
+    <div class="wz-panel" id="wp4">
+      <div class="wz-section-title">⚙ E. Motor y Emisiones</div>
+      <div class="ev-row">
+        <div class="ev-field"><label>Humo</label><select><option>Aprobado</option><option>Reprobado</option></select></div>
+        <div class="ev-field"><label>Gobernado</label><select><option>Aprobado</option><option>Reprobado</option></select></div>
+      </div>
+    </div>
+
+    <div class="wz-panel" id="wp5">
+      <div class="wz-section-title">🔍 F. Otros</div>
+      <div class="ev-row">
+        <div class="ev-field"><label>Caja Dirección</label><select><option>Aprobada</option><option>Fuga</option></select></div>
+        <div class="ev-field"><label>Depósito de Aceite</label><select><option>Aprobado</option><option>Fuga</option></select></div>
+        <div class="ev-field"><label>Parabrisas</label><select><option>Aprobado</option><option>Estrellado</option></select></div>
+        <div class="ev-field"><label>Limpiaparabrisas</label><select><option>Aprobado</option><option>Falta 1 pluma</option><option>Faltan 2 plumas</option><option>No funciona</option></select></div>
+        <div class="ev-field"><label>Huelgo</label><select><option>Aprobado</option><option>Reprobado</option></select></div>
+        <div class="ev-field"><label>Huelgo (mm si reprobado)</label><input type="number" placeholder="0" min="0"></div>
+        <div class="ev-field"><label>Escape</label><select><option>Aprobado</option><option>Faltante</option><option>Roto</option></select></div>
+      </div>
+    </div>
+
+    <div class="wz-panel" id="wp6">
+      <div class="wz-section-title">📷 G. Evidencias (opcional)</div>
+      <div class="ev-row">
+        <div class="ev-field"><label>Evidencia 1 (Frontal)</label><input type="file" accept="image/*" data-optional="true"></div>
+        <div class="ev-field"><label>Evidencia 2 (Lateral Izq.)</label><input type="file" accept="image/*" data-optional="true"></div>
+        <div class="ev-field"><label>Evidencia 3 (Lateral Der.)</label><input type="file" accept="image/*" data-optional="true"></div>
+        <div class="ev-field"><label>Evidencia 4</label><input type="file" accept="image/*" data-optional="true"></div>
+        <div class="ev-field"><label>Evidencia 5</label><input type="file" accept="image/*" data-optional="true"></div>
+        <div class="ev-field fw"><label>Comentarios Generales</label><textarea rows="2" placeholder="Observaciones adicionales del técnico..." data-optional="true"></textarea></div>
+      </div>
+      <div id="dictamen-preview" style="background:#f0fdf4;border:2px solid #16a34a;border-radius:10px;padding:14px;margin-top:12px;text-align:center;display:none">
+        <div style="font-size:28px" id="dp-icon">✅</div>
+        <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#15803d;margin-top:4px" id="dp-text">APROBADO</div>
+        <div style="font-size:12px;color:#4ade80;margin-top:3px" id="dp-sub">Todos los parámetros dentro de norma</div>
+      </div>
+    </div>
+
+    <div class="ma" style="border-top:1px solid var(--g200);padding-top:14px;margin-top:14px">
+      <button class="btn btn-outline" id="wz-prev" onclick="wzNav(-1)" style="display:none">← Anterior</button>
+      <span style="flex:1;font-size:12px;color:var(--g400);text-align:center" id="wz-info">Paso 1 de 7</span>
+      <button class="btn btn-outline" onclick="cm('m-wizard')">✘ Cancelar</button>
+      <button class="btn btn-blue" id="wz-next" onclick="wzNav(1)">Siguiente →</button>
+      <button class="btn btn-green" id="wz-finish" onclick="finishWizard()" style="display:none">✔ Guardar Cambios</button>
+    </div>
+  </div>
+</div>
+
 <script src="/js/api.js"></script>
 <script>
   let allVerificaciones = [];
   let allNotas = [];
   let allVehiculos = [];
+  let wizardEditingRecord = null;
   const formatter = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' });
 
   document.addEventListener('DOMContentLoaded', async () => {
@@ -178,6 +321,7 @@
 
       allNotas.forEach(n => { if(n.activo) selNota.innerHTML += `<option value="${n.id}">${n.folio} - ${n.cliente_nombre}</option>`; });
       allVehiculos.forEach(v => { if(v.activo) selVehiculo.innerHTML += `<option value="${v.id}">${v.placa} - ${v.serie}</option>`; });
+      syncWizardSelectors();
     } catch (e) { console.error('Error cargando catálogos'); }
   }
 
@@ -217,7 +361,7 @@
             <td><span class="b bp">NT-${v.id_nota}</span></td>
             <td>${v.unidad}</td>
             <td><div class="ax">
-              <button class="ab" onclick="toast('Edición en construcción')">✏️</button>
+              <button class="ab" onclick="openEditWizard(${v.id})">✏️</button>
               <button class="ab" onclick="deleteVerificacion(${v.id}, '${v.folio}')">🗑️</button>
             </div></td>
           </tr>
@@ -277,6 +421,116 @@
     } catch (e) { toast('❌ Error al guardar'); }
   }
 
+  function syncWizardSelectors() {
+    const selNota = document.getElementById('wz-nota');
+    const selVehiculo = document.getElementById('wz-vehiculo');
+    if (!selNota || !selVehiculo) return;
+
+    selNota.innerHTML = '<option value="">Selecciona una nota</option>';
+    selVehiculo.innerHTML = '<option value="">Selecciona un vehículo</option>';
+
+    allNotas.forEach(n => {
+      if (n.activo) selNota.innerHTML += `<option value="${n.id}">${n.folio} - ${n.cliente_nombre}</option>`;
+    });
+    allVehiculos.forEach(v => {
+      if (v.activo) selVehiculo.innerHTML += `<option value="${v.id}">${v.placa} - ${v.serie}</option>`;
+    });
+  }
+
+  function clearWizardForm() {
+    const modal = document.getElementById('m-wizard');
+    if (!modal) return;
+
+    modal.querySelectorAll('input').forEach(input => {
+      if (input.type === 'file') input.value = '';
+      else if (input.type === 'number') input.value = '';
+      else input.value = '';
+    });
+    modal.querySelectorAll('textarea').forEach(textarea => textarea.value = '');
+    modal.querySelectorAll('.wz-panel select').forEach(select => {
+      select.selectedIndex = 0;
+    });
+    modal.querySelectorAll('.psi-val').forEach(badge => {
+      badge.className = 'psi-val';
+      badge.textContent = '-';
+    });
+  }
+
+  function updateDictamenPreview(resultado) {
+    const preview = document.getElementById('dictamen-preview');
+    const icon = document.getElementById('dp-icon');
+    const text = document.getElementById('dp-text');
+    const sub = document.getElementById('dp-sub');
+    if (!preview || !icon || !text || !sub) return;
+
+    if (resultado === 'REPROBADO') {
+      preview.style.background = '#fef2f2';
+      preview.style.borderColor = '#dc2626';
+      icon.textContent = '❌';
+      text.textContent = 'REPROBADO';
+      text.style.color = '#b91c1c';
+      sub.textContent = 'La evaluación tiene observaciones pendientes por corregir';
+      sub.style.color = '#ef4444';
+      return;
+    }
+
+    preview.style.background = '#f0fdf4';
+    preview.style.borderColor = '#16a34a';
+    icon.textContent = '✅';
+    text.textContent = resultado || 'APROBADO';
+    text.style.color = '#15803d';
+    sub.textContent = 'Todos los parámetros dentro de norma';
+    sub.style.color = '#4ade80';
+  }
+
+  function openEditWizard(id) {
+    const verificacion = allVerificaciones.find(v => v.id === id);
+    if (!verificacion) {
+      toast('⚠️ No se encontró la verificación');
+      return;
+    }
+
+    wizardEditingRecord = verificacion;
+    window.wizardEditingId = id;
+    window.wizardConfirmMessage = '¿Confirmar y guardar los cambios de la evaluación?';
+
+    if (typeof resetWizard === 'function') resetWizard();
+    clearWizardForm();
+    syncWizardSelectors();
+
+    document.getElementById('wz-title').textContent = `🔧 Editar Evaluación - ${verificacion.folio}`;
+    document.getElementById('wz-vehiculo').value = verificacion.vehiculo_id ? String(verificacion.vehiculo_id) : '';
+    document.getElementById('wz-materia').value = verificacion.materia || 'MOTRIZ';
+    document.getElementById('wz-nota').value = verificacion.id_nota ? String(verificacion.id_nota) : '';
+    document.getElementById('wz-finish').textContent = '✔ Guardar Cambios';
+    updateDictamenPreview(verificacion.resultado);
+
+    om('m-wizard');
+  }
+
+  window.wizardSaveHandler = async function (data) {
+    if (!wizardEditingRecord) throw new Error('No hay una verificación en edición');
+    if (!data.notaId || !data.vehiculoId || !data.materia) throw new Error('Nota, vehículo y materia son requeridos');
+
+    const payload = {
+      idNota: parseInt(data.notaId),
+      vehiculo: { id: parseInt(data.vehiculoId) },
+      materia: data.materia,
+      folioVerificacion: wizardEditingRecord.folio,
+      precio: Number(wizardEditingRecord.precio || 0),
+      multa: Number(wizardEditingRecord.multa || 0),
+      fechaVerificacion: wizardEditingRecord.fecha !== 'N/A' ? wizardEditingRecord.fecha : null,
+      dictamen: data.resultado,
+      activo: true
+    };
+
+    await apiUpdateVerificacion(wizardEditingRecord.id, payload);
+    toast('✅ Evaluación actualizada');
+    wizardEditingRecord = null;
+    window.wizardEditingId = null;
+    await loadVerificacionesData();
+  };
+
   // Borrar
   async function deleteVerificacion(id, folio) {
     if(confirm(`⚠️ ¿Deseas eliminar la verificación ${folio}?`)) {
@@ -288,5 +542,7 @@
     }
   }
 </script>
+<script src="/js/validators.js"></script>
+<script src="/js/wizard.js"></script>
 </body>
 </html>
