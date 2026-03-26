@@ -5,6 +5,7 @@ import com.scanpesado.backend.service.TransaccionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,47 +14,57 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/transacciones")
 public class TransaccionController {
+
     @Autowired
     private TransaccionService service;
 
     @GetMapping
     public List<Map<String, Object>> getAll() {
-        return service.getAllTransacciones().stream().map(t -> {
+        return service.getAllTransacciones().stream().map(transaccion -> {
             Map<String, Object> map = new HashMap<>();
-            map.put("id", t.getId());
-            map.put("gestor", t.getNota() != null && t.getNota().getCliente() != null ? t.getNota().getCliente().getGestor() : "—");
-            map.put("razon_social", t.getNota() != null && t.getNota().getCliente() != null ? t.getNota().getCliente().getRazonSocial() : "—");
-            map.put("verificentro", t.getNota() != null && t.getNota().getVerificentro() != null ? t.getNota().getVerificentro().getNombre() : "—");
-            map.put("nota_folio", t.getNota() != null ? t.getNota().getFolio() : "—");
-            map.put("nota_id", t.getNota() != null ? t.getNota().getId() : null);
-            map.put("placa", t.getVehiculo() != null ? t.getVehiculo().getPlaca() : "—");
-            map.put("serie", t.getVehiculo() != null ? t.getVehiculo().getSerie() : "—");
-            map.put("materia", t.getMateria());
-            map.put("precio", t.getPrecio());
-            map.put("tipo_pago", t.getTipoPago());
-            map.put("cotizacion", t.getCotizacion());
-            map.put("fecha_folio", t.getFechaFolio() != null ? t.getFechaFolio().toString() : "");
-            map.put("folio", t.getFolio());
-            map.put("cuenta_deposito", t.getCuentaDeposito());
-            map.put("numero_factura", t.getNumeroFactura());
-            map.put("pagado", t.getPagado());
-            map.put("pendiente", t.getPendiente());
-            map.put("fecha_pedido", t.getFechaPedido() != null ? t.getFechaPedido().toString() : "");
+            map.put("id", transaccion.getId());
+            map.put("gestor", transaccion.getNota() != null && transaccion.getNota().getCliente() != null ? transaccion.getNota().getCliente().getGestor() : "-");
+            map.put("razon_social", transaccion.getNota() != null && transaccion.getNota().getCliente() != null ? transaccion.getNota().getCliente().getRazonSocial() : "-");
+            map.put("verificentro", transaccion.getNota() != null && transaccion.getNota().getVerificentro() != null ? transaccion.getNota().getVerificentro().getNombre() : "-");
+            map.put("nota_folio", transaccion.getNota() != null ? transaccion.getNota().getFolio() : "-");
+            map.put("nota_id", transaccion.getNota() != null ? transaccion.getNota().getId() : null);
+            map.put("placa", transaccion.getVehiculo() != null ? transaccion.getVehiculo().getPlaca() : "-");
+            map.put("serie", transaccion.getVehiculo() != null ? transaccion.getVehiculo().getSerie() : "-");
+            map.put("materia", transaccion.getMateria());
+            map.put("precio", transaccion.getPrecio());
+            map.put("tipo_pago", transaccion.getTipoPago());
+            map.put("cotizacion", transaccion.getCotizacion());
+            map.put("fecha_folio", transaccion.getFechaFolio() != null ? transaccion.getFechaFolio().toString() : "");
+            map.put("folio", transaccion.getFolio());
+            map.put("cuenta_deposito", transaccion.getCuentaDeposito());
+            map.put("numero_factura", transaccion.getNumeroFactura());
+            map.put("pagado", transaccion.getPagado());
+            map.put("pendiente", transaccion.getPendiente());
+            map.put("fecha_pedido", transaccion.getFechaPedido() != null ? transaccion.getFechaPedido().toString() : "");
             return map;
         }).collect(Collectors.toList());
     }
 
     @PostMapping
-    public ResponseEntity<Transaccion> create(@RequestBody Transaccion t) { return ResponseEntity.ok(service.saveTransaccion(t)); }
+    public ResponseEntity<Transaccion> create(@RequestBody Transaccion transaccion) {
+        return ResponseEntity.ok(service.saveTransaccion(transaccion));
+    }
 
-    // Endpoints de Acciones Masivas
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        service.deleteTransaccion(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @PutMapping("/pagar-masivo")
     public ResponseEntity<Void> pagarMasivo(@RequestBody List<Long> ids) {
-        service.pagarMasivo(ids); return ResponseEntity.ok().build();
+        service.pagarMasivo(ids);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/eliminar-masivo")
     public ResponseEntity<Void> eliminarMasivo(@RequestBody List<Long> ids) {
-        service.eliminarMasivo(ids); return ResponseEntity.ok().build();
+        service.eliminarMasivo(ids);
+        return ResponseEntity.ok().build();
     }
 }

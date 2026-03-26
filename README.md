@@ -1,50 +1,52 @@
-# Scan Pesado — Backend
+# Scan Pesado
 
-API REST para la gestión de verificaciones vehiculares y la operación diaria del sistema: autenticación de usuarios, administración de clientes, registro y consulta de verificaciones, y estadísticas para el dashboard. También soporta el flujo móvil de evaluaciones en campo.
+Aplicacion full stack con backend Spring Boot y frontend React para la gestion de verificaciones vehiculares, catalogos, finanzas y reportes.
 
-## Funcionalidades clave
-- Autenticación de usuarios (login).
-- Gestión de usuarios y clientes.
-- Verificaciones/inspecciones: creación y consulta de recientes.
-- Estadísticas operativas para paneles.
-- Soporte a evaluaciones móviles (inicio/actualización).
-
-## Stack tecnológico
-- Java 21
-- Spring Web (MVC) y Spring Data JPA
-- Jakarta (anotaciones)
-- Lombok
+## Stack
+- Java 17+
+- Spring Boot 3
+- Spring Web MVC y Spring Data JPA
 - MySQL 8.x
+- React + Vite + React Router
+- React Hook Form + Zod
 
-## Requisitos previos
-- Java 21 o superior
-- Maven 3.8+ (o superior)
-- MySQL en localhost:3306 (por defecto)
+## Requisitos
+- Java 17 o superior
+- Maven 3.8+ o wrapper Maven
+- Node.js 20+ y npm
+- MySQL en localhost:3306
 
-## Configuración
-Define la conexión a base de datos y parámetros de la app en `src/main/resources/application.properties` o mediante variables de entorno equivalentes.
+## Desarrollo
+Frontend:
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-Ejemplo:
-
-## Ejecución
-Desde la raíz del proyecto:
+Backend:
 ```bash
 mvn spring-boot:run
 ```
 
-El servidor iniciará en `http://localhost:8080`.
+## Build del frontend
+```bash
+cd frontend
+npm run build
+```
 
-## Endpoints Principales (Compatibilidad Frontend)
-- `POST /api/login`: Autenticación de usuarios
-- `GET /api/stats`: Estadísticas del dashboard
-- `GET /api/clientes`: Listado de clientes
-- `GET /api/usuarios`: Listado de usuarios
-- `GET /api/verificaciones`: Listado de verificaciones recientes
+El build de React se publica en `src/main/resources/static` y Spring Boot lo sirve desde `http://localhost:8080`.
 
-## Estructura del Proyecto (Java)
-- `src/main/java/com/scanpesado/backend/`: Código fuente Java
-    - `controller/`: Controladores REST (Endpoints)
-    - `model/`: Entidades JPA (Tablas de BD)
-    - `repository/`: Interfaces de acceso a datos (Spring Data JPA)
-    - `service/`: Lógica de negocio
-- `pom.xml`: Dependencias Maven (Spring Boot, MySQL, Lombok, etc.)
+## Endpoints clave
+- `POST /api/login`
+- `GET /api/stats`
+- `GET /api/clientes`
+- `GET /api/usuarios`
+- `GET /api/verificaciones`
+- `GET /api/regiones`
+
+## Estructura
+- `frontend/`: SPA React modular
+- `src/main/java/com/scanpesado/backend/`: API y logica de negocio
+- `src/main/resources/static/`: frontend compilado y assets
+- `pom.xml`: dependencias del backend
