@@ -80,4 +80,3 @@ INSERT INTO evaluaciones (id_verificacion, id_tecnico, fecha_captura, luces_alta
                                                                                                                      (1, 4, '2026-03-23 10:00:00', 'Regulares', 32, 'Falta ajuste en frenos traseros, se deja en PENDIENTE'),
                                                                                                                      (2, 5, '2026-03-24 11:30:00', 'Óptimas', 35, 'Niveles de opacidad de humo dentro de norma, APROBADO'),
                                                                                                                      (3, 4, '2026-03-26 09:15:00', 'Deficientes', 28, 'Falla en sistema de escape y baja presión de llantas, REPROBADO');
-

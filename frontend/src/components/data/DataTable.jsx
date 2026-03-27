@@ -1,9 +1,21 @@
 import { Pencil, Trash2 } from 'lucide-react';
 import { StatusBadge } from '../ui/StatusBadge.jsx';
 
-function renderCell(value) {
+function renderCell(column, value) {
   if (typeof value === 'boolean') {
-    return <StatusBadge value={value ? 'Activo' : 'Inactivo'} />;
+    if (column === 'activo') {
+      return <StatusBadge value={value ? 'Activo' : 'Inactivo'} />;
+    }
+
+    if (column === 'pagado') {
+      return <StatusBadge value={value ? 'Pagado' : 'No pagado'} />;
+    }
+
+    if (column === 'pendiente') {
+      return <StatusBadge value={value ? 'Pendiente' : 'Sin pendiente'} />;
+    }
+
+    return value ? 'Si' : 'No';
   }
 
   if (typeof value === 'string' && ['APROBADO', 'PENDIENTE', 'REPROBADO', 'ENTREGADO', 'ENVIADO', 'INCIDENCIA'].includes(value)) {
@@ -51,7 +63,7 @@ export function DataTable({
                     </td>
                   ) : null}
                   {columns.map((column) => (
-                    <td key={`${row.id}-${column}`}>{renderCell(row[column])}</td>
+                    <td key={`${row.id}-${column}`}>{renderCell(column, row[column])}</td>
                   ))}
                   <td>
                     <div className="action-row">

@@ -177,7 +177,7 @@ const baseModules = [
       { name: 'folio', label: 'Folio', type: 'text', required: true },
       { name: 'clienteId', label: 'Cliente', type: 'lookup', required: true, source: 'clientes' },
       { name: 'verificentroId', label: 'Verificentro', type: 'lookup', required: true, source: 'verificentros' },
-      { name: 'tipoPago', label: 'Tipo pago', type: 'select', required: true, options: ['EFECTIVO', 'DEPOSITO', 'TRANSFERENCIA', 'TARJETA'] },
+      { name: 'tipoPago', label: 'Tipo pago', type: 'select', required: true, options: ['EFECTIVO', 'DEPOSITO', 'TRANSFERENCIA', 'TARJETA', 'CREDITO'] },
       { name: 'anticipo', label: 'Anticipo ($)', type: 'number', required: true },
       { name: 'fechaContrato', label: 'Fecha contrato', type: 'date', required: true },
       { name: 'fechaVigencia', label: 'Fecha vigencia', type: 'date', required: true },

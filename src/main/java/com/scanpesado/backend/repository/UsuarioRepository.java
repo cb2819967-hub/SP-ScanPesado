@@ -8,4 +8,5 @@ import java.util.List;
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     Optional<Usuario> findByEmail(String email);
     List<Usuario> findByActivoTrue();
+    List<Usuario> findAllByOrderByActivoDescIdDesc();
 }

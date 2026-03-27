@@ -41,6 +41,7 @@ public class TransaccionController {
             map.put("pagado", transaccion.getPagado());
             map.put("pendiente", transaccion.getPendiente());
             map.put("fecha_pedido", transaccion.getFechaPedido() != null ? transaccion.getFechaPedido().toString() : "");
+            map.put("activo", transaccion.getActivo());
             return map;
         }).collect(Collectors.toList());
     }

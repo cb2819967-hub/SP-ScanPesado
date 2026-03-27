@@ -20,6 +20,10 @@ public class UsuarioService {
     @PersistenceContext
     private EntityManager entityManager;
 
+    public List<Usuario> getAllUsuarios() {
+        return usuarioRepository.findAllByOrderByActivoDescIdDesc();
+    }
+
     public List<Usuario> getAllActiveUsuarios() {
         return usuarioRepository.findByActivoTrue();
     }

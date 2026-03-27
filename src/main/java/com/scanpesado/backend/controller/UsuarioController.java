@@ -19,7 +19,7 @@ public class UsuarioController {
 
     @GetMapping
     public List<Map<String, Object>> getAllUsuarios() {
-        return usuarioService.getAllActiveUsuarios().stream()
+        return usuarioService.getAllUsuarios().stream()
             .map(u -> {
                 Map<String, Object> map = new HashMap<>();
                 map.put("id", u.getId());

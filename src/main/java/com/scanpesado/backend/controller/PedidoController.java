@@ -39,6 +39,7 @@ public class PedidoController {
             map.put("foto", p.getFoto());
             map.put("estatus_envio", p.getEstatusEnvio() != null ? p.getEstatusEnvio().name() : "");
             map.put("comentario", p.getComentario());
+            map.put("activo", p.getActivo());
 
             return map;
         }).collect(Collectors.toList());

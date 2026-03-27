@@ -17,6 +17,13 @@ function formatLookupOption(source, item) {
   return { value: item.id, label: item.nombre ?? item.folio ?? item.id };
 }
 
+function normalizeTipoPago(value) {
+  const normalized = String(value ?? '').trim().toUpperCase();
+  if (!normalized) return '';
+  if (normalized === 'CRÉDITO') return 'CREDITO';
+  return normalized;
+}
+
 function toFormData(module, row) {
   if (!row) {
     return null;
@@ -36,7 +43,7 @@ function toFormData(module, row) {
     if (field.name === 'email') base[field.name] = row.email ?? row.correo ?? '';
     if (field.name === 'claveVerificentro') base[field.name] = row.clave ?? '';
     if (field.name === 'telAlternativo') base[field.name] = row.tel_alternativo ?? '';
-    if (field.name === 'tipoPago') base[field.name] = row.tipo_pago ?? '';
+    if (field.name === 'tipoPago') base[field.name] = normalizeTipoPago(row.tipo_pago);
     if (field.name === 'pagadoCompleto') base[field.name] = row.pagado_completo ?? false;
     if (field.name === 'fechaContrato') base[field.name] = row.fecha_contrato ?? '';
     if (field.name === 'fechaVigencia') base[field.name] = row.fecha_vigencia ?? '';
@@ -71,6 +78,7 @@ function toPayload(module, values) {
     else if (key === 'verificentroId') payload.verificentro = { id: Number(value) };
     else if (key === 'notaId') payload.nota = { id: Number(value) };
     else if (key === 'vehiculoId') payload.vehiculo = { id: Number(value) };
+    else if (key === 'tipoPago') payload[key] = normalizeTipoPago(value);
     else payload[key] = value;
   });
 
