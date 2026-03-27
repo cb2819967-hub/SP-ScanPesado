@@ -1278,6 +1278,16 @@ textarea {
   padding-top: 0.15rem;
 }
 
+.note-card-comment {
+  margin: -0.1rem 0 0;
+  padding: 0.75rem 0.85rem;
+  border-radius: 12px;
+  background: rgba(37, 99, 235, 0.06);
+  color: var(--muted-strong);
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
 .data-card-line span {
   color: var(--muted);
   text-transform: capitalize;

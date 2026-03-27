@@ -77,7 +77,13 @@ export function DataCards({
                   <span>Tipo de pago</span>
                   <strong>{displayValue(row.tipo_pago)}</strong>
                 </div>
+                <div className="data-card-line">
+                  <span>Estatus</span>
+                  <strong>{row.pagado_completo ? 'Pagado completo' : 'Anticipo / pendiente'}</strong>
+                </div>
               </div>
+
+              {row.comentario ? <p className="note-card-comment">{row.comentario}</p> : null}
 
               <div className="note-card-footer">
                 <div className="note-card-meta">

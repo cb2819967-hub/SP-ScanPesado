@@ -50,7 +50,14 @@ public class Nota {
     // Se asignan fechas automáticamente antes de guardar en la BD
     @PrePersist
     protected void onCreate() {
-        this.fechaContrato = LocalDate.now();
-        this.fechaVigencia = LocalDate.now().plusYears(1);
+        if (this.fechaCreacion == null) {
+            this.fechaCreacion = LocalDate.now();
+        }
+        if (this.fechaContrato == null) {
+            this.fechaContrato = LocalDate.now();
+        }
+        if (this.fechaVigencia == null) {
+            this.fechaVigencia = this.fechaContrato.plusYears(1);
+        }
     }
 }

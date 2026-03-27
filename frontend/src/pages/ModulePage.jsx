@@ -38,6 +38,8 @@ function toFormData(module, row) {
     if (field.name === 'telAlternativo') base[field.name] = row.tel_alternativo ?? '';
     if (field.name === 'tipoPago') base[field.name] = row.tipo_pago ?? '';
     if (field.name === 'pagadoCompleto') base[field.name] = row.pagado_completo ?? false;
+    if (field.name === 'fechaContrato') base[field.name] = row.fecha_contrato ?? '';
+    if (field.name === 'fechaVigencia') base[field.name] = row.fecha_vigencia ?? '';
     if (field.name === 'folioVerificacion') base[field.name] = row.folio ?? '';
     if (field.name === 'fechaVerificacion') base[field.name] = row.fecha ?? '';
     if (field.name === 'dictamen') base[field.name] = row.resultado ?? '';

@@ -39,7 +39,9 @@ public class NotaController {
             map.put("atendio", n.getAtendio());
             map.put("reviso", n.getReviso());
             map.put("comentario", n.getComentario());
-            map.put("fecha_contrato", n.getFechaCreacion() != null ? n.getFechaCreacion().toString() : "");
+            map.put("fecha_creacion", n.getFechaCreacion() != null ? n.getFechaCreacion().toString() : "");
+            map.put("fecha_contrato", n.getFechaContrato() != null ? n.getFechaContrato().toString() : "");
+            map.put("fecha_vigencia", n.getFechaVigencia() != null ? n.getFechaVigencia().toString() : "");
             map.put("activo", n.getActivo());
 
             // 🟢 MAGIA VISTA 3: Cálculo automático de Verificaciones (VERSIÓN SEGURA CLÁSICA)

@@ -179,6 +179,8 @@ const baseModules = [
       { name: 'verificentroId', label: 'Verificentro', type: 'lookup', required: true, source: 'verificentros' },
       { name: 'tipoPago', label: 'Tipo pago', type: 'select', required: true, options: ['EFECTIVO', 'DEPOSITO', 'TRANSFERENCIA', 'TARJETA'] },
       { name: 'anticipo', label: 'Anticipo ($)', type: 'number', required: true },
+      { name: 'fechaContrato', label: 'Fecha contrato', type: 'date', required: true },
+      { name: 'fechaVigencia', label: 'Fecha vigencia', type: 'date', required: true },
       { name: 'pagadoCompleto', label: 'Pagado completo', type: 'switch' },
       { name: 'atendio', label: 'Atendio', type: 'text', required: true, lettersOnly: true },
       { name: 'reviso', label: 'Reviso', type: 'text', required: true, lettersOnly: true },
