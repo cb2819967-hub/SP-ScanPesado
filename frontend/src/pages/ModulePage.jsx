@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Plus, Search } from 'lucide-react';
+import { ChevronDown, Plus, Search } from 'lucide-react';
 import { DataCards } from '../components/data/DataCards.jsx';
 import { DataTable } from '../components/data/DataTable.jsx';
 import { EntityForm } from '../components/forms/EntityForm.jsx';
@@ -10,7 +10,7 @@ import { generateNotePdf } from '../utils/notePdf.js';
 function formatLookupOption(source, item) {
   if (source === 'clientes') return { value: item.id, label: item.razon_social };
   if (source === 'cedis') return { value: item.id, label: item.nombre };
-  if (source === 'vehiculos') return { value: item.id, label: `${item.placa} · ${item.serie}` };
+  if (source === 'vehiculos') return { value: item.id, label: `${item.placa} - ${item.serie}` };
   if (source === 'verificentros') return { value: item.id, label: item.nombre };
   if (source === 'notas') return { value: item.id, label: item.folio };
   if (source === 'regiones') return { value: item.id, label: item.nombre };
@@ -139,26 +139,38 @@ export function ModulePage({ module }) {
   const [submitting, setSubmitting] = useState(false);
   const [filterState, setFilterState] = useState(() => initialFilterState(module));
   const [deleteCandidate, setDeleteCandidate] = useState(null);
+  const [submitError, setSubmitError] = useState('');
+  const [pageError, setPageError] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
 
   const loadAll = useCallback(async () => {
-    const [list, ...lookupResults] = await Promise.all([
-      moduleApi.list(module.endpoint),
-      ...(module.lookups ?? []).map((lookup) => lookupApi[lookup]()),
-    ]);
+    try {
+      setPageError('');
+      const [list, ...lookupResults] = await Promise.all([
+        moduleApi.list(module.endpoint),
+        ...(module.lookups ?? []).map((lookup) => lookupApi[lookup]()),
+      ]);
 
-    setRows(list);
+      setRows(list);
 
-    const lookupMap = {};
-    (module.lookups ?? []).forEach((lookup, index) => {
-      lookupMap[lookup] = lookupResults[index].map((item) => formatLookupOption(lookup, item));
-    });
-    setLookupOptions(lookupMap);
+      const lookupMap = {};
+      (module.lookups ?? []).forEach((lookup, index) => {
+        lookupMap[lookup] = lookupResults[index].map((item) => formatLookupOption(lookup, item));
+      });
+      setLookupOptions(lookupMap);
+    } catch (error) {
+      setRows([]);
+      setLookupOptions({});
+      setPageError(error.message || 'No se pudieron cargar los datos del modulo.');
+    }
   }, [module.endpoint, module.lookups]);
 
   useEffect(() => {
     loadAll();
     setFilterState(initialFilterState(module));
     setSelectedIds([]);
+    setSubmitError('');
+    setCurrentPage(1);
   }, [loadAll, module]);
 
   const formData = useMemo(() => toFormData(module, editingRow), [editingRow, module]);
@@ -192,33 +204,71 @@ export function ModulePage({ module }) {
     return { total, aprobadas, reprobadas, pendientes };
   }, [filteredRows, module.key]);
 
+  const notesPageSize = 9;
+  const totalPages = module.key === 'notas' ? Math.max(1, Math.ceil(filteredRows.length / notesPageSize)) : 1;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filterState, rows, module.key]);
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
+
+  const visibleRows = useMemo(() => {
+    if (module.key !== 'notas') {
+      return filteredRows;
+    }
+
+    const start = (currentPage - 1) * notesPageSize;
+    return filteredRows.slice(start, start + notesPageSize);
+  }, [currentPage, filteredRows, module.key]);
+
   async function handleSave(values) {
     setSubmitting(true);
+    setSubmitError('');
     const payload = toPayload(module, values);
+
     try {
       if (editingRow?.id && !module.disableEdit) {
         await moduleApi.update(module.endpoint, editingRow.id, payload);
       } else {
         await moduleApi.create(module.endpoint, payload);
       }
+
       setOpen(false);
       setEditingRow(null);
       await loadAll();
+    } catch (error) {
+      setSubmitError(error.message || 'No se pudo guardar el registro.');
     } finally {
       setSubmitting(false);
     }
   }
 
   async function handleDelete(id) {
-    await moduleApi.remove(module.endpoint, id);
-    await loadAll();
+    try {
+      setPageError('');
+      await moduleApi.remove(module.endpoint, id);
+      await loadAll();
+    } catch (error) {
+      setPageError(error.message || 'No se pudo eliminar el registro.');
+    }
   }
 
   async function handleBulk(action) {
     if (!selectedIds.length) return;
-    await moduleApi.customPut(action.endpoint, selectedIds);
-    setSelectedIds([]);
-    await loadAll();
+
+    try {
+      setPageError('');
+      await moduleApi.customPut(action.endpoint, selectedIds);
+      setSelectedIds([]);
+      await loadAll();
+    } catch (error) {
+      setPageError(error.message || 'No se pudo completar la accion masiva.');
+    }
   }
 
   return (
@@ -231,31 +281,29 @@ export function ModulePage({ module }) {
         </div>
       </section>
 
+      {pageError ? <section className="error-banner page-error-banner">{pageError}</section> : null}
+
       {module.key === 'verificaciones' ? (
         <section className="verification-summary-grid">
           <article className="verification-summary-card blue">
-            <div className="verification-summary-icon">📋</div>
             <div>
               <strong>{verificationSummary?.total ?? 0}</strong>
               <span>Total</span>
             </div>
           </article>
           <article className="verification-summary-card green">
-            <div className="verification-summary-icon">✅</div>
             <div>
               <strong>{verificationSummary?.aprobadas ?? 0}</strong>
               <span>Aprobadas</span>
             </div>
           </article>
           <article className="verification-summary-card red">
-            <div className="verification-summary-icon">❌</div>
             <div>
               <strong>{verificationSummary?.reprobadas ?? 0}</strong>
               <span>Reprobadas</span>
             </div>
           </article>
           <article className="verification-summary-card orange">
-            <div className="verification-summary-icon">⏳</div>
             <div>
               <strong>{verificationSummary?.pendientes ?? 0}</strong>
               <span>Pendientes</span>
@@ -264,7 +312,7 @@ export function ModulePage({ module }) {
         </section>
       ) : null}
 
-      <section className={`toolbar toolbar-card ${module.filterControls?.length ? 'toolbar-rich' : ''}`}>
+      <section className={`toolbar toolbar-card ${module.filterControls?.length ? 'toolbar-rich' : ''} toolbar-${module.key}`}>
         <div className="toolbar-filters">
           <label className="search-box">
             <Search size={16} />
@@ -279,18 +327,20 @@ export function ModulePage({ module }) {
           {(module.filterControls ?? []).map((control) => {
             const options = getFilterOptions(control, rows, lookupOptions);
             return (
-              <select
-                key={control.key}
-                value={filterState[control.key] ?? 'all'}
-                onChange={(event) => setFilterState((current) => ({ ...current, [control.key]: event.target.value }))}
-              >
-                <option value="all">{control.allLabel ?? 'Todos'}</option>
-                {options.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
+              <label key={control.key} className="toolbar-select">
+                <select
+                  value={filterState[control.key] ?? 'all'}
+                  onChange={(event) => setFilterState((current) => ({ ...current, [control.key]: event.target.value }))}
+                >
+                  <option value="all">{control.allLabel ?? 'Todos'}</option>
+                  {options.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown size={16} className="toolbar-select-icon" />
+              </label>
             );
           })}
         </div>
@@ -306,6 +356,7 @@ export function ModulePage({ module }) {
             className="primary-button"
             onClick={() => {
               setEditingRow(null);
+              setSubmitError('');
               setOpen(true);
             }}
           >
@@ -335,7 +386,7 @@ export function ModulePage({ module }) {
 
       {module.key === 'notas' ? (
         <DataCards
-          rows={filteredRows}
+          rows={visibleRows}
           columns={module.columns}
           variant="notas"
           selectable={Boolean(module.bulkActions?.length)}
@@ -345,6 +396,7 @@ export function ModulePage({ module }) {
           }
           onEdit={(row) => {
             setEditingRow(row);
+            setSubmitError('');
             setOpen(true);
           }}
           onDelete={setDeleteCandidate}
@@ -353,7 +405,7 @@ export function ModulePage({ module }) {
         />
       ) : (
         <DataTable
-          rows={filteredRows}
+          rows={visibleRows}
           columns={module.columns}
           selectable={Boolean(module.bulkActions?.length)}
           selectedIds={selectedIds}
@@ -362,12 +414,37 @@ export function ModulePage({ module }) {
           }
           onEdit={(row) => {
             setEditingRow(row);
+            setSubmitError('');
             setOpen(true);
           }}
           onDelete={setDeleteCandidate}
           disableEdit={module.disableEdit}
         />
       )}
+
+      {module.key === 'notas' && totalPages > 1 ? (
+        <section className="pagination-bar">
+          <div className="pagination-summary">
+            Mostrando {(currentPage - 1) * notesPageSize + 1}-{Math.min(currentPage * notesPageSize, filteredRows.length)} de {filteredRows.length}
+          </div>
+          <div className="pagination-actions">
+            <button type="button" className="ghost-button compact" onClick={() => setCurrentPage((page) => Math.max(1, page - 1))} disabled={currentPage === 1}>
+              Anterior
+            </button>
+            <span className="pagination-indicator">
+              Pagina {currentPage} de {totalPages}
+            </span>
+            <button
+              type="button"
+              className="ghost-button compact"
+              onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+              disabled={currentPage === totalPages}
+            >
+              Siguiente
+            </button>
+          </div>
+        </section>
+      ) : null}
 
       <Modal
         open={open}
@@ -376,6 +453,7 @@ export function ModulePage({ module }) {
         onClose={() => {
           setOpen(false);
           setEditingRow(null);
+          setSubmitError('');
         }}
       >
         <EntityForm
@@ -384,17 +462,19 @@ export function ModulePage({ module }) {
           initialData={formData}
           onSubmit={handleSave}
           submitting={submitting}
+          submitError={submitError}
           className={module.key === 'notas' ? 'notes-form' : ''}
           onCancel={() => {
             setOpen(false);
             setEditingRow(null);
+            setSubmitError('');
           }}
         />
       </Modal>
 
       <Modal open={Boolean(deleteCandidate)} title="Confirmar eliminacion" onClose={() => setDeleteCandidate(null)}>
         <div className="confirm-box">
-          <p>¿Seguro que deseas eliminar este registro?</p>
+          <p>Seguro que deseas eliminar este registro?</p>
           <div className="confirm-actions">
             <button
               type="button"

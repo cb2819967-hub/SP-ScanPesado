@@ -3,7 +3,20 @@ const roles = {
   all: ['ADMIN', 'TECNICO'],
 };
 
-export const MODULES = [
+const GESTOR_OPTIONS = ['Roberto Garza', 'Ana Martinez', 'Carlos Ruiz', 'Jorge Gomez'];
+
+const OPTIONAL_FIELD_NAMES = new Set(['telefonoAlternativo', 'telAlternativo', 'comentario', 'foto']);
+
+const withRequiredFields = (modules) =>
+  modules.map((module) => ({
+    ...module,
+    fields: module.fields.map((field) => ({
+      ...field,
+      required: field.type === 'switch' ? field.required : !OPTIONAL_FIELD_NAMES.has(field.name),
+    })),
+  }));
+
+const baseModules = [
   {
     key: 'usuarios',
     path: 'usuarios',
@@ -19,7 +32,7 @@ export const MODULES = [
       { key: 'activo', type: 'status', allLabel: 'Todos los estados' },
     ],
     fields: [
-      { name: 'nombreUsuario', label: 'Nombre', type: 'text', required: true },
+      { name: 'nombreUsuario', label: 'Nombre', type: 'text', required: true, lettersOnly: true },
       { name: 'email', label: 'Correo', type: 'email', required: true },
       { name: 'contrasena', label: 'Contrasena', type: 'password', required: true, min: 4 },
       { name: 'tipoUsuario', label: 'Rol', type: 'select', required: true, options: ['ADMIN', 'TECNICO'] },
@@ -42,11 +55,11 @@ export const MODULES = [
     ],
     fields: [
       { name: 'razonSocial', label: 'Razon social', type: 'text', required: true },
-      { name: 'rfc', label: 'RFC', type: 'text' },
+      { name: 'rfc', label: 'RFC', type: 'text', exactLength: 13, maxLength: 13, uppercase: true },
       { name: 'email', label: 'Correo', type: 'email' },
-      { name: 'telefono', label: 'Telefono', type: 'text' },
-      { name: 'telefonoAlternativo', label: 'Telefono alternativo', type: 'text' },
-      { name: 'gestor', label: 'Gestor', type: 'text' },
+      { name: 'telefono', label: 'Telefono', type: 'text', digitsOnly: true, exactLength: 10, maxLength: 10 },
+      { name: 'telefonoAlternativo', label: 'Telefono alternativo', type: 'text', digitsOnly: true, exactLength: 10, maxLength: 10 },
+      { name: 'gestor', label: 'Gestor', type: 'select', options: GESTOR_OPTIONS },
       { name: 'activo', label: 'Activo', type: 'switch' },
     ],
   },
@@ -71,10 +84,10 @@ export const MODULES = [
       { name: 'clienteId', label: 'Cliente', type: 'lookup', required: true, source: 'clientes' },
       { name: 'regionId', label: 'Region', type: 'lookup', required: true, source: 'regiones' },
       { name: 'direccion', label: 'Direccion', type: 'textarea' },
-      { name: 'encargado', label: 'Encargado', type: 'text' },
+      { name: 'encargado', label: 'Encargado', type: 'text', lettersOnly: true },
       { name: 'correo', label: 'Correo', type: 'email' },
-      { name: 'telefono', label: 'Telefono', type: 'text' },
-      { name: 'telAlternativo', label: 'Telefono alternativo', type: 'text' },
+      { name: 'telefono', label: 'Telefono', type: 'text', digitsOnly: true, exactLength: 10, maxLength: 10 },
+      { name: 'telAlternativo', label: 'Telefono alternativo', type: 'text', digitsOnly: true, exactLength: 10, maxLength: 10 },
       { name: 'activo', label: 'Activo', type: 'switch' },
     ],
   },
@@ -129,10 +142,10 @@ export const MODULES = [
       { name: 'claveVerificentro', label: 'Clave', type: 'text' },
       { name: 'regionId', label: 'Region', type: 'lookup', required: true, source: 'regiones' },
       { name: 'direccion', label: 'Direccion', type: 'textarea' },
-      { name: 'responsable', label: 'Responsable', type: 'text' },
+      { name: 'responsable', label: 'Responsable', type: 'text', lettersOnly: true },
       { name: 'correo', label: 'Correo', type: 'email' },
-      { name: 'telefono', label: 'Telefono', type: 'text' },
-      { name: 'telAlternativo', label: 'Telefono alternativo', type: 'text' },
+      { name: 'telefono', label: 'Telefono', type: 'text', digitsOnly: true, exactLength: 10, maxLength: 10 },
+      { name: 'telAlternativo', label: 'Telefono alternativo', type: 'text', digitsOnly: true, exactLength: 10, maxLength: 10 },
       { name: 'horario', label: 'Horario', type: 'text' },
       { name: 'activo', label: 'Activo', type: 'switch' },
     ],
@@ -167,8 +180,8 @@ export const MODULES = [
       { name: 'tipoPago', label: 'Tipo pago', type: 'select', required: true, options: ['EFECTIVO', 'DEPOSITO', 'TRANSFERENCIA', 'TARJETA'] },
       { name: 'anticipo', label: 'Anticipo ($)', type: 'number', required: true },
       { name: 'pagadoCompleto', label: 'Pagado completo', type: 'switch' },
-      { name: 'atendio', label: 'Atendio', type: 'text', required: true },
-      { name: 'reviso', label: 'Reviso', type: 'text', required: true },
+      { name: 'atendio', label: 'Atendio', type: 'text', required: true, lettersOnly: true },
+      { name: 'reviso', label: 'Reviso', type: 'text', required: true, lettersOnly: true },
       { name: 'comentario', label: 'Comentario', type: 'textarea' },
       { name: 'activo', label: 'Activo', type: 'switch' },
     ],
@@ -220,7 +233,7 @@ export const MODULES = [
       { name: 'clienteId', label: 'Cliente', type: 'lookup', required: true, source: 'clientes' },
       { name: 'materia', label: 'Materia', type: 'text', required: true },
       { name: 'costo', label: 'Costo', type: 'number', required: true },
-      { name: 'encargado', label: 'Encargado', type: 'text' },
+      { name: 'encargado', label: 'Encargado', type: 'text', lettersOnly: true },
       { name: 'atiendeYCobra', label: 'Atiende y cobra', type: 'text' },
       { name: 'activo', label: 'Activo', type: 'switch' },
     ],
@@ -280,7 +293,7 @@ export const MODULES = [
       { name: 'notaId', label: 'Nota', type: 'lookup', required: true, source: 'notas' },
       { name: 'fechaEnvio', label: 'Fecha de envio', type: 'date' },
       { name: 'numeroGuia', label: 'Numero de guia', type: 'text' },
-      { name: 'recibio', label: 'Recibio', type: 'text' },
+      { name: 'recibio', label: 'Recibio', type: 'text', lettersOnly: true },
       { name: 'foto', label: 'Foto / evidencia', type: 'text' },
       { name: 'estatusEnvio', label: 'Estatus', type: 'select', options: ['PENDIENTE', 'ENVIADO', 'ENTREGADO', 'INCIDENCIA'] },
       { name: 'comentario', label: 'Comentario', type: 'textarea' },
@@ -288,3 +301,5 @@ export const MODULES = [
     ],
   },
 ];
+
+export const MODULES = withRequiredFields(baseModules);

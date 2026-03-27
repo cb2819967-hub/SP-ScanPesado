@@ -59,7 +59,7 @@ export function AppShell() {
 
       <Modal open={logoutConfirmOpen} title="Confirmar salida" onClose={() => setLogoutConfirmOpen(false)}>
         <div className="confirm-box">
-          <p>¿Seguro que deseas cerrar sesion?</p>
+          <p>Seguro que deseas cerrar sesion?</p>
           <div className="confirm-actions">
             <button type="button" className="ghost-button" onClick={() => setLogoutConfirmOpen(false)}>
               Cancelar
