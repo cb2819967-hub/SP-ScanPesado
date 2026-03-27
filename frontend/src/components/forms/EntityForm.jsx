@@ -203,7 +203,14 @@ function buildSchema(module, initialData) {
 
 function defaultValues(fields, initialData) {
   return fields.reduce((accumulator, field) => {
-    accumulator[field.name] = initialData?.[field.name] ?? (field.type === 'switch' ? true : '');
+    const rawValue = initialData?.[field.name];
+
+    if (field.type === 'lookup' || field.type === 'select') {
+      accumulator[field.name] = rawValue === null || rawValue === undefined ? '' : String(rawValue);
+      return accumulator;
+    }
+
+    accumulator[field.name] = rawValue ?? (field.type === 'switch' ? true : '');
     return accumulator;
   }, {});
 }
