@@ -518,7 +518,16 @@ textarea {
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
-.page-header h2,
+.page-header h2 {
+  margin: 0;
+  color: var(--primary);
+  font-size: clamp(1.95rem, 3.2vw, 2.4rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.02;
+  font-family: 'Syne', sans-serif;
+}
+
 .panel-heading h3 {
   margin: 0;
   color: var(--primary);
@@ -678,14 +687,19 @@ textarea {
 
 .page-header {
   display: grid;
-  gap: 0.2rem;
-  margin-bottom: 1.15rem;
-  padding: 0.15rem 0 0.1rem;
+  gap: 0.35rem;
+  margin-bottom: 1.25rem;
+  padding: 0.2rem 0 0.1rem;
 }
 
 .page-header h2 {
-  font-size: 1.95rem;
-  font-family: 'Syne', sans-serif;
+  text-wrap: balance;
+}
+
+.page-subtitle {
+  max-width: 720px;
+  font-size: 0.93rem;
+  line-height: 1.5;
 }
 
 .toolbar-card,

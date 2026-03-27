@@ -379,7 +379,6 @@ export function ModulePage({ module }) {
     <div className={`page-stack module-page module-page-${module.key}`}>
       <section className="page-header">
         <div>
-          <p className="eyebrow">{module.title}</p>
           <h2>{module.title}</h2>
           <p className="page-subtitle">{module.description}</p>
         </div>
