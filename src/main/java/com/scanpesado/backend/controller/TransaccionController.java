@@ -23,9 +23,12 @@ public class TransaccionController {
         return service.getAllTransacciones().stream().map(transaccion -> {
             Map<String, Object> map = new HashMap<>();
             map.put("id", transaccion.getId());
+            map.put("cliente_id", transaccion.getNota() != null && transaccion.getNota().getCliente() != null ? transaccion.getNota().getCliente().getId() : null);
             map.put("gestor", transaccion.getNota() != null && transaccion.getNota().getCliente() != null ? transaccion.getNota().getCliente().getGestor() : "-");
             map.put("razon_social", transaccion.getNota() != null && transaccion.getNota().getCliente() != null ? transaccion.getNota().getCliente().getRazonSocial() : "-");
             map.put("verificentro", transaccion.getNota() != null && transaccion.getNota().getVerificentro() != null ? transaccion.getNota().getVerificentro().getNombre() : "-");
+            map.put("region_id", transaccion.getNota() != null && transaccion.getNota().getVerificentro() != null && transaccion.getNota().getVerificentro().getRegion() != null ? transaccion.getNota().getVerificentro().getRegion().getId() : null);
+            map.put("region_nombre", transaccion.getNota() != null && transaccion.getNota().getVerificentro() != null && transaccion.getNota().getVerificentro().getRegion() != null ? transaccion.getNota().getVerificentro().getRegion().getNombreRegion() : "-");
             map.put("nota_folio", transaccion.getNota() != null ? transaccion.getNota().getFolio() : "-");
             map.put("nota_id", transaccion.getNota() != null ? transaccion.getNota().getId() : null);
             map.put("placa", transaccion.getVehiculo() != null ? transaccion.getVehiculo().getPlaca() : "-");
@@ -48,6 +51,12 @@ public class TransaccionController {
 
     @PostMapping
     public ResponseEntity<Transaccion> create(@RequestBody Transaccion transaccion) {
+        return ResponseEntity.ok(service.saveTransaccion(transaccion));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Transaccion> update(@PathVariable Long id, @RequestBody Transaccion transaccion) {
+        transaccion.setId(id);
         return ResponseEntity.ok(service.saveTransaccion(transaccion));
     }
 

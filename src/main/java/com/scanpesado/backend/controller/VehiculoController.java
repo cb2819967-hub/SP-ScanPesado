@@ -34,6 +34,8 @@ public class VehiculoController {
                     // 🟢 Mapeo del CEDIS corregido (ID y Nombre)
                     map.put("cedis_id", v.getCedis() != null ? v.getCedis().getId() : null);
                     map.put("cedis_nombre", v.getCedis() != null ? v.getCedis().getNombre() : "N/A");
+                    map.put("region_id", v.getCedis() != null && v.getCedis().getRegion() != null ? v.getCedis().getRegion().getId() : null);
+                    map.put("region_nombre", v.getCedis() != null && v.getCedis().getRegion() != null ? v.getCedis().getRegion().getNombreRegion() : "N/A");
 
                     map.put("activo", v.getActivo());
                     return map;

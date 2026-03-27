@@ -33,6 +33,8 @@ public class NotaController {
             map.put("cliente_nombre", n.getCliente() != null ? n.getCliente().getRazonSocial() : "N/A");
             map.put("verificentro_id", n.getVerificentro() != null ? n.getVerificentro().getId() : null);
             map.put("verificentro_nombre", n.getVerificentro() != null ? n.getVerificentro().getNombre() : "N/A");
+            map.put("region_id", n.getVerificentro() != null && n.getVerificentro().getRegion() != null ? n.getVerificentro().getRegion().getId() : null);
+            map.put("region_nombre", n.getVerificentro() != null && n.getVerificentro().getRegion() != null ? n.getVerificentro().getRegion().getNombreRegion() : "N/A");
             map.put("tipo_pago", n.getTipoPago());
             map.put("anticipo", n.getAnticipo());
             map.put("pagado_completo", n.getPagadoCompleto());

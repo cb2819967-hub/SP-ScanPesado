@@ -9,6 +9,7 @@ public interface VerificacionRepository extends JpaRepository<Verificacion, Long
 
     // 🟢 AQUÍ ESTÁ EL CAMBIO: findByNotaId en lugar de findByIdNota
     List<Verificacion> findByNotaIdAndActivoTrue(Long idNota);
+    List<Verificacion> findByVehiculoIdAndActivoTrueOrderByFechaVerificacionDesc(Long idVehiculo);
 
     // Las instrucciones de conteo para el Dashboard:
     long countByActivoTrue();

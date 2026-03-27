@@ -20,7 +20,15 @@ export const dashboardApi = {
 };
 
 export const reportApi = {
-  list: () => http.get('/reportes'),
+  list: (filters = {}) => {
+    const query = new URLSearchParams(
+      Object.entries(filters)
+        .filter(([, value]) => value !== undefined && value !== null && value !== '' && value !== 'all')
+        .map(([key, value]) => [key, String(value)]),
+    );
+    const suffix = query.toString() ? `?${query.toString()}` : '';
+    return http.get(`/reportes${suffix}`);
+  },
 };
 
 export const moduleApi = {
@@ -29,4 +37,12 @@ export const moduleApi = {
   update: (endpoint, id, payload) => http.put(`${endpoint}/${id}`, payload),
   remove: (endpoint, id) => http.delete(`${endpoint}/${id}`),
   customPut: (endpoint, payload) => http.put(endpoint, payload),
+};
+
+export const evaluationApi = {
+  create: (payload) => http.post('/evaluaciones', payload),
+  update: (id, payload) => http.put(`/evaluaciones/${id}`, payload),
+  byVehiculo: (vehiculoId) => http.absoluteGet(`/movil/evaluaciones/vehiculo/${vehiculoId}`),
+  byTecnico: (tecnicoId) => http.absoluteGet(`/movil/evaluaciones/tecnico/${tecnicoId}`),
+  byVerificacion: (verificacionId) => http.absoluteGet(`/movil/evaluaciones/verificacion/${verificacionId}`),
 };

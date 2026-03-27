@@ -200,8 +200,11 @@ textarea {
 
 .input-with-icon input {
   border: 0;
+  border-radius: 0;
   padding-inline: 0;
   background: transparent;
+  box-shadow: none;
+  outline: none;
 }
 
 .input-icon,
@@ -233,6 +236,16 @@ textarea {
 .field textarea:focus {
   outline: 2px solid rgba(45, 85, 219, 0.15);
   border-color: var(--primary);
+}
+
+.input-with-icon:focus-within {
+  outline: 2px solid rgba(45, 85, 219, 0.15);
+  border-color: var(--primary);
+}
+
+.input-with-icon input:focus {
+  outline: none;
+  border-color: transparent;
 }
 
 .field small,
@@ -609,6 +622,52 @@ textarea {
   flex-wrap: wrap;
   gap: 0.7rem;
   align-items: center;
+}
+
+.toolbar-notas,
+.toolbar-transacciones {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 1rem 1.25rem;
+}
+
+.toolbar-notas .toolbar-filters,
+.toolbar-transacciones .toolbar-filters {
+  display: grid;
+  grid-template-columns: minmax(320px, 1.5fr) repeat(auto-fit, minmax(180px, 1fr));
+  align-items: start;
+  gap: 0.8rem;
+}
+
+.toolbar-notas .search-box,
+.toolbar-transacciones .search-box {
+  min-width: 0;
+  width: 100%;
+  height: 48px;
+}
+
+.toolbar-notas .toolbar-select,
+.toolbar-transacciones .toolbar-select {
+  min-width: 0;
+  width: 100%;
+  flex: initial;
+}
+
+.toolbar-notas .toolbar-actions,
+.toolbar-transacciones .toolbar-actions {
+  align-self: start;
+  justify-content: flex-end;
+  gap: 0.8rem;
+  flex-wrap: nowrap;
+}
+
+.toolbar-notas .toolbar-actions .ghost-button,
+.toolbar-notas .toolbar-actions .primary-button,
+.toolbar-transacciones .toolbar-actions .ghost-button,
+.toolbar-transacciones .toolbar-actions .primary-button {
+  min-height: 48px;
+  white-space: nowrap;
 }
 
 .toolbar-rich {
@@ -1075,6 +1134,23 @@ textarea {
   border-radius: 14px;
 }
 
+.module-page-transacciones {
+  min-height: calc(100vh - 7rem);
+}
+
+.module-page-transacciones .table-card {
+  overflow: hidden;
+  padding: 0.75rem;
+  border-radius: 22px;
+  background: linear-gradient(180deg, #ffffff 0%, #f9fbff 100%);
+}
+
+.module-page-transacciones .table-scroll {
+  max-height: calc(100vh - 21rem);
+  border-radius: 16px;
+  background: white;
+}
+
 .panel-heading {
   display: grid;
   gap: 0.15rem;
@@ -1153,6 +1229,79 @@ textarea {
   background: #f4f8ff;
 }
 
+.data-table-transacciones {
+  min-width: 1840px;
+}
+
+.data-table-transacciones th,
+.data-table-transacciones td {
+  white-space: nowrap;
+}
+
+.data-table-transacciones .sticky-column,
+.data-table-transacciones .sticky-column-actions {
+  position: static;
+  left: auto;
+  right: auto;
+  z-index: auto;
+  background: inherit;
+}
+
+.data-table-transacciones th {
+  background: linear-gradient(180deg, #f7faff 0%, #edf3ff 100%);
+}
+
+.data-table-transacciones td {
+  padding: 0.85rem 0.8rem;
+  font-size: 0.87rem;
+}
+
+.table-money {
+  font-weight: 800;
+  color: var(--navy-strong);
+}
+
+.sticky-column {
+  position: sticky;
+  z-index: 2;
+  background: inherit;
+}
+
+.sticky-column-checkbox {
+  left: 0;
+  z-index: 4;
+}
+
+.sticky-column-1 {
+  left: 52px;
+  z-index: 3;
+}
+
+.sticky-column-2 {
+  left: 210px;
+  z-index: 3;
+}
+
+.sticky-column-actions {
+  right: 0;
+  z-index: 4;
+}
+
+.data-table-transacciones tbody tr:nth-child(odd) .sticky-column,
+.data-table-transacciones tbody tr:nth-child(odd) .sticky-column-actions {
+  background: white;
+}
+
+.data-table-transacciones tbody tr:nth-child(even) .sticky-column,
+.data-table-transacciones tbody tr:nth-child(even) .sticky-column-actions {
+  background: #fbfcff;
+}
+
+.data-table-transacciones tbody tr:hover .sticky-column,
+.data-table-transacciones tbody tr:hover .sticky-column-actions {
+  background: #f4f8ff;
+}
+
 .checkbox-cell {
   width: 52px;
 }
@@ -1194,23 +1343,42 @@ textarea {
 }
 
 .note-card {
-  position: relative;
-  gap: 0.8rem;
-  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.1rem;
+  border-radius: 22px;
+  border: 1px solid #d9e4fb;
+  background:
+    radial-gradient(circle at top right, rgba(45, 85, 219, 0.08), transparent 28%),
+    linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  box-shadow: 0 16px 34px rgba(32, 53, 103, 0.1);
 }
 
-.note-card .data-card-top {
-  position: absolute;
-  top: 14px;
-  left: 14px;
-  right: 14px;
-  justify-content: space-between;
-}
-
-.note-card-badge-row {
+.note-card-topbar,
+.note-card-select,
+.note-card-statuses,
+.note-card-tags {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  gap: 0.65rem;
+}
+
+.note-card-topbar,
+.note-card-header,
+.note-card-footer {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.note-card-kicker {
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 .note-summary-pill {
@@ -1222,6 +1390,11 @@ textarea {
   background: #f2f4f8;
   font-size: 0.82rem;
   font-weight: 700;
+}
+
+.note-summary-pill.strong {
+  color: var(--navy-strong);
+  background: #eaf0ff;
 }
 
 .data-card-top,
@@ -1259,31 +1432,62 @@ textarea {
   border-bottom: 1px solid #edf2fa;
 }
 
-.note-card .data-card-head {
-  padding-left: 1.8rem;
-  padding-right: 5.5rem;
-}
-
-.note-card .data-card-head h3 {
+.note-card-title-wrap h3 {
   font-size: 1.2rem;
   font-weight: 800;
+  margin: 0;
 }
 
-.note-card .data-card-head p {
+.note-card-title-wrap p {
+  margin: 0.25rem 0 0;
   font-size: 0.92rem;
+  color: var(--muted);
 }
 
-.note-card-lines {
-  border-top: 0;
-  padding-top: 0.15rem;
+.note-card-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.note-metric-card {
+  display: grid;
+  gap: 0.28rem;
+  padding: 0.85rem 0.95rem;
+  border: 1px solid #e5edf9;
+  border-radius: 16px;
+  background: #fcfdff;
+}
+
+.note-metric-card.wide {
+  grid-column: span 2;
+}
+
+.note-metric-card.highlight {
+  background: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%);
+}
+
+.note-metric-card span {
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.note-metric-card strong {
+  color: var(--navy-strong);
+  font-size: 1rem;
+  line-height: 1.35;
 }
 
 .note-card-comment {
-  margin: -0.1rem 0 0;
-  padding: 0.75rem 0.85rem;
-  border-radius: 12px;
-  background: rgba(37, 99, 235, 0.06);
-  color: var(--muted-strong);
+  margin: 0;
+  padding: 0.9rem 1rem;
+  border-radius: 16px;
+  border: 1px solid rgba(45, 85, 219, 0.08);
+  background: rgba(37, 99, 235, 0.05);
+  color: #4c5d7a;
   font-size: 0.84rem;
   line-height: 1.45;
 }
@@ -1301,14 +1505,15 @@ textarea {
 
 .note-card-footer {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   gap: 1rem;
+  padding-top: 0.15rem;
 }
 
 .note-card-meta {
   display: grid;
-  gap: 0.1rem;
+  gap: 0.2rem;
   color: var(--muted);
   font-size: 0.8rem;
 }
@@ -1490,6 +1695,130 @@ textarea {
   box-shadow: none;
 }
 
+.history-stack,
+.evaluation-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.history-card,
+.evaluation-section,
+.wheel-metric-block {
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: white;
+}
+
+.history-card.clickable {
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.history-card.clickable:hover,
+.history-card.clickable:focus-visible {
+  transform: translateY(-1px);
+  border-color: rgba(45, 85, 219, 0.35);
+  box-shadow: 0 10px 24px rgba(32, 53, 103, 0.12);
+  outline: none;
+}
+
+.history-card-head,
+.history-card-grid,
+.evaluation-section-head,
+.wheel-metric-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.history-card-head p,
+.wheel-diagram-item small,
+.evidence-card figcaption {
+  margin: 0.25rem 0 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.history-card-hint {
+  color: var(--primary);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.history-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 0.9rem;
+}
+
+.history-card-grid span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+}
+
+.history-card-grid strong {
+  color: var(--text);
+}
+
+.wheel-diagram {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.6rem;
+  min-width: 320px;
+}
+
+.wheel-diagram-item {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  gap: 0.35rem;
+}
+
+.wheel-diagram-circle {
+  width: 34px;
+  height: 34px;
+  border: 4px solid var(--navy);
+  border-radius: 50%;
+  background: linear-gradient(145deg, #f8fbff 0%, #dbe6ff 100%);
+}
+
+.wheel-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem 1rem;
+  margin-top: 0.85rem;
+}
+
+.evidence-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.evidence-card {
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #f8fbff;
+}
+
+.evidence-card img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.evidence-card figcaption {
+  padding: 0.65rem 0.8rem;
+ }
+
 .empty-state {
   display: grid;
   place-items: center;
@@ -1540,6 +1869,41 @@ textarea {
     flex-direction: column;
     align-items: stretch;
   }
+
+  .note-card-topbar,
+  .note-card-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .note-card-statuses,
+  .note-card-tags {
+    flex-wrap: wrap;
+  }
+
+  .note-card-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .note-metric-card.wide {
+    grid-column: span 1;
+  }
+
+  .history-card-grid,
+  .wheel-metric-grid,
+  .evidence-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .history-card-head,
+  .evaluation-section-head,
+  .wheel-metric-head {
+    flex-direction: column;
+  }
+
+  .wheel-diagram {
+    min-width: 0;
+  }
 }
 
 @media (max-width: 640px) {
@@ -1553,6 +1917,22 @@ textarea {
   .toolbar-actions {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .toolbar-notas,
+  .toolbar-transacciones {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .toolbar-notas .toolbar-filters,
+  .toolbar-transacciones .toolbar-filters {
+    grid-template-columns: 1fr;
+  }
+
+  .toolbar-notas .toolbar-actions,
+  .toolbar-transacciones .toolbar-actions {
+    flex-wrap: wrap;
   }
 
   .toolbar {

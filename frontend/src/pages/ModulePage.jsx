@@ -1,11 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ChevronDown, Plus, Search } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { DataCards } from '../components/data/DataCards.jsx';
 import { DataTable } from '../components/data/DataTable.jsx';
+import { EvaluationForm } from '../components/evaluations/EvaluationForm.jsx';
 import { EntityForm } from '../components/forms/EntityForm.jsx';
 import { Modal } from '../components/ui/Modal.jsx';
-import { moduleApi, lookupApi } from '../services/api.js';
+import { evaluationApi, moduleApi, lookupApi } from '../services/api.js';
 import { generateNotePdf } from '../utils/notePdf.js';
+import { useAuth } from '../utils/auth.js';
 
 function formatLookupOption(source, item) {
   if (source === 'clientes') return { value: item.id, label: item.razon_social };
@@ -39,6 +42,7 @@ function toFormData(module, row) {
     if (field.name === 'vehiculoId') base[field.name] = row.vehiculo_id ?? '';
     if (field.name === 'tipoUsuario') base[field.name] = row.rol ?? '';
     if (field.name === 'nombreUsuario') base[field.name] = row.nombre ?? '';
+    if (field.name === 'nombreRegion') base[field.name] = row.nombre ?? '';
     if (field.name === 'razonSocial') base[field.name] = row.razon_social ?? '';
     if (field.name === 'email') base[field.name] = row.email ?? row.correo ?? '';
     if (field.name === 'claveVerificentro') base[field.name] = row.clave ?? '';
@@ -140,15 +144,36 @@ function matchesControl(row, control, selectedValue) {
   return String(row[control.field] ?? '') === String(selectedValue);
 }
 
+function toVerificationOption(row) {
+  if (!row) {
+    return [];
+  }
+
+  return [
+    {
+      value: row.id,
+      label: `${row.materia} | ${row.folio || 'S/F'} | ${row.fecha || 'Sin fecha'}`,
+    },
+  ];
+}
+
 export function ModulePage({ module }) {
+  const { user } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
   const [rows, setRows] = useState([]);
   const [lookupOptions, setLookupOptions] = useState({});
   const [selectedIds, setSelectedIds] = useState([]);
   const [editingRow, setEditingRow] = useState(null);
   const [open, setOpen] = useState(false);
+  const [evaluationOpen, setEvaluationOpen] = useState(false);
+  const [editingEvaluation, setEditingEvaluation] = useState(null);
+  const [evaluationVerification, setEvaluationVerification] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [evaluationSubmitting, setEvaluationSubmitting] = useState(false);
   const [filterState, setFilterState] = useState(() => initialFilterState(module));
   const [deleteCandidate, setDeleteCandidate] = useState(null);
+  const [bulkActionCandidate, setBulkActionCandidate] = useState(null);
   const [submitError, setSubmitError] = useState('');
   const [pageError, setPageError] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -181,6 +206,9 @@ export function ModulePage({ module }) {
     setSelectedIds([]);
     setSubmitError('');
     setCurrentPage(1);
+    setEvaluationOpen(false);
+    setEditingEvaluation(null);
+    setEvaluationVerification(null);
   }, [loadAll, module]);
 
   const formData = useMemo(() => toFormData(module, editingRow), [editingRow, module]);
@@ -236,6 +264,8 @@ export function ModulePage({ module }) {
     return filteredRows.slice(start, start + notesPageSize);
   }, [currentPage, filteredRows, module.key]);
 
+  const evaluationVerificationOptions = useMemo(() => toVerificationOption(evaluationVerification), [evaluationVerification]);
+
   async function handleSave(values) {
     setSubmitting(true);
     setSubmitError('');
@@ -257,6 +287,70 @@ export function ModulePage({ module }) {
       setSubmitting(false);
     }
   }
+
+  async function openVerificationEvaluation(row) {
+    setSubmitError('');
+    setPageError('');
+    setEvaluationVerification(row);
+
+    try {
+      const evaluation = await evaluationApi.byVerificacion(row.id);
+      setEditingEvaluation(evaluation);
+    } catch (_error) {
+      setEditingEvaluation({ idVerificacion: row.id });
+    }
+
+    setEvaluationOpen(true);
+  }
+
+  async function handleEvaluationSave(values) {
+    setEvaluationSubmitting(true);
+    setSubmitError('');
+    const payload = Object.fromEntries(
+      Object.entries({
+        ...values,
+        idTecnico: editingEvaluation?.id_tecnico ?? user?.id,
+        activo: true,
+      }).filter(([, value]) => value !== '' && value !== undefined && value !== null),
+    );
+
+    try {
+      if (editingEvaluation?.id) {
+        await evaluationApi.update(editingEvaluation.id, payload);
+      } else {
+        await evaluationApi.create(payload);
+      }
+
+      setEvaluationOpen(false);
+      setEditingEvaluation(null);
+      setEvaluationVerification(null);
+      await loadAll();
+    } catch (error) {
+      setSubmitError(error.message || 'No se pudo guardar la evaluacion.');
+    } finally {
+      setEvaluationSubmitting(false);
+    }
+  }
+
+  useEffect(() => {
+    if (module.key !== 'verificaciones') {
+      return;
+    }
+
+    const openVerificationId = location.state?.openVerificationId;
+    if (!openVerificationId || !rows.length) {
+      return;
+    }
+
+    const targetRow = rows.find((row) => String(row.id) === String(openVerificationId));
+    if (!targetRow) {
+      navigate(location.pathname, { replace: true, state: {} });
+      return;
+    }
+
+    openVerificationEvaluation(targetRow);
+    navigate(location.pathname, { replace: true, state: {} });
+  }, [location.pathname, location.state, module.key, navigate, rows]);
 
   async function handleDelete(id) {
     try {
@@ -282,7 +376,7 @@ export function ModulePage({ module }) {
   }
 
   return (
-    <div className="page-stack">
+    <div className={`page-stack module-page module-page-${module.key}`}>
       <section className="page-header">
         <div>
           <p className="eyebrow">{module.title}</p>
@@ -376,14 +470,14 @@ export function ModulePage({ module }) {
         </div>
       </section>
 
-      {(module.key === 'notas' || module.key === 'transacciones') && selectedIds.length > 0 ? (
+      {module.bulkActions?.length && selectedIds.length > 0 ? (
         <section className="notes-selection-bar">
           <span>
             {selectedIds.length} seleccionada{selectedIds.length === 1 ? '' : 's'}
           </span>
           <div className="notes-selection-actions">
             {module.bulkActions?.map((action) => (
-              <button type="button" key={action.endpoint} className="secondary-button compact" onClick={() => handleBulk(action)}>
+              <button type="button" key={action.endpoint} className="secondary-button compact" onClick={() => setBulkActionCandidate(action)}>
                 {action.label}
               </button>
             ))}
@@ -417,12 +511,18 @@ export function ModulePage({ module }) {
         <DataTable
           rows={visibleRows}
           columns={module.columns}
+          variant={module.key}
           selectable={Boolean(module.bulkActions?.length)}
           selectedIds={selectedIds}
           onToggleSelect={(id) =>
             setSelectedIds((current) => (current.includes(id) ? current.filter((item) => item !== id) : [...current, id]))
           }
           onEdit={(row) => {
+            if (module.key === 'verificaciones') {
+              openVerificationEvaluation(row);
+              return;
+            }
+
             setEditingRow(row);
             setSubmitError('');
             setOpen(true);
@@ -482,6 +582,30 @@ export function ModulePage({ module }) {
         />
       </Modal>
 
+      <Modal
+        open={evaluationOpen}
+        title={editingEvaluation?.id ? 'Editar evaluacion' : 'Registrar evaluacion'}
+        onClose={() => {
+          setEvaluationOpen(false);
+          setEditingEvaluation(null);
+          setEvaluationVerification(null);
+          setSubmitError('');
+        }}
+      >
+        <EvaluationForm
+          initialData={editingEvaluation}
+          verificationOptions={evaluationVerificationOptions}
+          onSubmit={handleEvaluationSave}
+          submitting={evaluationSubmitting}
+          onCancel={() => {
+            setEvaluationOpen(false);
+            setEditingEvaluation(null);
+            setEvaluationVerification(null);
+            setSubmitError('');
+          }}
+        />
+      </Modal>
+
       <Modal open={Boolean(deleteCandidate)} title="Confirmar eliminacion" onClose={() => setDeleteCandidate(null)}>
         <div className="confirm-box">
           <p>Seguro que deseas eliminar este registro?</p>
@@ -495,6 +619,34 @@ export function ModulePage({ module }) {
               }}
             >
               Eliminar
+            </button>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal
+        open={Boolean(bulkActionCandidate)}
+        title="Confirmar accion masiva"
+        onClose={() => setBulkActionCandidate(null)}
+      >
+        <div className="confirm-box">
+          <p>
+            Seguro que deseas aplicar "{bulkActionCandidate?.label}" sobre {selectedIds.length} registro
+            {selectedIds.length === 1 ? '' : 's'}?
+          </p>
+          <div className="confirm-actions">
+            <button type="button" className="ghost-button" onClick={() => setBulkActionCandidate(null)}>
+              Cancelar
+            </button>
+            <button
+              type="button"
+              className="primary-button danger-button"
+              onClick={async () => {
+                await handleBulk(bulkActionCandidate);
+                setBulkActionCandidate(null);
+              }}
+            >
+              Confirmar
             </button>
           </div>
         </div>

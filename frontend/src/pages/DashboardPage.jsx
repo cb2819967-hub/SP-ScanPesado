@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { AlertCircle, Building2, ClipboardList, LoaderCircle, SearchCheck, Truck } from 'lucide-react';
 import { dashboardApi } from '../services/api.js';
 import { StatusBadge } from '../components/ui/StatusBadge.jsx';
+import { useAuth } from '../utils/auth.js';
 
 function MetricCard({ icon, label, value, accent, onClick }) {
   return (
@@ -30,6 +31,7 @@ function QuickCard({ icon, title, subtitle, accent, onClick }) {
 
 export function DashboardPage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [stats, setStats] = useState(null);
   const [recent, setRecent] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -200,8 +202,18 @@ export function DashboardPage() {
 
       <section className="dashboard-quick-grid">
         <QuickCard icon={<Truck size={22} />} title="Vehiculos" subtitle="Historial por unidad" accent="green" onClick={() => navigate('/dashboard/vehiculos')} />
-        <QuickCard icon={<ClipboardList size={22} />} title="Transacciones" subtitle="Cobros y seguimiento" accent="orange" onClick={() => navigate('/dashboard/transacciones')} />
-        <QuickCard icon={<SearchCheck size={22} />} title="Notas" subtitle="Resumen general de notas" accent="purple" onClick={() => navigate('/dashboard/notas')} />
+        {user?.rol === 'ADMIN' ? (
+          <QuickCard icon={<ClipboardList size={22} />} title="Transacciones" subtitle="Cobros y seguimiento" accent="orange" onClick={() => navigate('/dashboard/transacciones')} />
+        ) : (
+          <QuickCard icon={<ClipboardList size={22} />} title="Reportes" subtitle="Mis evaluaciones y trazabilidad" accent="orange" onClick={() => navigate('/dashboard/reportes')} />
+        )}
+        <QuickCard
+          icon={<SearchCheck size={22} />}
+          title="Notas"
+          subtitle={user?.rol === 'ADMIN' ? 'Resumen general de notas' : 'Verificaciones y seguimiento'}
+          accent="purple"
+          onClick={() => navigate(user?.rol === 'ADMIN' ? '/dashboard/notas' : '/dashboard/verificaciones')}
+        />
       </section>
     </div>
   );

@@ -7,6 +7,7 @@ import { LoginPage } from '../pages/LoginPage.jsx';
 import { ModulePage } from '../pages/ModulePage.jsx';
 import { NotFoundPage } from '../pages/NotFoundPage.jsx';
 import { ReportsPage } from '../pages/ReportsPage.jsx';
+import { VehicleWorkspacePage } from '../pages/VehicleWorkspacePage.jsx';
 
 export function App() {
   return (
@@ -22,7 +23,15 @@ export function App() {
         }
       >
         <Route index element={<DashboardPage />} />
-        {MODULES.filter((module) => !module.readOnly).map((module) => (
+        <Route
+          path="vehiculos"
+          element={
+            <ProtectedRoute roles={['ADMIN', 'TECNICO']}>
+              <VehicleWorkspacePage />
+            </ProtectedRoute>
+          }
+        />
+        {MODULES.filter((module) => !module.readOnly && module.path !== 'vehiculos').map((module) => (
           <Route
             key={module.path}
             path={module.path}

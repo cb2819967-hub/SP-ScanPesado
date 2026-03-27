@@ -16,4 +16,15 @@ public class RegionService {
     public List<Region> getAllRegiones() {
         return regionRepository.findAll();
     }
+
+    public Region saveRegion(Region region) {
+        return regionRepository.save(region);
+    }
+
+    public void deleteRegion(Long id) {
+        regionRepository.findById(id).ifPresent(region -> {
+            region.setActivo(false);
+            regionRepository.save(region);
+        });
+    }
 }

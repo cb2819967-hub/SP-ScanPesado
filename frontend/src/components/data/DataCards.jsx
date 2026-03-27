@@ -11,6 +11,20 @@ function displayValue(value) {
   return value ?? 'N/D';
 }
 
+function formatMoney(value) {
+  const numeric = Number(value);
+  if (Number.isNaN(numeric)) {
+    return displayValue(value);
+  }
+
+  return new Intl.NumberFormat('es-MX', {
+    style: 'currency',
+    currency: 'MXN',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(numeric);
+}
+
 export function DataCards({
   rows,
   columns,
@@ -32,54 +46,64 @@ export function DataCards({
     <div className="cards-grid">
       {rows.map((row) => {
         if (variant === 'notas') {
+          const paymentStatus = row.pagado_completo ? 'Pagado completo' : 'Pendiente';
+
           return (
             <article key={row.id} className="data-card note-card">
-              <div className="data-card-top">
-                {selectable ? (
-                  <input
-                    type="checkbox"
-                    checked={selectedIds.includes(row.id)}
-                    onChange={() => onToggleSelect(row.id)}
-                  />
-                ) : (
-                  <span className="data-card-bullet" />
-                )}
-                <StatusBadge value={displayValue(row.activo)} />
+              <div className="note-card-topbar">
+                <div className="note-card-select">
+                  {selectable ? (
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.includes(row.id)}
+                      onChange={() => onToggleSelect(row.id)}
+                    />
+                  ) : (
+                    <span className="data-card-bullet" />
+                  )}
+                  <span className="note-card-kicker">Nota</span>
+                </div>
+                <div className="note-card-statuses">
+                  <StatusBadge value={paymentStatus} />
+                  <StatusBadge value={displayValue(row.activo)} />
+                </div>
               </div>
 
-              <div className="data-card-head">
-                <h3>{displayValue(row.folio)}</h3>
-                <p>{displayValue(row.cliente_nombre)}</p>
+              <div className="note-card-header">
+                <div className="note-card-title-wrap">
+                  <h3>{displayValue(row.folio)}</h3>
+                  <p>{displayValue(row.cliente_nombre)}</p>
+                </div>
+                <div className="note-card-tags">
+                  <span className="note-summary-pill">{displayValue(row.tipo_pago)}</span>
+                  <span className="note-summary-pill strong">Verificaciones: {displayValue(row.resumen_verificaciones ?? '0')}</span>
+                </div>
               </div>
 
-              <div className="note-card-badge-row">
-                <span className="note-summary-pill">Verificaciones: {displayValue(row.resumen_verificaciones ?? '0 Registradas')}</span>
-              </div>
-
-              <div className="data-card-lines note-card-lines">
-                <div className="data-card-line">
+              <div className="note-card-metrics">
+                <div className="note-metric-card">
                   <span>Contrato</span>
                   <strong>{displayValue(row.fecha_contrato)}</strong>
                 </div>
-                <div className="data-card-line">
+                <div className="note-metric-card">
                   <span>Vigencia</span>
                   <strong>{displayValue(row.fecha_vigencia)}</strong>
                 </div>
-                <div className="data-card-line">
+                <div className="note-metric-card highlight">
                   <span>Anticipo</span>
-                  <strong className={row.pagado_completo ? 'amount-paid' : 'amount-pending'}>{displayValue(row.anticipo)}</strong>
+                  <strong className={row.pagado_completo ? 'amount-paid' : 'amount-pending'}>{formatMoney(row.anticipo)}</strong>
                 </div>
-                <div className="data-card-line">
+                <div className="note-metric-card wide">
                   <span>Verificentro</span>
                   <strong>{displayValue(row.verificentro_nombre)}</strong>
                 </div>
-                <div className="data-card-line">
-                  <span>Tipo de pago</span>
-                  <strong>{displayValue(row.tipo_pago)}</strong>
+                <div className="note-metric-card">
+                  <span>Atendio</span>
+                  <strong>{displayValue(row.atendio)}</strong>
                 </div>
-                <div className="data-card-line">
-                  <span>Estatus</span>
-                  <strong>{row.pagado_completo ? 'Pagado completo' : 'Anticipo / pendiente'}</strong>
+                <div className="note-metric-card">
+                  <span>Reviso</span>
+                  <strong>{displayValue(row.reviso)}</strong>
                 </div>
               </div>
 
@@ -87,8 +111,8 @@ export function DataCards({
 
               <div className="note-card-footer">
                 <div className="note-card-meta">
-                  <span>Atendió: {displayValue(row.atendio)}</span>
-                  <span>Revisó: {displayValue(row.reviso)}</span>
+                  <span>Estatus de pago: {paymentStatus}</span>
+                  <span>Metodo: {displayValue(row.tipo_pago)}</span>
                 </div>
                 <div className="data-card-actions">
                   <button type="button" className="secondary-button compact" onClick={() => onGeneratePdf(row)}>

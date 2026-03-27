@@ -3,6 +3,7 @@ import {
   ClipboardList,
   CreditCard,
   FileText,
+  Globe2,
   LayoutDashboard,
   Menu,
   SearchCheck,
@@ -19,6 +20,7 @@ const ICONS = {
   dashboard: LayoutDashboard,
   usuarios: UserCog,
   clientes: Building2,
+  regiones: Globe2,
   cedis: Warehouse,
   vehiculos: Truck,
   verificentros: Wrench,
@@ -59,7 +61,10 @@ function groupItems(role) {
         path: `/dashboard/${module.path}`,
       })),
     },
-    { title: 'Analisis', items: [{ key: 'reportes', label: 'Reportes', path: '/dashboard/reportes' }] },
+    {
+      title: 'Analisis',
+      items: [{ key: 'reportes', label: 'Reportes', path: '/dashboard/reportes' }],
+    },
   ];
 }
 
@@ -90,7 +95,7 @@ export function Sidebar({ role, collapsed, mobileOpen, onToggleCollapsed, onClos
             <section key={group.title} className="sidebar-group">
               <p className="sidebar-group-title">{group.title}</p>
               {group.items.map((item) => {
-                const Icon = ICONS[item.key];
+                const Icon = ICONS[item.key] ?? FileText;
                 return (
                   <NavLink
                     key={item.path}

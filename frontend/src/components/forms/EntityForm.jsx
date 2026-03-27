@@ -4,6 +4,23 @@ import { useEffect, useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 
+const PHONE_FIELDS = new Set(['telefono', 'telefonoAlternativo', 'telAlternativo']);
+const MONEY_FIELDS = new Set(['anticipo', 'costo', 'precio', 'multa']);
+const CUSTOM_FORMAT_FIELDS = new Set(['rfc', 'serie', 'placa', 'razonSocial', ...PHONE_FIELDS]);
+
+function hasUpToTwoDecimals(value) {
+  return /^\d+(\.\d{1,2})?$/.test(String(value));
+}
+
+function toDateValue(value) {
+  if (!value) {
+    return null;
+  }
+
+  const parsed = new Date(`${value}T00:00:00`);
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
+}
+
 function sanitizeValue(value, field) {
   if (typeof value !== 'string') {
     return value;
@@ -11,17 +28,8 @@ function sanitizeValue(value, field) {
 
   let nextValue = value;
 
-  if (field.digitsOnly) {
-    nextValue = nextValue.replace(/\D/g, '');
-  }
-
   if (field.uppercase) {
     nextValue = nextValue.toUpperCase();
-  }
-
-  if (field.lettersOnly) {
-    nextValue = nextValue.replace(/[^\p{L}\s]/gu, '');
-    nextValue = nextValue.replace(/\s{2,}/g, ' ');
   }
 
   if (field.maxLength) {
@@ -32,19 +40,36 @@ function sanitizeValue(value, field) {
 }
 
 function fieldSchema(field, initialData) {
-  const stringSchema = z.string().trim();
+  const stringSchema = z.string();
 
   if (field.type === 'number') {
     const numberSchema = z.union([z.string(), z.number()]).transform((value) => {
-      if (value === '') {
+      if (value === '' || value === null || value === undefined) {
         return undefined;
       }
       return Number(value);
     });
 
+    let schema = numberSchema.refine((value) => value === undefined || !Number.isNaN(value), 'Ingresa un numero valido');
+    const minValue = field.min ?? (MONEY_FIELDS.has(field.name) ? 0 : undefined);
+
+    if (minValue !== undefined) {
+      schema = schema.refine(
+        (value) => value === undefined || value >= minValue,
+        minValue === 0 ? 'Debe ser mayor o igual a 0' : `Debe ser mayor o igual a ${minValue}`,
+      );
+    }
+
+    if (MONEY_FIELDS.has(field.name)) {
+      schema = schema.refine(
+        (value) => value === undefined || hasUpToTwoDecimals(value),
+        'Solo se permiten numeros con hasta dos decimales',
+      );
+    }
+
     return field.required
-      ? numberSchema.refine((value) => value !== undefined && !Number.isNaN(value), 'Campo requerido')
-      : numberSchema.optional();
+      ? schema.refine((value) => value !== undefined, 'Campo requerido')
+      : schema.optional();
   }
 
   if (field.type === 'switch') {
@@ -56,30 +81,69 @@ function fieldSchema(field, initialData) {
   }
 
   if (field.type === 'email') {
-    const emailSchema = z.string().trim().min(1, 'Campo requerido').email('Correo invalido');
+    const emailSchema = z
+      .string()
+      .refine((value) => value === value.trim(), 'No se permiten espacios al inicio o al final')
+      .refine((value) => !/\s/.test(value), 'No se permiten espacios en el correo')
+      .email('Debe tener formato usuario@dominio.com');
+
     return field.required
       ? emailSchema.min(1, 'Campo requerido')
       : z
           .string()
-          .trim()
-          .refine((value) => value === '' || z.string().email().safeParse(value).success, 'Correo invalido')
+          .refine((value) => value === '' || value === value.trim(), 'No se permiten espacios al inicio o al final')
+          .refine((value) => value === '' || !/\s/.test(value), 'No se permiten espacios en el correo')
+          .refine((value) => value === '' || z.string().email().safeParse(value).success, 'Debe tener formato usuario@dominio.com')
           .optional();
   }
 
   let textSchema = stringSchema;
 
-  if (field.digitsOnly) {
+  if (PHONE_FIELDS.has(field.name)) {
+    textSchema = textSchema.refine(
+      (value) => value === '' || /^\d{10}$/.test(value),
+      'Debe tener exactamente 10 digitos, sin espacios, guiones ni parentesis',
+    );
+  } else if (field.digitsOnly) {
     textSchema = textSchema.refine((value) => value === '' || /^\d+$/.test(value), 'Solo se permiten numeros');
   }
 
   if (field.lettersOnly) {
     textSchema = textSchema.refine(
       (value) => value === '' || /^[\p{L}\s]+$/u.test(value),
-      'Solo se permiten letras y espacios',
+      'Solo se permiten letras, espacios y acentos',
     );
   }
 
-  if (field.exactLength) {
+  if (field.name === 'rfc') {
+    textSchema = textSchema.refine(
+      (value) => value === '' || /^[A-Z0-9]{12,13}$/.test(value),
+      'El RFC debe tener 12 o 13 caracteres con solo letras mayusculas y numeros',
+    );
+  }
+
+  if (field.name === 'serie') {
+    textSchema = textSchema.refine(
+      (value) => value === '' || /^[A-HJ-NPR-Z0-9]{17}$/.test(value),
+      'La serie debe tener 17 caracteres alfanumericos y no puede incluir I, O o Q',
+    );
+  }
+
+  if (field.name === 'placa') {
+    textSchema = textSchema.refine(
+      (value) => value === '' || /^[A-Z0-9-]{7,9}$/.test(value),
+      'La placa debe tener entre 7 y 9 caracteres, usando solo mayusculas, numeros y guiones',
+    );
+  }
+
+  if (field.name === 'razonSocial') {
+    textSchema = textSchema.refine(
+      (value) => value === '' || /^[\p{L}\d\s.,]+$/u.test(value),
+      'La razon social solo permite letras, numeros, espacios, puntos y comas',
+    );
+  }
+
+  if (field.exactLength && !CUSTOM_FORMAT_FIELDS.has(field.name)) {
     textSchema = textSchema.length(field.exactLength, `Debe tener ${field.exactLength} caracteres`);
   } else {
     if (field.minLength) {
@@ -100,13 +164,41 @@ function fieldSchema(field, initialData) {
   return textSchema.min(field.min ?? 1, 'Campo requerido');
 }
 
-function buildSchema(fields, initialData) {
-  return z.object(
-    fields.reduce((shape, field) => {
-      shape[field.name] = fieldSchema(field, initialData);
-      return shape;
-    }, {}),
-  );
+function buildSchema(module, initialData) {
+  return z
+    .object(
+      module.fields.reduce((shape, field) => {
+        shape[field.name] = fieldSchema(field, initialData);
+        return shape;
+      }, {}),
+    )
+    .superRefine((values, context) => {
+      if (module.key === 'notas') {
+        const fechaContrato = toDateValue(values.fechaContrato);
+        const fechaVigencia = toDateValue(values.fechaVigencia);
+
+        if (fechaContrato && fechaVigencia && fechaVigencia < fechaContrato) {
+          context.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ['fechaVigencia'],
+            message: 'La fecha de vigencia debe ser mayor o igual a la fecha de creacion/contrato',
+          });
+        }
+      }
+
+      if (values.fechaPedido && values.fechaEnvio) {
+        const fechaPedido = toDateValue(values.fechaPedido);
+        const fechaEnvio = toDateValue(values.fechaEnvio);
+
+        if (fechaPedido && fechaEnvio && fechaEnvio < fechaPedido) {
+          context.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ['fechaEnvio'],
+            message: 'La fecha de envio no puede ser anterior a la fecha de pedido',
+          });
+        }
+      }
+    });
 }
 
 function defaultValues(fields, initialData) {
@@ -126,7 +218,7 @@ export function EntityForm({
   className = '',
   onCancel,
 }) {
-  const schema = useMemo(() => buildSchema(module.fields, initialData), [initialData, module.fields]);
+  const schema = useMemo(() => buildSchema(module, initialData), [initialData, module]);
   const {
     register,
     handleSubmit,
@@ -136,6 +228,8 @@ export function EntityForm({
   } = useForm({
     resolver: zodResolver(schema),
     defaultValues: defaultValues(module.fields, initialData),
+    mode: 'onChange',
+    reValidateMode: 'onChange',
   });
   const watchedValues = useWatch({ control });
 
@@ -163,6 +257,8 @@ export function EntityForm({
                 };
           const inputProps = {
             maxLength: field.maxLength ?? field.exactLength,
+            min: field.type === 'number' ? field.min : undefined,
+            step: field.type === 'number' ? field.step ?? 'any' : undefined,
             inputMode: field.digitsOnly ? 'numeric' : field.lettersOnly ? 'text' : undefined,
           };
 
